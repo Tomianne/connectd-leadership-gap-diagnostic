@@ -205,7 +205,11 @@ def main():
     report = json.loads(Path(run_path).read_text(encoding="utf-8"))
 
     import render
-    html_body = render.render(report).split("<body>")[1].split("</body>")[0]
+
+    # The onward share is read by somebody who did not run the diagnostic, so it
+    # needs the framing that lets it stand alone in a forwarded email.
+    ctx = "shared" if share else "self_serve"
+    html_body = render.render(report, context=ctx).split("<body>")[1].split("</body>")[0]
 
     ok, msg = email_report(report, to, html_body, share=share)
     print(msg)

@@ -234,6 +234,44 @@ def header(report, strapline, audience="founder"):
 </header>"""
 
 
+def intro_block(context, company=None):
+    """
+    How the reader arrived decides what the opening has to do.
+
+    Shared context is the interesting one commercially: the reader did not run
+    this, so the report has to carry enough framing to stand on its own in a
+    forwarded email, while crediting the person who sent it.
+    """
+    if context == "outbound":
+        body = (
+            "<strong>This came from Connectd.</strong> We place senior operators into "
+            "early stage companies as advisors and non executives. Nobody asked us to "
+            "look at you, and nobody has spoken to your team. This was read off your "
+            "public website in about ninety seconds, so treat it as something to argue "
+            "with rather than an assessment. Every claim below shows the evidence it "
+            "rests on."
+        )
+    elif context == "shared":
+        body = (
+            "<strong>Somebody sent you this.</strong> It was generated from "
+            + (f"the public website of {e(company)} " if company else "the company's public website ")
+            + "in about ninety seconds, by Connectd, who place senior "
+            "operators into early stage companies as advisors and non executives. "
+            "Nobody has spoken to the team, so it is a starting point for a "
+            "conversation rather than an assessment. Every claim shows the evidence it "
+            "rests on, so you can check or dismiss any of it quickly."
+        )
+    else:  # self_serve
+        body = (
+            "<strong>Here is what we could read.</strong> This is built from your public "
+            "website only, in about ninety seconds, and nobody at Connectd has spoken to "
+            "your team. So it is a starting point to argue with, not an assessment. Every "
+            "claim below shows the evidence behind it, and the last section lists what we "
+            "could not see."
+        )
+    return f'<div class="intro"><p style="margin-bottom:0">{body}</p></div>'
+
+
 def provenance(ev):
     """
     Where the answer came from. Real, checkable, deliberately near the bottom.
@@ -364,7 +402,7 @@ form.</p>
 </div>"""
 
 
-def render_delivered(r, audience="founder"):
+def render_delivered(r, audience="founder", context="self_serve"):
     """
     Ordered for the person receiving it.
 
@@ -400,15 +438,7 @@ def render_delivered(r, audience="founder"):
 
     out = [header(r, strap, audience)]
 
-    # Who this is from and why it arrived. The report never said, anywhere.
-    out.append(
-        '<div class="intro"><p style="margin-bottom:0"><strong>This came from '
-        "Connectd.</strong> We place senior operators into early stage companies as "
-        "advisors and non executives. Nobody asked us to look at you, and nobody has "
-        "spoken to your team. This was read off your public website in about ninety "
-        "seconds, so treat it as something to argue with rather than an assessment. "
-        "Every claim below shows the evidence it rests on.</p></div>"
-    )
+    out.append(intro_block(context, r.get("company_name")))
 
     if gaps:
         out.append("<h2>Where the gaps are</h2>")
@@ -504,7 +534,7 @@ def render_delivered(r, audience="founder"):
     return shell(f"Leadership gaps: {r.get('company_name')}", "".join(out))
 
 
-def render_refused(r, audience="founder"):
+def render_refused(r, audience="founder", context="self_serve"):
     """
     A refusal is still a document somebody reads about their own company, so it
     should be useful to them. The first version told them our evidence field count
@@ -559,7 +589,7 @@ and it does not depend on what your website happens to show.</p>
     return shell(f"Not enough to go on: {r.get('company_name')}", "".join(out))
 
 
-def render_out_of_icp(r, audience="founder"):
+def render_out_of_icp(r, audience="founder", context="self_serve"):
     """
     Telling somebody they are "outside the profile" and quoting the config line
     that excluded them is a rejection letter. The same fact can be delivered as a
@@ -621,10 +651,10 @@ RENDERERS = {
 }
 
 
-def render(report, audience="founder"):
+def render(report, audience="founder", context="self_serve"):
     fn = RENDERERS.get(report.get("outcome"))
     if fn in (render_delivered, render_refused, render_out_of_icp):
-        return fn(report, audience=audience)
+        return fn(report, audience=audience, context=context)
     if not fn:
         return render_error(
             {
@@ -640,6 +670,12 @@ def main():
     ap = argparse.ArgumentParser(description="Render a diagnostic run to HTML")
     ap.add_argument("runs", nargs="+", help="run JSON files")
     ap.add_argument("--out", default="samples", help="output directory")
+    ap.add_argument(
+        "--context",
+        choices=["self_serve", "shared", "outbound"],
+        default="self_serve",
+        help="how the reader arrived, which decides the opening",
+    )
     ap.add_argument(
         "--audience",
         choices=["founder", "internal"],
@@ -660,7 +696,9 @@ def main():
         stem = report.get("slug") or report.get("run_id") or p.stem
         suffix = "-internal" if args.audience == "internal" else ""
         target = outdir / f"{stem}{suffix}.html"
-        target.write_text(render(report, audience=args.audience), encoding="utf-8")
+        target.write_text(
+            render(report, audience=args.audience, context=args.context), encoding="utf-8"
+        )
         print(f"{report.get('outcome'):<12} -> {target}")
     return 0
 
