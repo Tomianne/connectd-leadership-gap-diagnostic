@@ -81,8 +81,14 @@ st.markdown(
   .foot a { color: #b4532a; }
 
   div.stButton > button[kind="primary"] {
-      background: #16181d; border: none; font-weight: 600; }
-  div.stButton > button[kind="primary"]:hover { background: #000; }
+      background: #16181d !important; border: none !important;
+      color: #ffffff !important; font-weight: 600; }
+  div.stButton > button[kind="primary"] p,
+  div.stButton > button[kind="primary"] div { color: #ffffff !important; }
+  div.stButton > button[kind="primary"]:hover { background: #000 !important; }
+  div.stButton > button[kind="primary"]:disabled,
+  div.stButton > button[kind="primary"]:disabled p {
+      background: #e4e4e0 !important; color: #8b909c !important; }
   div.stButton > button[kind="secondary"] {
       border: 1px solid #e4e4e0; color: #16181d; font-weight: 500;
       background: #fff; font-size: 13.5px; }
@@ -175,6 +181,9 @@ def load_html(slug):
 
 def embed_height(body_html):
     """
+    Fallback only, for Streamlit versions without st.iframe, which sizes to its
+    content on its own.
+
     Estimate the rendered height so the report does not scroll inside a page that
     already scrolls. A box with its own scrollbar is the thing that made this read
     as an attachment rather than as part of the page.
@@ -231,13 +240,14 @@ def show_report(report, body_html=None, key_prefix=""):
 
     if body_html:
         doc = f'<div style="background:#fff">{body_html}</div>'
-        h = embed_height(body_html)
-        # st.components.v1.html is deprecated as of June 2026. Prefer st.iframe
-        # where it exists and fall back so this still runs on older versions.
+        # st.iframe takes the HTML positionally and sizes to the content, which
+        # is what removes the inner scrollbar. st.components.v1.html was
+        # deprecated in June 2026 but is kept as a fallback for older versions,
+        # where the height has to be estimated instead.
         if hasattr(st, "iframe"):
-            st.iframe(srcdoc=doc, height=h, scrolling=False)
+            st.iframe(doc, height="content")
         else:
-            st.components.v1.html(doc, height=h, scrolling=False)
+            st.components.v1.html(doc, height=embed_height(body_html), scrolling=False)
 
 
 # ---------------------------------------------------------------------------
