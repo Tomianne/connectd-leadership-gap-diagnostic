@@ -48,7 +48,11 @@ st.set_page_config(
 st.markdown(
     """
 <style>
-  .stApp { background: #ffffff; }
+  .stApp { background: #ffffff;
+           font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                        Helvetica, Arial, sans-serif; }
+  .stApp, .stApp p, .stApp li, .stApp label, .stApp div[data-testid] {
+           font-family: inherit; }
   .block-container { max-width: 840px; padding-top: 2rem; padding-bottom: 4rem; }
   h1 { font-size: 2.15rem !important; line-height: 1.15 !important;
        letter-spacing: -.022em !important; font-weight: 680 !important;
@@ -85,6 +89,14 @@ st.markdown(
   div.stButton > button[kind="secondary"]:hover {
       border-color: #16181d; color: #16181d; }
   [data-testid="stTabs"] button p { font-weight: 600; }
+
+  /* the heading the embedded report no longer carries */
+  .rpt-head { border-top: 1px solid #e4e4e0; padding-top: 22px; margin-top: 8px; }
+  .rpt-title { font-size: 1.5rem !important; font-weight: 660 !important;
+               letter-spacing: -.015em; margin: 0 0 4px !important; color: #16181d; }
+  .rpt-meta { font-size: 13px; color: #8b909c; margin: 0 0 14px; word-break: break-all; }
+  .rpt-meta a { color: #8b909c; }
+  iframe { border: none !important; }
 </style>
 """,
     unsafe_allow_html=True,
@@ -148,15 +160,56 @@ def load_run(slug):
 
 
 def load_html(slug):
-    p = ROOT / "samples" / f"{slug}.html"
-    if not p.exists():
+    """
+    Render the sample fresh in embed mode rather than reading the standalone
+    file. The committed HTML carries its own page header, which duplicates what
+    the app has already shown and is what made the report look pasted in.
+    """
+    report = load_run(slug)
+    if not report:
         return None
-    t = p.read_text(encoding="utf-8")
-    return t.split("<body>")[1].split("</body>")[0] if "<body>" in t else t
+    import render
+
+    return render.render(report, embed=True).split("<body>")[1].split("</body>")[0]
+
+
+def embed_height(body_html):
+    """
+    Estimate the rendered height so the report does not scroll inside a page that
+    already scrolls. A box with its own scrollbar is the thing that made this read
+    as an attachment rather than as part of the page.
+
+    Overshooting a little is fine, the host page just shows white. Undershooting
+    reintroduces the scrollbar, so the estimate leans long.
+    """
+    import re as _re
+
+    text = _re.sub(r"<[^>]+>", " ", body_html or "")
+    text = _re.sub(r"\s+", " ", text)
+    lines = len(text) / 78          # characters per line at this width
+    blocks = body_html.count('class="field"') + body_html.count('class="gap"')
+    return int(min(max(lines * 27 + blocks * 26 + 320, 700), 9000))
 
 
 def show_report(report, body_html=None, key_prefix=""):
+    """
+    The app supplies the heading that the embedded report no longer carries, so
+    the reader gets the company name once rather than twice.
+    """
     outcome = report.get("outcome", "error")
+    company = report.get("company_name") or report.get("url") or ""
+    src = report.get("url") or ""
+    when = (report.get("generated_at") or "")[:10]
+
+    st.markdown(
+        f'<div class="rpt-head">'
+        f'<h3 class="rpt-title">{company}</h3>'
+        f'<p class="rpt-meta">Read from <a href="{src}">{src}</a>'
+        + (f" on {when}" if when else "")
+        + "</p></div>",
+        unsafe_allow_html=True,
+    )
+
     c1, c2 = st.columns([1, 3])
     with c1:
         st.markdown(
@@ -177,9 +230,14 @@ def show_report(report, body_html=None, key_prefix=""):
         st.write("")
 
     if body_html:
-        st.components.v1.html(
-            f'<div style="background:#fff">{body_html}</div>', height=880, scrolling=True
-        )
+        doc = f'<div style="background:#fff">{body_html}</div>'
+        h = embed_height(body_html)
+        # st.components.v1.html is deprecated as of June 2026. Prefer st.iframe
+        # where it exists and fall back so this still runs on older versions.
+        if hasattr(st, "iframe"):
+            st.iframe(srcdoc=doc, height=h, scrolling=False)
+        else:
+            st.components.v1.html(doc, height=h, scrolling=False)
 
 
 # ---------------------------------------------------------------------------
@@ -300,7 +358,7 @@ with tab_live:
                 )
 
             st.write("")
-            body = render.render(report).split("<body>")[1].split("</body>")[0]
+            body = render.render(report, embed=True).split("<body>")[1].split("</body>")[0]
             show_report(report, body)
 
             st.download_button(

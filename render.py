@@ -207,7 +207,22 @@ def answer_field(label, value):
     )
 
 
-def shell(title, body, company=None):
+EMBED_CSS = """
+body { background: transparent; }
+.wrap { max-width: 100%; padding: 0 2px 8px; }
+header { padding-bottom: 20px; margin-bottom: 26px; }
+h1 { font-size: 26px; }
+h2:first-of-type { margin-top: 26px; }
+"""
+
+
+def shell(title, body, company=None, embed=False):
+    """
+    `embed` strips the page chrome so the report sits inside a host page rather
+    than looking like a document dropped into one. The host already supplies the
+    width, the background and the scroll container.
+    """
+    extra = EMBED_CSS if embed else ""
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -215,7 +230,7 @@ def shell(title, body, company=None):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title>
 <meta name="robots" content="noindex">
-<style>{CSS}</style>
+<style>{CSS}{extra}</style>
 </head>
 <body><div class="wrap">{body}</div></body>
 </html>
@@ -453,7 +468,7 @@ form.</p>
 </div>"""
 
 
-def render_delivered(r, audience="founder", context="self_serve"):
+def render_delivered(r, audience="founder", context="self_serve", embed=False):
     """
     Ordered for the person receiving it.
 
@@ -487,7 +502,7 @@ def render_delivered(r, audience="founder", context="self_serve"):
     else:
         strap = f"{n} senior advisory gaps, with the evidence behind each."
 
-    out = [header(r, strap, audience)]
+    out = [] if embed else [header(r, strap, audience)]
 
     out.append(intro_block(context, r.get("company_name")))
 
@@ -599,17 +614,17 @@ wrong. Ten minutes covers all three.</p>
     out.append(provenance(ev))
     out.append(feedback_block(r))
     out.append(method_footer())
-    return shell(f"Leadership gaps: {r.get('company_name')}", "".join(out))
+    return shell(f"Leadership gaps: {r.get('company_name')}", "".join(out), embed=embed)
 
 
-def render_refused(r, audience="founder", context="self_serve"):
+def render_refused(r, audience="founder", context="self_serve", embed=False):
     """
     A refusal is still a document somebody reads about their own company, so it
     should be useful to them. The first version told them our evidence field count
     and that we monitor our refusal rate for drift. That is a note to Connectd
     wearing a founder's report as a disguise.
     """
-    out = [header(r, "We stopped rather than guess.", audience)]
+    out = [] if embed else [header(r, "We stopped rather than guess.", audience)]
 
     out.append("<h2>Why there is no report here</h2>")
     out.append(
@@ -654,17 +669,17 @@ and it does not depend on what your website happens to show.</p>
 
     out.append('<div class="cta"><p><a class="btn" href="#book">Book the ten minute call</a></p></div>')
     out.append(method_footer())
-    return shell(f"Not enough to go on: {r.get('company_name')}", "".join(out))
+    return shell(f"Not enough to go on: {r.get('company_name')}", "".join(out), embed=embed)
 
 
-def render_out_of_icp(r, audience="founder", context="self_serve"):
+def render_out_of_icp(r, audience="founder", context="self_serve", embed=False):
     """
     Telling somebody they are "outside the profile" and quoting the config line
     that excluded them is a rejection letter. The same fact can be delivered as a
     compliment, because it usually is one: they are past the stage where this
     offer helps.
     """
-    out = [header(r, "You are past the point this is built for.", audience)]
+    out = [] if embed else [header(r, "You are past the point this is built for.", audience)]
 
     out.append("<h2>Why there is no report here</h2>")
     out.append(
@@ -694,7 +709,7 @@ def render_out_of_icp(r, audience="founder", context="self_serve"):
 
     out.append('<div class="cta"><p><a class="btn" href="#book">Tell us if we read it wrong</a></p></div>')
     out.append(method_footer())
-    return shell(f"Not the right fit: {r.get('company_name')}", "".join(out))
+    return shell(f"Not the right fit: {r.get('company_name')}", "".join(out), embed=embed)
 
 
 def render_error(r):
@@ -708,7 +723,7 @@ def render_error(r):
         "more damaging one, so the system reports the failure instead.</p>"
     )
     out.append(method_footer())
-    return shell("Did not complete", "".join(out))
+    return shell("Did not complete", "".join(out), embed=embed)
 
 
 RENDERERS = {
@@ -719,10 +734,10 @@ RENDERERS = {
 }
 
 
-def render(report, audience="founder", context="self_serve"):
+def render(report, audience="founder", context="self_serve", embed=False):
     fn = RENDERERS.get(report.get("outcome"))
     if fn in (render_delivered, render_refused, render_out_of_icp):
-        return fn(report, audience=audience, context=context)
+        return fn(report, audience=audience, context=context, embed=embed)
     if not fn:
         return render_error(
             {
