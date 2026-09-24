@@ -170,65 +170,38 @@ Worth stating, because it is what makes the principle real rather than decorativ
 
 ---
 
-## The one that got through
+## How it fails, and what catches it
 
-**The first version of this system published a false claim about a real company.**
+The question worth asking about a system like this is not whether it is clever.
+It is whether you would put your name on what it tells a founder.
 
-It reported that Anemo Labs had a Scientific Advisory Board section with no members
-listed. Anemo Labs has three advisors: Mr Nim Arumainayagam, Prof Sergey Piletsky
-and Dr Todd Cowen. They are loaded into the page by JavaScript and appear nowhere
-in the HTML a scraper receives.
+An early version told a startup its Scientific Advisory Board section was empty.
+The board has three members. They load into the page by JavaScript and appear
+nowhere in the HTML a scraper receives.
 
-Every gate above passed it. The claim carried a citation. It named a real page. It
-survived the adversarial pass, because nothing in the evidence contradicted it. The
-evidence was incomplete in a way the system could not detect.
+**Every automated gate passed it.** The claim carried a real citation, named a
+real page, and survived the adversarial pass because nothing in the evidence
+contradicted it. The evidence was incomplete in a way the system could not
+detect. It failed *plausibly*, which is the failure mode that matters: an error
+announces itself, a confident wrong answer does not.
 
-A human read the report and knew it was wrong. That is the only reason it was
-caught, and it is the argument for keeping a human gate rather than a decoration
-on it.
+A person read it and knew it was wrong. That is the argument for keeping a human
+gate rather than a decoration on one, and it is why the accept or reject step
+before a brief reaches an exec is built rather than described.
 
-The root error was reasoning, not scraping. **A heading is evidence the thing
-exists.** A company does not put "Scientific Advisory Board" on its team page
-unless it has one. The system read that heading as evidence of absence, which is
-close to exactly backwards.
-
-### What changed
+The fix was a reasoning one, not a scraping one. **A heading is evidence the
+thing exists.** A company does not put "Scientific Advisory Board" on its team
+page unless it has one. The system had been reading that heading as evidence of
+absence, which is close to exactly backwards.
 
 | Fix | Where |
 |---|---|
-| Detect pages we could not render, by text to markup ratio under 2 per cent. Anemo Labs measures 0.54 per cent, a conventional site measures 6. | `crawl()` |
-| A heading for an unrendered section suppresses the matching archetype outright | `suppress_by_unrendered_sections()` |
-| Absence can never be a citation, and is dropped entirely from unrendered pages | `guard_absence()`, `is_absence_claim()` |
+| Detect pages that did not render, by text to markup ratio | `crawl()` |
+| A heading for an unrendered section suppresses the matching archetype | `suppress_by_unrendered_sections()` |
+| Absence can never be a citation | `guard_absence()` |
 | Citing a person whose role IS the missing expertise is an inversion | `flag_person_inversion()` |
-| The report states what it could not read, above any finding | `render_delivered()` |
 
-All in code, not in the prompt. This was never a matter of asking the model more
-firmly.
-
----
-
-## Three more defects found the same way
-
-Found by reading reports about real companies and disagreeing with them, rather
-than by testing. The fixes are more interesting than the build.
-
-**1. The qualification step did not exist.** `icp.yml` was written first and then
-never wired into the pipeline, so Chatterbox, a 29 person company with a blue chip
-client, got a full report. A funnel that reports on everything it is handed does
-not have an ideal customer profile. It has a preference.
-
-**2. Customer logos were being cited as evidence of a sales gap.** Two claims cited
-"Holland & Barrett, approximately 100 stores" and "BNP Paribas Portugal" as
-evidence the company could not sell to enterprises. Those are named enterprise
-customers. The evidence pointed the opposite way. The adversarial pass now runs an
-explicit **evidence inversion** check and drops both.
-
-**3. Confidence was being over rated on inference from absence.** A gap was rated
-`medium` where the stated reasoning was, in effect, "there is no team page, so
-there is no compliance lead". That is inference from a missing page, not evidence
-about the company, and the tier definitions call it `low`. Two fixes: a refusal
-gate that requires leadership visibility at all, and a mechanical confidence cap
-that no prompt can talk its way past.
+All in code, because this was never a matter of asking the model more firmly.
 
 ---
 

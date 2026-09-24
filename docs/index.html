@@ -282,98 +282,32 @@ consumes a scarce person rather than a cheap API call.</p>
 
 
 
-<h2>What broke, and what changed</h2>
-<p>Five defects, none of them found by testing. Every one came from reading reports about
-real companies and disagreeing with them, which is the argument for keeping a human in
-the loop rather than a decoration on it. Two of the five were found by somebody else
-reviewing the output, which is the same argument again.</p>
-<h3>The one that got through, and what it changed</h3>
+<h2>How it fails, and what catches it</h2>
 
-<div class="callout"><strong>The first version of this system published a false claim
-about a real company.</strong> It reported that Anemo Labs had a Scientific Advisory
-Board section with no members. Anemo Labs has three advisors: Mr Nim Arumainayagam,
-Prof Sergey Piletsky and Dr Todd Cowen. They are loaded into the page by JavaScript and
-appear nowhere in the HTML a scraper receives.</div>
+<p class="big">The question worth asking about a system like this is not whether it is
+clever. It is whether you would put your name on what it tells a founder.</p>
 
-<p>Every gate described above passed it. The claim carried a citation, it named a real
-page, and it survived the adversarial pass, because it was not contradicted by anything
-in the evidence. The evidence was simply incomplete in a way the system could not see.</p>
+<p>An early version told a startup its Scientific Advisory Board section was empty. The
+board has three members. They load into the page by JavaScript and appear nowhere in the
+HTML a scraper receives.</p>
 
-<p class="big">A human read the report and knew it was wrong. That is the only reason it
-was caught, and it is the argument for the human gate rather than a decoration on it.</p>
+<div class="callout"><strong>Every automated gate passed it.</strong> The claim carried a
+real citation, named a real page, and survived the adversarial pass because nothing in
+the evidence contradicted it. The evidence was incomplete in a way the system could not
+detect. It failed <em>plausibly</em>, which is the failure mode that matters: an error
+announces itself, a confident wrong answer does not.</div>
 
-<p>The root error was a reasoning mistake, not a scraping one, and it took a while to
-see it clearly. <strong>A heading is evidence that the thing exists.</strong> A company
-does not put "Scientific Advisory Board" on its team page unless it has one. The system
-read that heading as evidence of absence, which is close to exactly backwards.</p>
+<p>A person read it and knew it was wrong. That is the whole argument for keeping a human
+gate rather than a decoration on one, and it is why the accept or reject step before a
+brief reaches an exec is built rather than described.</p>
 
-<h3>What changed as a result</h3>
-<ul>
-<li><strong>Pages we could not render are detected.</strong> Text to markup ratio below
-two per cent means most of the content was assembled by scripts. Anemo Labs measures
-0.54 per cent. Ridelogix, a conventional site, measures six.</li>
-<li><strong>A heading for an unrendered section now suppresses the matching archetype
-outright.</strong> If the site says it has an advisory board, no advisory gap can be
-named, full stop.</li>
-<li><strong>Absence can no longer be a citation.</strong> A deterministic check rejects
-quoted evidence phrased as a negative, and drops it entirely when it comes from a page
-that did not render.</li>
-<li><strong>The report says what it could not read</strong>, at the top, before any
-finding.</li>
-</ul>
-
-<p>These are in code, not in the prompt, because this was never a matter of asking the
-model more firmly.</p>
-
-
-<h3>Three smaller ones, found the same way</h3>
-<p>The qualification step existed as a config file and was never wired into the
-pipeline, so a 29 person company with a blue chip client got a full report. Customer
-logos were being cited as evidence of a sales gap, when a named enterprise customer is
-evidence of the opposite. And confidence was being over rated on inference from absence,
-rated <code>medium</code> where the reasoning was "there is no team page, so there is no
-compliance lead".</p>
-<p>All three are fixed, and the fixes are in code rather than in prompt wording, because
-asking a model more firmly to respect its own confidence definitions is not a control.</p>
-
-<h3>What testing on live companies surfaced</h3>
-<p>I picked three UK companies to test with, chosen for having a readable public
-footprint. Two were screened out and both screens were right. Piclo has eighteen named
-staff including a CFO and nine institutional investors. DrDoctor raised a ten million
-Series B and serves seventy NHS trusts. Neither wants three pro bono advisors.</p>
-
-<div class="callout"><strong>The companies easiest to read are the ones most likely to be
-out of profile.</strong> A rich public footprint correlates with being further along.
-Thin sites get refused, rich sites get screened out, and the target sits in a narrow band
-between them. Selecting test companies by how readable they were selected against the
-ICP, which is worth knowing before anyone concludes from three tries that the thing never
-reports.</div>
-
-<h3>A filter only one side spoke</h3>
-<p>Then a second defect, and a better one. Six companies in a row produced no report.
-The cause was that <code>icp.yml</code> targeted the stage <code>series-a-early</code>,
-while the extractor's schema only ever emits <code>pre-seed</code>, <code>seed</code>,
-<code>series-a</code>, <code>later</code> or <code>unknown</code>. The two sides spoke
-different vocabularies, so <strong>every Series A company was rejected silently.</strong></p>
-
-<div class="callout">It failed as a plausible result rather than as an error. Each
-company was screened out with a confident, correctly worded explanation, and nothing
-looked broken. The four sample runs are pre-seed, seed and later, so none of them could
-ever have exposed it. Only companies I had not chosen could.</div>
-
-<p>The fix is a startup check that refuses to run if the ICP names a stage the extractor
-cannot produce. A filter only one side speaks is not a filter, it is a silent reject.
-With the vocabularies agreed, the same company that was screened out produces three
-gaps.</p>
-
-<p>It also exposed a design miss. A screened-out company was a dead end, and it should
-not have been. Connectd is a two sided marketplace, and the senior operators inside a
-company too far along to need advisors are exactly who the other side of it recruits.
-Piclo's CFO is not a customer. She is supply. The screen now changes which side of the
-business the lead belongs to rather than discarding it, which is worth more than the
-report it replaces, because exec side acquisition is where the revenue actually is.</p>
-
-
+<p>The fix was a reasoning one, not a scraping one. <strong>A heading is evidence the
+thing exists.</strong> A company does not put "Scientific Advisory Board" on its team
+page unless it has one. The system had been reading that heading as evidence of absence,
+which is close to exactly backwards. Now: pages that did not render are detected by their
+text to markup ratio, a heading for an unrendered section suppresses the matching
+archetype outright, and absence can never be a citation. All three in code, because this
+was never a matter of asking the model more firmly.</p>
 
 <h2>The optimisation loop</h2>
 <p class="big">An honest description first. At thirty runs a week this is not an
@@ -562,17 +496,28 @@ mailed.</td></tr>
 </table>
 
 <h3>Known limitations</h3>
+<p>Four more things the build got wrong and now handles, kept here because they are
+limits of the approach rather than incidents.</p>
 <ul>
-<li><strong>Static fetch only.</strong> No JavaScript execution. This produced the
-false claim described above. The system now detects unrendered pages and refuses to build
-claims on absence from them, which contains the failure without removing the underlying
-limit: there is content on some sites it simply cannot read.</li>
-<li><strong>Run to run variance.</strong> Temperature is zero and runs still differ. On
-one run the adversarial pass demoted a gap and on the next it did not. A safety gate that
-fires probabilistically is weaker than one that fires deterministically, which is why
-three checks were moved into code.</li>
-<li><strong>Four runs.</strong> Everything about the loop is specification, not result.</li>
+<li><strong>Static fetch only.</strong> No JavaScript execution, which is what produced
+the failure above. Contained now, but there is content on some sites this cannot read.</li>
+<li><strong>A filter only one side speaks is a silent reject.</strong> The ICP once
+targeted a stage value the classifier could never emit, so every Series A company was
+screened out with a confident, correctly worded explanation and nothing looked broken. A
+startup check now refuses to run on a vocabulary mismatch.</li>
+<li><strong>Absence of evidence is not evidence of absence.</strong> Customer logos were
+briefly cited as proof of a sales gap, when a named enterprise customer is evidence of
+the opposite, and confidence was over rated where the reasoning was really "no team page,
+therefore no compliance lead". Both are now deterministic checks rather than instructions.</li>
+<li><strong>Run to run variance.</strong> Temperature is zero and runs still differ. A
+safety gate that fires probabilistically is weaker than one that fires deterministically,
+which is why three of them were moved into code.</li>
+<li><strong>The companies easiest to read are the ones most likely to be out of
+profile.</strong> A rich public footprint correlates with being further along. Thin sites
+get refused, rich sites get screened out, and the target sits in a narrow band between
+them.</li>
 </ul>
+
 
 
 
