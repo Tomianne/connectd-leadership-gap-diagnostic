@@ -52,10 +52,10 @@ two are the exhibits I would look at first.**
 
 | Company | Outcome | What it demonstrates |
 |---|---|---|
-| **Anemo Labs** | 2 gaps | London deep tech, 700k pre-seed, three named staff. A third gap was named, published, found wrong by a human, and is now structurally impossible to produce. See below. |
-| **Ridelogix** | 2 gaps | Claims citing a named enterprise customer as proof the company could not sell to enterprises were discarded by the adversarial pass. |
+| **Anemo Labs** | Report | London deep tech, 700k pre-seed, three named staff. A third gap was named, published, found wrong by a human, and is now structurally impossible to produce. See below. |
+| **Ridelogix** | Report | Claims citing a named enterprise customer as proof the company could not sell to enterprises were discarded by the adversarial pass. |
 | **Chatterbox** | **Out of profile** | 29 staff, blue chip client, past the stage this is built for. Screened before any gap judgement was made. |
-| **Rule** | **Refused** | A 615 character site. No team, no roles. The system declined to diagnose a leadership gap with no visibility of the leadership. |
+| **Rule** | **Refused** | A 615 character site. Too little to work from, so it declined to diagnose rather than infer a gap from an empty page. |
 
 A diagnostic that only knows how to produce a diagnosis will produce one whether
 or not it should. Two of these four are the system deciding not to.
@@ -240,7 +240,7 @@ accepted briefs is a failed system that looks like a successful one.
 **Three label sources, in rank order**, because an optimiser is only as good as its
 ground truth:
 
-1. **Strongest:** the human accept, edit or reject per gap. Skin in the game. Low volume.
+1. **Strongest:** the human accept, edit or reject per gap. Skin in the game, low volume, and **not yet built**, so the column exists and is empty.
 2. **Medium:** behaviour. Completed, shared, returned, booked.
 3. **Weakest:** the founder's own yes, partly or no. Cheap, high volume, biased
    towards politeness. Sets direction, never decides alone.
@@ -320,6 +320,25 @@ agentic**, which is worth saying rather than dressing up.
 
 ---
 
+## What a run costs
+
+Measured, not projected. OpenRouter reports real cost per call and every run logs
+what it spent.
+
+| Outcome | Calls | Cost |
+|---|---|---|
+| Full report | 3 to 4 | $0.075 to $0.151 |
+| Screened out of profile | 1 | $0.016 |
+| Refused | 1 | $0.003 |
+
+**The quality gates are also cost gates.** A refusal costs about fifty times less
+than a full report, because it exits before the expensive model runs. The ICP
+screen and the refusal gate were built to stop the system saying something it
+could not support. At volume they also stop it spending money on companies it was
+never going to help.
+
+---
+
 ## How it expands
 
 **Week 1.** Diagnostic live on real URLs. Taxonomy v0. Run log populated. Own
@@ -363,7 +382,8 @@ to write them.
 | The loop is self optimising | It is specified, the schema and config exist, and it has four rows of data. It needs about thirty runs per variant before its output means anything. |
 | The report is accurate | It is accurate about what is publicly visible, and it says so in the body rather than a footnote. Where it cannot see, it says so and asks. |
 | Emails are sent at volume | The delivery leg is live and tested end to end: a report copy and an onward share both sent through a transactional endpoint, and a malformed address was rejected without sending. Three sends is a working mechanism, not a campaign, and no list has been mailed. |
-| Fully autonomous | Two human gates, at named seams, with a stated reason for each. Everything else runs unattended. |
+| Fully autonomous | Two human gates are designed, at named seams, with a stated reason for each. |
+| **Both human gates are built** | **Only one is.** The identity confirmation at step 2 runs. The accept, edit or reject of each gap before a brief reaches an exec is specified and has no interface, so the loop's strongest label source currently collects nothing. It is the next thing to build, and the design depends on it more than on anything already working. |
 
 ### Known limitations
 

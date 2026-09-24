@@ -104,14 +104,14 @@ exhibits I would look at first.</strong></p>
 
 <div class="cards">
   <a class="card" href="samples/anemo-labs.html">
-    <span class="pill ok">2 gaps, 1 discarded</span>
+    <span class="pill ok">Report</span>
     <p class="name">Anemo Labs</p>
     <p class="why">London deep tech, 700k pre-seed, three named staff. A third gap was
     named, published, found to be wrong by a human, and is now structurally impossible
     to produce.</p>
   </a>
   <a class="card" href="samples/ridelogix.html">
-    <span class="pill ok">2 gaps, 1 discarded</span>
+    <span class="pill ok">Report</span>
     <p class="name">Ridelogix</p>
     <p class="why">A claim citing a named enterprise customer as proof the company could
     not sell to enterprises was discarded by the adversarial pass.</p>
@@ -125,8 +125,8 @@ exhibits I would look at first.</strong></p>
   <a class="card" href="samples/rule-money.html">
     <span class="pill warn">Refused</span>
     <p class="name">Rule</p>
-    <p class="why">A 615 character site. No team, no roles. It declined to diagnose a
-    leadership gap with no visibility of the leadership.</p>
+    <p class="why">A 615 character site. Too little to work from, so it declined to
+    diagnose rather than infer a gap from an empty page.</p>
   </a>
 </div>
 
@@ -398,6 +398,24 @@ rate is known, because paid multiplies whatever rate you already have. And manua
 outreach on LinkedIn, which is effective, available today, and <strong>not agentic</strong>,
 which is worth saying rather than dressing up.</p>
 
+<h2>What a run costs</h2>
+<p>Measured, not projected. OpenRouter reports real cost per call, so every run logs
+what it actually spent.</p>
+<table>
+<thead><tr><th>Outcome</th><th>Calls</th><th>Cost</th></tr></thead>
+<tbody>
+<tr><td>Full report</td><td>3 to 4</td><td>$0.075 to $0.151</td></tr>
+<tr><td>Screened out of profile</td><td>1</td><td>$0.016</td></tr>
+<tr><td>Refused</td><td>1</td><td>$0.003</td></tr>
+</tbody>
+</table>
+<div class="callout"><strong>The quality gates are also cost gates.</strong> A refusal
+costs about fifty times less than a full report, because it exits before the expensive
+model runs. The ICP screen and the refusal gate were built to stop the system saying
+something it could not support; at volume they also stop it spending money on companies
+it was never going to help. Roughly six pence a run across the four, and the cheap
+outcomes are the ones you want more of.</div>
+
 <h2>How it expands</h2>
 <table>
 <thead><tr><th>When</th><th>What</th></tr></thead>
@@ -441,6 +459,10 @@ work to fix, not a rebuild.</td></tr>
 <tr><td>Loop is running</td><td>Specified, with the schema and config in place and four
 rows of data. It needs about thirty runs per variant before its output means
 anything.</td></tr>
+<tr><td>Both human gates are built</td><td><strong>Only one is.</strong> The identity
+confirmation runs. The accept or reject of each gap before a brief reaches an exec is
+specified and has no interface, so the loop's strongest label source collects nothing
+yet. It is the next thing to build.</td></tr>
 <tr><td>Report is accurate</td><td>Accurate about what is publicly visible, and it says
 so in the body rather than a footnote. Where it cannot see, it says so and asks.</td></tr>
 <tr><td>Emails sent at volume</td><td>The delivery leg is live and tested end to end: a

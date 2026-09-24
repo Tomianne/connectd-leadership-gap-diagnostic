@@ -1,11 +1,11 @@
 {
-  "run_id": "66a71f6dbb8b",
+  "run_id": "ac7cc0d6b32a",
   "slug": "anemo-labs",
   "url": "https://anemolabs.com",
   "outcome": "delivered",
   "company_name": "Anemo Labs",
   "one_line": "Digitizing Smell",
-  "generated_at": "2026-09-24T16:21:21+00:00",
+  "generated_at": "2026-09-24T16:58:50+00:00",
   "taxonomy_version": 0,
   "evidence": {
     "company_name": "Anemo Labs",
@@ -73,7 +73,7 @@
       "https://anemolabs.com",
       "https://anemolabs.com/team"
     ],
-    "_extracted_at": "2026-09-24T16:21:31+00:00"
+    "_extracted_at": "2026-09-24T16:59:00+00:00"
   },
   "evidence_completeness": "8/8",
   "gaps": [
@@ -82,8 +82,8 @@
       "confidence": "high",
       "quoted_evidence": "Medical device development (olfactory sensors for disease detection)",
       "source_url": "https://anemolabs.com",
-      "reasoning": "Anemo Labs is explicitly building a medical device for disease detection and biomarker monitoring, placing it squarely in a regulated healthcare/diagnostics category. The full team roster (CEO, Head of Electronics, Lead Research Chemist) shows no compliance, regulatory affairs, or quality/clinical affairs title, despite the product needing regulatory pathway navigation (e.g. medical device classification, clinical evidence standards).",
-      "what_goes_wrong": "Without a named regulatory owner, the company risks building toward a device classification or clinical claim it cannot actually support, discovering the correct regulatory pathway too late, or facing costly redesigns and delays when a notified body or regulator flags gaps that a specialist would have caught early.",
+      "reasoning": "The company operates squarely in a regulated sector (medical device development, healthcare diagnostics, biomarker monitoring for cancer and disease screening). The full named team consists of a CEO, a Head of Electronics, and a Lead Research Chemist ('Co-founder & CEO', 'Head of Electronics', 'Lead Research Chemist' on https://anemolabs.com/team) \u2014 no compliance, regulatory affairs, quality, or clinical/legal title is present anywhere. Two independent pieces of evidence (sector description and the named roster) converge on the same gap.",
+      "what_goes_wrong": "Medical device and diagnostics claims (disease detection, biomarker screening) attract regulatory scrutiny (e.g. MHRA/FDA classification, clinical evidence standards). Without a named regulatory owner, the company risks building product and marketing claims that are not defensible for the intended regulatory pathway, causing costly rework or delayed market access.",
       "name": "Regulatory and compliance",
       "covers": "Sector specific authorisation, licensing, supervisory relationships.",
       "profile": "Has held a regulated role or run a compliance function in the specific sector. Not a generalist lawyer.",
@@ -92,30 +92,30 @@
         "Who is the accountable person today",
         "What happens in your first supervisory conversation"
       ],
-      "unfilled_six_months": "Without a named regulatory owner, the company risks building toward a device classification or clinical claim it cannot actually support, discovering the correct regulatory pathway too late, or facing costly redesigns and delays when a notified body or regulator flags gaps that a specialist would have caught early."
+      "unfilled_six_months": "Medical device and diagnostics claims (disease detection, biomarker screening) attract regulatory scrutiny (e.g. MHRA/FDA classification, clinical evidence standards). Without a named regulatory owner, the company risks building product and marketing claims that are not defensible for the intended regulatory pathway, causing costly rework or delayed market access."
     },
     {
-      "archetype_id": "data-protection-privacy",
+      "archetype_id": "fractional-cfo",
       "confidence": "medium",
-      "quoted_evidence": "Monitoring biomarkers in bodily fluids (urine, sweat)",
+      "quoted_evidence": "Raised \u00a3700K to digitise smell",
       "source_url": "https://anemolabs.com",
-      "reasoning": "The product collects health and biological data at the individual level, which in most jurisdictions counts as special category data under data protection law. The three-person team (CEO, electronics lead, research chemist) has no named privacy or data protection role, and no privacy documentation is visible on the site.",
-      "what_goes_wrong": "Special category health data handled without a clear lawful basis, DPA structure, or named accountable owner creates real exposure: regulatory penalties, loss of clinical partner trust, or having to retrofit consent and data-handling processes after data collection has already started at scale.",
-      "name": "Data protection and privacy",
-      "covers": "UK GDPR, lawful basis, DPAs, data subject rights, international transfers.",
-      "profile": "Has run privacy for a company processing similar data. Practical about lawful basis rather than absolutist.",
+      "reasoning": "The company has taken institutional seed funding but the three named team members (CEO, Head of Electronics, Lead Research Chemist) include no finance, operations-finance, or strategic finance title. This matches the pattern of a recent raise with no named finance function.",
+      "what_goes_wrong": "Without dedicated financial oversight, runway modelling, burn tracking, and investor reporting fall to a technical or generalist founder, increasing the risk of cash mismanagement or being under-prepared for the next funding round.",
+      "name": "Fractional CFO and financial control",
+      "covers": "Runway modelling, unit economics, board reporting, raise readiness.",
+      "profile": "Has taken a company through at least one priced round. Comfortable at both the model and the board pack.",
       "first_questions": [
-        "What is your lawful basis for the core processing",
-        "Where does personal data leave the UK or EEA",
-        "Who answers a data subject access request today"
+        "How many months of runway do you have, and what assumption is that most sensitive to",
+        "What is your gross margin per unit, and how confident are you in it",
+        "Who currently owns the board pack"
       ],
-      "unfilled_six_months": "Special category health data handled without a clear lawful basis, DPA structure, or named accountable owner creates real exposure: regulatory penalties, loss of clinical partner trust, or having to retrofit consent and data-handling processes after data collection has already started at scale."
+      "unfilled_six_months": "Without dedicated financial oversight, runway modelling, burn tracking, and investor reporting fall to a technical or generalist founder, increasing the risk of cash mismanagement or being under-prepared for the next funding round."
     }
   ],
   "open_questions": [
-    "The company raised \u00a3700K and lists no finance-titled team member \u2014 is there a fractional CFO or finance advisor supporting runway and reporting that simply isn't listed on the public team page?",
-    "The 'Backed By' section heading appears with no investor names rendered \u2014 is this a content/rendering issue or does it reflect an early-stage cap table with no named institutional backers yet?",
-    "Only three named team members are visible against a hardware, AI, and regulated-health product scope \u2014 are there additional team members, contractors, or advisors not shown on the team page?"
+    "The Scientific Advisory Board section has a heading but no members rendered \u2014 is this a real, staffed advisory function or an aspirational placeholder?",
+    "The 'Backed By' section has a heading but no investor names or logos rendered \u2014 who, if anyone, are the institutional backers behind the \u00a3700K raise?",
+    "No pricing, customer logos, or specific product specifications are visible \u2014 is the product still pre-commercial, and if so, does that change the urgency of some of these gaps?"
   ],
   "not_visible": [
     "Pricing information",
@@ -129,7 +129,19 @@
       "contradicting_evidence": "The site carries a section about 'advisory board' whose contents did not render for us. A heading is evidence the thing exists. Naming this as a gap would mean reporting our own rendering limit as a fact about the company."
     }
   ],
-  "notes_for_human": "Evidence is thin (single homepage + team page, only 3 named people), so most findings rest on one or two data points rather than deep corroboration. The Scientific Advisory Board and Backed By sections both show heading-without-content, which is a genuine rendering/content signal worth re-checking live before treating as a hard gap \u2014 it may simply be a site build issue rather than an actual absence of advisors or backers. No disqualifying evidence found (no team member holds a compliance, privacy, or scientific advisory title), so none of the three gaps are overridden.",
+  "notes_for_human": "This is a 3-person seed-stage hardware/health-tech team with very limited public information (no LinkedIn depth, no board detail, no advisory board content despite a heading for one). Confidence on all gaps is capped at medium/high based only on what is directly visible from the team page and homepage copy. Two site sections (Scientific Advisory Board, Backed By) appear to be under construction or failed to render, so any inference from those was deliberately excluded per evidentiary rules \u2014 worth a human checking the live site directly, as those sections could materially change the domain-advisory and governance picture.",
+  "run_cost": {
+    "usd": 0.075311,
+    "calls": 3,
+    "prompt_tokens": 8695,
+    "completion_tokens": 6787
+  },
+  "duration_seconds": 75.6,
+  "models": {
+    "extract": "anthropic/claude-haiku-4.5",
+    "classify": "anthropic/claude-sonnet-5",
+    "adversary": "anthropic/claude-haiku-4.5"
+  },
   "unrendered_pages": [
     "https://anemolabs.com",
     "https://anemolabs.com/team"

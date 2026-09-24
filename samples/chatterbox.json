@@ -1,10 +1,16 @@
 {
-  "run_id": "a001b1d8c1cc",
+  "run_id": "6db31bea5131",
   "slug": "chatterbox",
   "url": "https://www.chatterbox.io",
   "company_name": "Chatterbox",
   "outcome": "out_of_icp",
-  "generated_at": "2026-09-24T16:01:18+00:00",
+  "run_cost": {
+    "usd": 0.015689,
+    "calls": 1,
+    "prompt_tokens": 5359,
+    "completion_tokens": 2066
+  },
+  "generated_at": "2026-09-24T17:02:40+00:00",
   "icp_reasons": [
     "apparent stage 'later' is outside the target stages (pre-seed, seed, series-a-early)"
   ],
@@ -183,23 +189,25 @@
     "regulated_sector_signals": [],
     "handles_personal_data_signals": [
       "Learner personal and professional interests used for AI-powered coach matching algorithm",
-      "Tracks learner satisfaction and progress metrics in real-time",
-      "Admin dashboard with reporting and analytics for organisations"
+      "Admin dashboard with reporting and analytics for organisations",
+      "Learner satisfaction monitoring and progress tracking"
     ],
     "physical_product_signals": [],
     "last_activity_seen": "March 27, 2025",
     "not_visible": [
-      "Specific pricing tiers or pricing structure - site states 'Chatterbox takes a consultative approach to pricing' with custom solutions",
+      "Specific pricing amounts or pricing tiers - pricing page states 'Chatterbox takes a consultative approach to pricing' with custom solutions",
       "Founding date or year company was established",
-      "Specific funding amounts or rounds",
-      "Number of active learners or customers",
+      "Specific funding amounts or funding rounds",
       "Executive leadership team names and titles",
-      "Detailed company financials or revenue information"
+      "Total number of employees",
+      "Geographic headquarters location (footer mentions UK & Portugal, Denmark, Brazil, Hungary & Spain but unclear which is HQ)",
+      "Revenue or financial metrics",
+      "Number of active customers or users"
     ],
     "unrendered_sections": [
-      "Newsletter signup form noted as needing storage option configuration",
-      "Awards section header visible but no award details rendered",
-      "Featured in section header visible but no logos or details rendered"
+      "Newsletter signup form on multiple pages marked as needing storage option configuration",
+      "Awards section on about page shows heading but no award details rendered",
+      "Featured in section on about page shows heading but no logos or details rendered"
     ],
     "sources": [
       "https://www.chatterbox.io",
@@ -207,7 +215,7 @@
       "https://www.chatterbox.io/company",
       "https://www.chatterbox.io/pricing"
     ],
-    "_extracted_at": "2026-09-24T16:01:37+00:00"
+    "_extracted_at": "2026-09-24T17:02:57+00:00"
   },
   "evidence_completeness": "8/8",
   "message": "This company sits outside the profile this diagnostic is built for. Producing a leadership gap report anyway would mean inventing a gap to fill a template."

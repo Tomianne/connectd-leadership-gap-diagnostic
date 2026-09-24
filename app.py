@@ -57,7 +57,7 @@ st.markdown(
 
 SAMPLES = {
     "Anemo Labs, London deep tech, raised 700k pre-seed": "anemo-labs",
-    "Ridelogix, urban logistics, two claims discarded": "ridelogix",
+    "Ridelogix, urban logistics, claims discarded by the adversary": "ridelogix",
     "Chatterbox, screened out as outside the profile": "chatterbox",
     "Rule, refused because the leadership was not visible": "rule-money",
 }

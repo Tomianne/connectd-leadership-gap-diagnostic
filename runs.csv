@@ -1,5 +1,5 @@
 run_id,timestamp,input_url,company_name,confirmation_corrected,evidence_completeness,leadership_visible,outcome,icp_verdict,archetypes_named,confidence_per_archetype,adversary_drops,confidence_caps,gaps_final_count,config_version,taxonomy_version,variant_ids,delivered,emailed,shared,returned,booked,founder_rating,human_gap_verdicts,brief_accepted,llm_cost_usd
-b84653e2b0a4,2026-09-24T15:30:52+00:00,https://anemolabs.com,Anemo Labs,,8/8,True,delivered,in,regulatory-compliance|data-protection-privacy,medium|medium,domain-scientific-advisory,,2,3,0,baseline,True,,,,,,,,
-abf574db816b,2026-09-24T15:36:37+00:00,https://www.chatterbox.io,Chatterbox,,8/8,True,out_of_icp,out,,,,,0,3,,baseline,False,,,,,,,,
-0673a20f21eb,2026-09-24T15:31:48+00:00,https://ridelogix.com,Ridelogix,,5/8,True,delivered,in,enterprise-sales-gtm|product-marketing-positioning,medium|medium,commercial-revenue-leader,,2,3,0,baseline,True,,,,,,,,
-5e10ad9a2e35,2026-09-24T15:36:37+00:00,https://rulemoney.co.uk,Rule Finance Ltd,,3/8,False,refused,,,,,,0,3,,baseline,False,,,,,,,,
+ac7cc0d6b32a,2026-09-24T16:58:50+00:00,https://anemolabs.com,Anemo Labs,,8/8,True,delivered,in,regulatory-compliance|fractional-cfo,high|medium,domain-scientific-advisory,,2,3,0,baseline,True,,,,,,,,0.07531
+6db31bea5131,2026-09-24T17:02:40+00:00,https://www.chatterbox.io,Chatterbox,,8/8,True,out_of_icp,out,,,,,0,3,,baseline,False,,,,,,,,0.01569
+8e9f2e445691,2026-09-24T17:00:06+00:00,https://ridelogix.com,Ridelogix,,5/8,True,delivered,in,commercial-revenue-leader,medium,enterprise-sales-gtm,,1,3,0,baseline,True,,,,,,,,0.15115
+a033d61b04ef,2026-09-24T17:02:57+00:00,https://rulemoney.co.uk,Rule Finance Ltd,,3/8,False,refused,,,,,,0,3,,baseline,False,,,,,,,,0.00299
