@@ -1,9 +1,10 @@
 {
-  "run_id": "5e10ad9a2e35",
+  "run_id": "f6b43b903415",
   "slug": "rule-money",
   "url": "https://rulemoney.co.uk",
   "company_name": "Rule Finance Ltd",
   "outcome": "refused",
+  "generated_at": "2026-09-24T16:01:11+00:00",
   "refusal_reason": "only 3 of 8 evidence fields populated, threshold is 4",
   "refusal_message": "We could not see enough of your business to do this properly. Rather than guess, here is a ten minute call with someone who will ask the four questions a website cannot answer.",
   "evidence": {
@@ -45,7 +46,7 @@
     "sources": [
       "https://rulemoney.co.uk"
     ],
-    "_extracted_at": "2026-09-24T15:33:35+00:00"
+    "_extracted_at": "2026-09-24T16:01:18+00:00"
   },
   "evidence_completeness": "3/8"
 }

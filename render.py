@@ -172,18 +172,33 @@ def shell(title, body, company=None):
 """
 
 
-def header(report, strapline):
+def header(report, strapline, audience="founder"):
+    """
+    The eyebrow is a real heading, not a styled paragraph, because mail clients
+    strip the stylesheet and it then landed as an orphaned line of body text.
+
+    Run ids and taxonomy versions are build internals. They tell a founder
+    nothing and make a document written for them read like a system dump, so
+    they appear only in the internal view.
+    """
     company = report.get("company_name") or report.get("url")
     url = report.get("url", "")
+    when = (report.get("generated_at") or "")[:10]
+
+    meta = f'Read from <a href="{e(url)}">{e(url)}</a>'
+    if when:
+        meta += f" on {e(when)}"
+    if audience == "internal":
+        meta += (
+            f" &middot; run {e(report.get('run_id'))}"
+            f" &middot; taxonomy v{e(report.get('taxonomy_version', 0))}"
+        )
+
     return f"""<header>
   <h2 class="eyebrow doc-title">Leadership Gap Diagnostic</h2>
   <h1>{e(company)}</h1>
   <p class="sub">{e(strapline)}</p>
-  <p class="meta">
-    Read from <a href="{e(url)}">{e(url)}</a> on {e((report.get('generated_at') or '')[:10])}
-    &middot; run {e(report.get('run_id'))}
-    &middot; taxonomy v{e(report.get('taxonomy_version', 0))}
-  </p>
+  <p class="meta">{meta}</p>
 </header>"""
 
 
@@ -240,8 +255,7 @@ def feedback_block(report):
     highest volume ground truth label the optimisation loop has, and the only one
     available before anybody books anything.
     """
-    rid = report.get("run_id")
-    return f"""<div class="feedback">
+    return """<div class="feedback">
 <h2 style="margin-top:0">Did we get this right?</h2>
 <p>One question, and it genuinely changes what this tool does next.</p>
 <p style="margin-bottom:0">
@@ -249,8 +263,8 @@ def feedback_block(report):
   <a class="btn ghost" href="#rate-partly">Partly</a>
   <a class="btn ghost" href="#rate-no">No, we have these covered</a>
 </p>
-<p class="sources" style="margin-top:14px;margin-bottom:0">Answers are read as a
-signal, never as a score, and a "no" is the most useful answer we get. Run {e(rid)}.</p>
+<p class="sources" style="margin-top:14px;margin-bottom:0">A "no" is the most useful
+answer we get.</p>
 </div>"""
 
 
@@ -264,7 +278,6 @@ def capture_block(report):
     founder or a board member introduces a second qualified contact with a warm
     referral already attached.
     """
-    slug = report.get("slug") or report.get("run_id")
     return f"""<div class="cta">
 <h2>Next</h2>
 <p class="big">Two questions this report could not answer are listed above. They are
@@ -276,7 +289,7 @@ the right place to start a conversation.</p>
 </p>
 <p class="sources">Supplying an address is optional and it is only ever used for what
 you asked for. You have already read the report; nothing is held back behind the
-form. Run reference {e(slug)}.</p>
+form.</p>
 </div>"""
 
 
@@ -307,7 +320,7 @@ def render_delivered(r, audience="founder"):
     else:
         strap = f"{n} senior advisory gaps, with the evidence behind each."
 
-    out = [header(r, strap)]
+    out = [header(r, strap, audience)]
 
     unrendered = r.get("unrendered_pages") or []
     if unrendered:
@@ -434,58 +447,99 @@ def render_delivered(r, audience="founder"):
     return shell(f"Leadership gaps: {r.get('company_name')}", "".join(out))
 
 
-def render_refused(r):
-    out = [header(r, "We stopped rather than guess.")]
+def render_refused(r, audience="founder"):
+    """
+    A refusal is still a document somebody reads about their own company, so it
+    should be useful to them. The first version told them our evidence field count
+    and that we monitor our refusal rate for drift. That is a note to Connectd
+    wearing a founder's report as a disguise.
+    """
+    out = [header(r, "We stopped rather than guess.", audience)]
+
     out.append("<h2>Why there is no report here</h2>")
-    out.append(f'<p class="big">{e(r.get("refusal_message"))}</p>')
-    out.append('<div class="panel">')
-    out.append(field("The specific reason", e(r.get("refusal_reason"))))
-    out.append(field("Evidence found", e(r.get("evidence_completeness")) + " fields"))
-    out.append("</div>")
-    out.append("<h2>Why this matters more than the report would have</h2>")
     out.append(
-        "<p>A leadership gap cannot be diagnosed from a site that does not show the "
-        "leadership. Naming a gap here would mean inferring it from a missing page "
-        "rather than from anything about the company, and a confident wrong answer "
-        "about someone's business is worse than no answer.</p>"
+        '<p class="big">Your website did not show us enough about who runs the company '
+        "for us to say anything useful about it. We would rather tell you that than "
+        "invent something that sounds insightful.</p>"
     )
     out.append(
-        "<p>So the system refuses. Refusal rate is measured, and it is watched for "
-        "drifting towards zero, because a diagnostic that never refuses has quietly "
-        "learned to guess.</p>"
+        "<p>That is not a criticism of the site. Plenty of good companies keep their "
+        "team off it, and plenty of sites build that page in a way our reader cannot "
+        "follow. Either way, guessing from what we could not see would produce a "
+        "confident answer with nothing behind it.</p>"
     )
+
+    out.append("<h2>The questions a website cannot answer</h2>")
+    out.append("""<div class="panel"><ul>
+<li>Who owns revenue today, and is that the same person who owns the product</li>
+<li>Who would you call first if the next six months went better than planned</li>
+<li>What decision are you putting off because nobody in the room has done it before</li>
+<li>Which of your investors or advisors do you actually ring</li>
+</ul>
+<p style="margin-bottom:0">Ten minutes on those four gets further than any amount of
+reading your website.</p></div>""")
+
     out.append("""<h2>What we can still do</h2>
 <div class="panel">
 <p style="margin-bottom:0">Connectd places up to three senior operators with early stage
-companies, pro bono, for three to six months. Working out which three is a ten minute
-conversation, and it does not depend on what your website happens to show.</p>
+companies, pro bono, for three to six months. Working out which three is a conversation,
+and it does not depend on what your website happens to show.</p>
 </div>""")
+
+    if audience == "internal":
+        out.append("<h2>Internal</h2>")
+        out.append('<div class="panel">')
+        out.append(field("Refusal reason", e(r.get("refusal_reason"))))
+        out.append(field("Evidence completeness", e(r.get("evidence_completeness"))))
+        out.append(field("Why this matters", (
+            "Refusal rate is a monitored guardrail. It is watched for drifting towards "
+            "zero, because a diagnostic that stops refusing has learned to guess."
+        )))
+        out.append("</div>")
+
     out.append('<div class="cta"><p><a class="btn" href="#book">Book the ten minute call</a></p></div>')
     out.append(method_footer())
     return shell(f"Not enough to go on: {r.get('company_name')}", "".join(out))
 
 
-def render_out_of_icp(r):
-    out = [header(r, "Outside the profile this is built for.")]
+def render_out_of_icp(r, audience="founder"):
+    """
+    Telling somebody they are "outside the profile" and quoting the config line
+    that excluded them is a rejection letter. The same fact can be delivered as a
+    compliment, because it usually is one: they are past the stage where this
+    offer helps.
+    """
+    out = [header(r, "You are past the point this is built for.", audience)]
+
     out.append("<h2>Why there is no report here</h2>")
-    out.append(f'<p class="big">{e(r.get("message"))}</p>')
-    out.append('<div class="panel">')
-    for reason in r.get("icp_reasons", []):
-        out.append(field("Screen", e(reason)))
-    out.append("</div>")
-    out.append("<h2>The point of saying so</h2>")
     out.append(
-        "<p>This diagnostic is built for early stage companies that cannot yet afford "
-        "the senior hire they need. A company past that point has a different problem, "
-        "and the useful answer is to say so rather than to produce a report because a "
-        "report is what the system knows how to make.</p>"
+        '<p class="big">This diagnostic is built for companies too early to afford the '
+        "senior people they need. From the outside, you look past that.</p>"
     )
     out.append(
-        "<p>A funnel that reports on everything it is handed does not have an ideal "
-        "customer profile. It has a preference.</p>"
+        "<p>We could produce three gaps for you. Any system like this can produce three "
+        "gaps for anyone. It would mean picking them to fill a template rather than "
+        "because the evidence pointed at them, and that is not worth your time or ours.</p>"
     )
+    out.append(
+        "<p>If we have read that wrong, and it does happen from the outside, a short "
+        "conversation will sort it out faster than the website will.</p>"
+    )
+
+    if audience == "internal":
+        out.append("<h2>Internal</h2>")
+        out.append('<div class="panel">')
+        for reason in r.get("icp_reasons", []):
+            out.append(field("Screen", e(reason)))
+        out.append(field("Why this matters", (
+            "A funnel that reports on everything it is handed does not have an ideal "
+            "customer profile. It has a preference."
+        )))
+        out.append("</div>")
+
+    out.append('<div class="cta"><p><a class="btn" href="#book">Tell us if we read it wrong</a></p></div>')
     out.append(method_footer())
-    return shell(f"Out of profile: {r.get('company_name')}", "".join(out))
+    return shell(f"Not the right fit: {r.get('company_name')}", "".join(out))
 
 
 def render_error(r):
@@ -512,7 +566,7 @@ RENDERERS = {
 
 def render(report, audience="founder"):
     fn = RENDERERS.get(report.get("outcome"))
-    if fn is render_delivered:
+    if fn in (render_delivered, render_refused, render_out_of_icp):
         return fn(report, audience=audience)
     if not fn:
         return render_error(
