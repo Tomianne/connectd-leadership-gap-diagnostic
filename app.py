@@ -200,7 +200,12 @@ def actions(report, key_prefix=""):
     import render as _r
 
     booking = (_r.load_offer().get("booking_url") or "").strip()
-    rid = report.get("run_id") or key_prefix
+    # Both the call site and the run identify the widgets. The previous version
+    # was `run_id or key_prefix`, so key_prefix was never used when a run_id
+    # existed, and two call sites showing the same report would have produced
+    # identical widget keys and shared each other's state. That is the most
+    # likely cause of the two address fields colliding.
+    rid = f"{key_prefix or 'live'}_{report.get('run_id') or 'none'}"
     company = report.get("company_name") or ""
 
     st.markdown("---")
@@ -209,26 +214,39 @@ def actions(report, key_prefix=""):
     if booking:
         st.link_button("Book a ten minute call", booking, use_container_width=False)
 
-    c1, c2 = st.columns(2)
+    # One form, one address. Two forms side by side had their session state
+    # collide, so typing an address into one populated the other. The deeper
+    # problem was that two forms and four fields was more interface than a
+    # single decision needs: the only thing that varies is who it goes to.
+    with st.form(f"send_{rid}", border=True):
+        who = st.radio(
+            "Send the report to",
+            ["Me", "My co-founder or board"],
+            horizontal=True,
+            key=f"who_{rid}",
+        )
+        share = who != "Me"
 
-    with c1:
-        with st.form(f"copy_{rid}", border=True):
-            st.markdown("**Email me a copy**")
-            addr = st.text_input("Your email", key=f"e1_{rid}", label_visibility="collapsed",
-                                 placeholder="you@company.com")
-            consent = st.checkbox("Connectd may follow up about this", key=f"c1_{rid}")
-            if st.form_submit_button("Send it to me"):
-                _send(report, addr, share=False, consent=consent)
+        addr = st.text_input(
+            "Email address",
+            key=f"addr_{rid}",
+            placeholder="them@company.com" if share else "you@company.com",
+        )
 
-    with c2:
-        with st.form(f"share_{rid}", border=True):
-            st.markdown("**Send to my co-founder or board**")
-            addr2 = st.text_input("Their email", key=f"e2_{rid}", label_visibility="collapsed",
-                                  placeholder="them@company.com")
-            note = st.text_input("A line from you, optional", key=f"n2_{rid}",
-                                 placeholder="Thought this was worth a look")
-            if st.form_submit_button("Send it on"):
-                _send(report, addr2, share=True, note=note)
+        note = ""
+        if share:
+            note = st.text_input(
+                "A line from you, optional",
+                key=f"note_{rid}",
+                placeholder="Thought this was worth a look",
+            )
+
+        consent = st.checkbox(
+            "Connectd may follow up about this", key=f"consent_{rid}"
+        )
+
+        if st.form_submit_button("Send the report", type="primary"):
+            _send(report, addr, share=share, note=note, consent=consent)
 
     # The feedback question. Weakest of the three label sources the loop uses, and
     # the only one available before anybody books anything.
