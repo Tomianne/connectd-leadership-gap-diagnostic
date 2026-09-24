@@ -263,11 +263,14 @@ def intro_block(context, company=None):
             "evidence behind it and can be checked or dismissed quickly."
         )
     else:  # self_serve
+        # They typed a URL into a form ten seconds ago. They know nobody spoke to
+        # their team, and pre-emptively downgrading the report just tells them to
+        # expect less before they have read it. The invitation to disagree already
+        # exists, in the feedback block, where it can actually be acted on.
         body = (
-            "<strong>We read your public website, and nothing else.</strong> Nobody at "
-            "Connectd has spoken to your team, so treat this as a starting point to "
-            "argue with rather than an assessment. Every claim below shows the evidence "
-            "behind it, and the last section sets out what we could not see."
+            "<strong>We read your public website, and nothing else.</strong> Every claim "
+            "below shows the evidence behind it, so you can check or dismiss any of it in "
+            "seconds. The last section sets out what we could not see."
         )
     return f'<div class="intro"><p style="margin-bottom:0">{body}</p></div>'
 
