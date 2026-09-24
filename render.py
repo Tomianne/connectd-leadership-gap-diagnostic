@@ -407,17 +407,14 @@ def feedback_block(report):
     return """<div class="feedback">
 <h2 style="margin-top:0">Did we get this right?</h2>
 <p>One question, and it genuinely changes what this tool does next.</p>
-<p style="margin-bottom:0">
-  <a class="btn ghost" href="#rate-yes">Yes, that is fair</a>
-  <a class="btn ghost" href="#rate-partly">Partly</a>
-  <a class="btn ghost" href="#rate-no">No, we have these covered</a>
-</p>
+<p style="margin-bottom:0" class="sources">Answer in the tool, where it is recorded
+against the run.</p>
 <p class="sources" style="margin-top:14px;margin-bottom:0">A "no" is the most useful
 answer we get.</p>
 </div>"""
 
 
-def capture_block(report):
+def capture_block(report, embed=False):
     """
     The capture step. The report is shown in full first, then the address is asked
     for. Value before friction, and an address given by someone who has just read
@@ -427,16 +424,24 @@ def capture_block(report):
     founder or a board member introduces a second qualified contact with a warm
     referral already attached.
     """
+    offer = load_offer()
+    booking = (offer.get("booking_url") or "").strip()
+
+    # In the app, Streamlit renders the real controls below this, because an
+    # anchor inside injected HTML cannot trigger a callback. On a static page the
+    # only thing that can genuinely work is the booking link, so that is the only
+    # thing shown. A button that does nothing is worse than no button.
+    if embed:
+        return ""
+
+    if not booking:
+        return ""
+
     return f"""<div class="cta">
 <h2>Next</h2>
-<p>
-  <a class="btn" href="#book">Book a ten minute call</a>
-  <a class="btn ghost" href="#email">Email me a copy</a>
-  <a class="btn ghost" href="#share">Send to my co-founder or board</a>
-</p>
-<p class="sources">Supplying an address is optional and it is only ever used for what
-you asked for. You have already read the report; nothing is held back behind the
-form.</p>
+<p><a class="btn" href="{e(booking)}">Book a ten minute call</a></p>
+<p class="sources">The emailed copy and the forward to a co founder are available in
+the tool itself, which is where the address can actually be captured.</p>
 </div>"""
 
 
@@ -557,7 +562,7 @@ wrong. Ten minutes covers all three.</p>
 
     # the offer, directly after the problem rather than three sections later
     out.append(offer_block(gaps))
-    out.append(capture_block(r))
+    out.append(capture_block(r, embed))
 
     # caveats and working, for anyone who wants to check it
     oq = [q for q in (r.get("open_questions") or []) if q][:3]
@@ -639,7 +644,9 @@ and it does not depend on what your website happens to show.</p>
         )))
         out.append("</div>")
 
-    out.append('<div class="cta"><p><a class="btn" href="#book">Book the ten minute call</a></p></div>')
+    _b = (load_offer().get("booking_url") or "").strip()
+    if _b and not embed:
+        out.append(f'<div class="cta"><p><a class="btn" href="{e(_b)}">Book the ten minute call</a></p></div>')
     out.append(method_footer())
     return shell(f"Not enough to go on: {r.get('company_name')}", "".join(out), embed=embed)
 
@@ -688,12 +695,12 @@ def render_out_of_icp(r, audience="founder", context="self_serve", embed=False):
         )))
         out.append("</div>")
 
-    out.append(
-        '<div class="cta"><p>'
-        '<a class="btn" href="#exec">Tell me about advisory roles</a>'
-        '<a class="btn ghost" href="#book">You read it wrong, we are earlier than that</a>'
-        "</p></div>"
-    )
+    _b = (load_offer().get("booking_url") or "").strip()
+    if _b and not embed:
+        out.append(
+            f'<div class="cta"><p><a class="btn" href="{e(_b)}">Tell me about advisory roles</a>'
+            f'<a class="btn ghost" href="{e(_b)}">You read it wrong, we are earlier than that</a></p></div>'
+        )
     out.append(method_footer())
     return shell(f"Not the right fit: {r.get('company_name')}", "".join(out), embed=embed)
 

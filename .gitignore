@@ -17,3 +17,6 @@ captures.csv
 
 # streamlit secrets, never commit
 .streamlit/secrets.toml
+
+# feedback log, holds no PII but is per-deployment
+feedback.csv

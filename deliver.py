@@ -55,6 +55,24 @@ UA = (
 
 
 def load_env():
+    """
+    Secrets first, then .env.
+
+    On Streamlit Community Cloud there is no .env file, so without this the send
+    leg silently has no key in exactly the deployment where someone would use it.
+    """
+    try:
+        import streamlit as st
+
+        if getattr(st, "secrets", None) and "BREVO_API_KEY" in st.secrets:
+            return {
+                "BREVO_API_KEY": st.secrets.get("BREVO_API_KEY"),
+                "BREVO_SENDER_EMAIL": st.secrets.get("BREVO_SENDER_EMAIL"),
+                "BREVO_SENDER_NAME": st.secrets.get("BREVO_SENDER_NAME"),
+            }
+    except Exception:  # noqa: BLE001
+        pass
+
     for parent in [ROOT] + list(ROOT.parents):
         candidate = parent / ".env"
         if candidate.exists():

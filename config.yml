@@ -107,5 +107,9 @@ offer:
     - You meet them. If the fit is wrong, you say so and we go again
     - Three to six months, unpaid, no notice period and no fee at any point
 
+  # Where "book a call" actually goes. Replace with Connectd's real booking
+  # link. Left blank, the report shows no booking button rather than a dead one.
+  booking_url: "https://connectd.co/contact"
+
   # Shown per gap, turning the profile into an ask.
   per_gap_cta: "Ask us who we have for this"

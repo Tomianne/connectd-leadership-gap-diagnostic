@@ -185,6 +185,108 @@ def load_html(slug):
     return render.render(report, embed=True).split("<body>")[1].split("</body>")[0]
 
 
+def actions(report, key_prefix=""):
+    """
+    The three calls to action, doing what they say.
+
+    They were anchors going nowhere for the whole build, while deliver.py sat
+    there sending real transactional email with consent logging and address
+    rejection. A capture step that captures nothing is the worst kind of gap,
+    because the interface claims a mechanism the system actually has.
+
+    Rendered as Streamlit controls rather than HTML because an anchor inside
+    injected markup cannot trigger a callback.
+    """
+    import render as _r
+
+    booking = (_r.load_offer().get("booking_url") or "").strip()
+    rid = report.get("run_id") or key_prefix
+    company = report.get("company_name") or ""
+
+    st.markdown("---")
+    st.markdown("##### Next")
+
+    if booking:
+        st.link_button("Book a ten minute call", booking, use_container_width=False)
+
+    c1, c2 = st.columns(2)
+
+    with c1:
+        with st.form(f"copy_{rid}", border=True):
+            st.markdown("**Email me a copy**")
+            addr = st.text_input("Your email", key=f"e1_{rid}", label_visibility="collapsed",
+                                 placeholder="you@company.com")
+            consent = st.checkbox("Connectd may follow up about this", key=f"c1_{rid}")
+            if st.form_submit_button("Send it to me"):
+                _send(report, addr, share=False, consent=consent)
+
+    with c2:
+        with st.form(f"share_{rid}", border=True):
+            st.markdown("**Send to my co-founder or board**")
+            addr2 = st.text_input("Their email", key=f"e2_{rid}", label_visibility="collapsed",
+                                  placeholder="them@company.com")
+            note = st.text_input("A line from you, optional", key=f"n2_{rid}",
+                                 placeholder="Thought this was worth a look")
+            if st.form_submit_button("Send it on"):
+                _send(report, addr2, share=True, note=note)
+
+    # The feedback question. Weakest of the three label sources the loop uses, and
+    # the only one available before anybody books anything.
+    st.markdown("**Did we get this right?**")
+    f1, f2, f3 = st.columns(3)
+    for col, label, val in [
+        (f1, "Yes, that is fair", "yes"),
+        (f2, "Partly", "partly"),
+        (f3, "No, we have these covered", "no"),
+    ]:
+        with col:
+            if st.button(label, key=f"fb_{val}_{rid}", use_container_width=True):
+                _log_feedback(report, val)
+                st.success("Logged. A no is the most useful answer we get.")
+
+
+def _send(report, addr, share=False, note=None, consent=False):
+    import deliver
+    import render as _r
+
+    if not addr:
+        st.warning("Enter an address first.")
+        return
+    if not deliver.valid_email(addr):
+        st.warning("That address does not look right. Nothing was sent.")
+        return
+
+    body = _r.render(report, context="shared" if share else "self_serve")
+    body = body.split("<body>")[1].split("</body>")[0]
+
+    with st.spinner("Sending"):
+        ok, msg = deliver.email_report(
+            report, addr.strip(), body, share=share, note=note,
+            consent_followup=consent,
+        )
+    (st.success if ok else st.warning)(msg)
+
+
+def _log_feedback(report, value):
+    """One row per answer, against the run, which is what the loop reads."""
+    import csv as _csv
+    import datetime as _dt
+
+    p = ROOT / "feedback.csv"
+    exists = p.exists()
+    try:
+        with open(p, "a", newline="", encoding="utf-8") as f:
+            w = _csv.writer(f)
+            if not exists:
+                w.writerow(["at", "run_id", "company", "rating"])
+            w.writerow([
+                _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
+                report.get("run_id"), report.get("company_name"), value,
+            ])
+    except OSError:
+        pass  # a read only filesystem must not break the page
+
+
 def show_report(report, body_html=None, key_prefix=""):
     """
     The app supplies the heading that the embedded report no longer carries, so
@@ -350,6 +452,7 @@ with tab_live:
             st.write("")
             body = render.render(report, embed=True).split("<body>")[1].split("</body>")[0]
             show_report(report, body)
+            actions(report)
 
             st.download_button(
                 "Download the run record",
@@ -373,6 +476,7 @@ with tab_demo:
         st.error(f"Sample {slug} is missing.")
     else:
         show_report(report, load_html(slug), key_prefix="demo")
+        actions(report, key_prefix=f"demo_{slug}")
         with st.expander("The machine readable record for this run"):
             st.json(
                 {
