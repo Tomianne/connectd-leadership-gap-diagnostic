@@ -359,11 +359,25 @@ def offer_block(gaps):
     defined the offer by what it was not, gave no sense of the bench that is the
     actual asset, and asked for ten minutes without saying what happens in them.
     """
-    if not gaps:
-        return ""
     offer = load_offer()
     count = len(gaps)
     noun = "gap" if count == 1 else "gaps"
+    brief_line = (
+        f"The {count} {noun} above are written as a brief for exactly that reason. Each "
+        "one names the experience that fills it and the questions to put to whoever we "
+        "introduce, so you are judging the person rather than taking our word for the "
+        "match."
+        if gaps
+        else "When we do name gaps, they are written as a brief: the experience that "
+        "fills each one and the questions to put to whoever we introduce. Working out "
+        "which three apply to you is what the call is for."
+    )
+    close = (
+        f"If the {noun} we named are the wrong ones, say so on the call. Getting that "
+        "wrong is more useful to us than you politely agreeing."
+        if gaps
+        else "A conversation gets to the right three faster than a website ever will."
+    )
 
     bench_size = (offer.get("bench_size") or "").strip()
     bench_line = (offer.get("bench_line") or "").strip()
@@ -384,16 +398,13 @@ def offer_block(gaps):
 <p class="big"><strong>{opener}</strong> {follow} into a company like yours as advisors
 or non executives, for three to six months.</p>
 <p>{e(bench_line)}</p>
-<p>The {count} {noun} above are written as a brief for exactly that reason. Each one
-names the experience that fills it and the questions to put to whoever we introduce, so
-you are judging the person rather than taking our word for the match.</p>
+<p>{brief_line}</p>
 </div>
 
 <h3 style="margin-top:30px">What happens if you say yes</h3>
 <div class="panel">
 {steps_html}
-<p style="margin-bottom:0">If the {noun} we named are the wrong ones, say so on the call.
-Getting that wrong is more useful to us than you politely agreeing.</p>
+<p style="margin-bottom:0">{close}</p>
 </div>"""
 
 
@@ -479,6 +490,20 @@ def render_delivered(r, audience="founder", context="self_serve"):
     out = [header(r, strap, audience)]
 
     out.append(intro_block(context, r.get("company_name")))
+
+    if not gaps:
+        out.append("""<h2>We could not evidence a gap</h2>
+<div class="panel">
+<p class="big">Every candidate we considered was either contradicted by something on
+your site, or rested on an absence rather than evidence. So we are not naming one.</p>
+<p>That is a real result rather than a blank. A system like this can always produce
+three plausible gaps for anybody, and one that does is telling you about its template
+rather than about your company.</p>
+<p style="margin-bottom:0">What it does mean is that your public footprint is not
+showing the seams. Those usually sit where a website cannot reach: who actually owns
+revenue, what decision keeps getting deferred, which hire you have tried twice and got
+wrong. Ten minutes covers all three.</p>
+</div>""")
 
     if gaps:
         out.append("<h2>Where the gaps are</h2>")

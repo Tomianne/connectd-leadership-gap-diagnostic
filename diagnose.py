@@ -994,13 +994,28 @@ def enrich(gaps, taxonomy):
     return out
 
 
-def run(url, slug=None, confirm=True):
+def run(url, slug=None, confirm=True, on_step=None):
+    """
+    on_step(stage, detail) is called as each stage begins and ends, so a caller
+    can narrate progress. A full run takes 75 to 150 seconds, which is long
+    enough that an unexplained spinner loses people, and the stages are the
+    interesting part anyway: two models disagreeing about a company is worth
+    watching.
+    """
+    def step(stage, detail=""):
+        if on_step:
+            try:
+                on_step(stage, detail)
+            except Exception:  # noqa: BLE001
+                pass
+
     taxonomy = load_yaml("taxonomy.yml")
     reset_cost()
     key = api_key()
     run_id = uuid.uuid4().hex[:12]
     started = dt.datetime.now(dt.timezone.utc)
 
+    step("fetch", f"Reading {url}")
     print(f"[1/6] fetching {url}")
     pages = crawl(url)
     if not pages:
@@ -1012,6 +1027,8 @@ def run(url, slug=None, confirm=True):
             "message": "Nothing could be fetched from that address.",
         }
     print(f"      {len(pages)} pages retrieved")
+    step("fetched", f"{len(pages)} pages retrieved: " + ", ".join(
+        p["url"].replace(url.rstrip("/"), "") or "/" for p in pages))
 
     card = identity_card(pages)
     print(f"[2/6] identity: {card['title'][:70] or '(no title)'}")
@@ -1020,13 +1037,19 @@ def run(url, slug=None, confirm=True):
         if input("\n      Is this the right company? [y/N] ").strip().lower() not in ("y", "yes"):
             return {"run_id": run_id, "slug": slug, "url": url, "outcome": "wrong_company"}
 
+    step("extract", "Pulling out the facts, with a source for each one")
     print("[3/6] extracting evidence")
     ev = extract_evidence(pages, key)
     score, total = evidence_completeness(ev)
     print(f"      completeness {score}/{total}")
+    team = ev.get("team_members") or []
+    step("extracted", (
+        f"Found {len(team)} named people" if team else "No named people visible"
+    ) + f", evidence {score}/{total}")
 
     refuse, why = should_refuse(ev, taxonomy)
     if refuse:
+        step("refused", why)
         print(f"[4/6] REFUSING: {why}")
         return {
             "run_id": run_id,
@@ -1045,6 +1068,7 @@ def run(url, slug=None, confirm=True):
     icp = load_yaml("icp.yml")
     verdict, why = qualify(ev, icp)
     if verdict == "out":
+        step("out_of_icp", "; ".join(why))
         print(f"[4/6] OUT OF ICP: {'; '.join(why)}")
         return {
             "run_id": run_id,
@@ -1064,10 +1088,12 @@ def run(url, slug=None, confirm=True):
             ),
         }
 
+    step("classify", "Matching against 21 advisory archetypes, citation required for each")
     print("[4/6] classifying against taxonomy")
     result = classify(ev, taxonomy, key)
     raw_gaps = result.get("gaps", [])
     print(f"      {len(raw_gaps)} candidate gaps: {[g['archetype_id'] for g in raw_gaps]}")
+    step("classified", f"{len(raw_gaps)} candidate gaps proposed")
 
     if result.get("classifier_failed"):
         print(f"[5/6] CLASSIFIER FAILED: {result['classifier_failed']}")
@@ -1089,6 +1115,7 @@ def run(url, slug=None, confirm=True):
             ),
         }
 
+    step("adversary", "A second model now tries to disprove every one of them")
     print("[5/6] adversarial pass")
     verdicts = adversarial_pass(ev, raw_gaps, key)
     kept, demotions = adjudicate(raw_gaps, verdicts)
