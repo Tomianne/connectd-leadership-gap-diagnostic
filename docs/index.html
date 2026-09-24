@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leadership Gap Diagnostic</title>
+<meta name="description" content="A lead magnet for acquiring startups, and the agentic funnel behind it. Built for Connectd.">
+<style>
+:root{
+  --ink:#16181d; --soft:#565b66; --faint:#8b909c;
+  --bg:#fff; --panel:#f7f7f5; --line:#e4e4e0;
+  --accent:#b4532a; --ok:#1f6b3f; --warn:#8a6100;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+header{padding:76px 0 40px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 16px}
+h1{font-size:40px;line-height:1.14;margin:0 0 18px;font-weight:660;letter-spacing:-.022em}
+.lede{font-size:19px;line-height:1.56;color:var(--soft);margin:0 0 22px}
+.by{font-size:13.5px;color:var(--faint);margin:0}
+.by a{color:var(--faint)}
+h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+  margin:64px 0 18px;font-weight:620}
+h3{font-size:20px;margin:36px 0 8px;font-weight:620;letter-spacing:-.012em}
+p{margin:0 0 15px}
+strong{font-weight:620}
+ul{padding-left:20px;margin:0 0 15px}
+li{margin-bottom:9px}
+a{color:var(--accent)}
+.big{font-size:19px;line-height:1.58}
+.panel{background:var(--panel);border-radius:11px;padding:26px 28px;margin:0 0 20px}
+.rule{border:0;border-top:1px solid var(--line);margin:0}
+table{width:100%;border-collapse:collapse;margin:0 0 22px;font-size:15px}
+th{text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);font-weight:620;padding:0 12px 10px 0;border-bottom:1px solid var(--line)}
+td{padding:13px 12px 13px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 8px;border-radius:3px;border:1px solid currentColor;font-weight:640}
+.pill.ok{color:var(--ok)} .pill.warn{color:var(--warn)} .pill.acc{color:var(--accent)}
+pre{background:var(--panel);border-radius:9px;padding:20px;overflow-x:auto;
+  font:12.5px/1.62 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:0 0 20px}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--panel);padding:1px 5px;border-radius:3px}
+pre code{background:none;padding:0;font-size:12.5px}
+.btn{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;
+  padding:13px 22px;border-radius:7px;font-size:15px;font-weight:560;margin:0 9px 10px 0}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 22px}
+.card{border:1px solid var(--line);border-radius:10px;padding:20px 22px;text-decoration:none;
+  color:var(--ink);display:block}
+.card:hover{border-color:var(--ink)}
+.card .name{font-weight:620;font-size:17px;margin:10px 0 5px}
+.card .why{font-size:14px;color:var(--soft);margin:0}
+.callout{border-left:2px solid var(--accent);background:var(--panel);
+  padding:18px 22px;margin:0 0 20px;font-size:15.5px}
+footer{margin:80px 0 0;padding:30px 0 90px;border-top:1px solid var(--line);
+  font-size:13.5px;color:var(--faint)}
+@media(max-width:620px){
+  header{padding:46px 0 32px}
+  h1{font-size:30px}
+  .lede{font-size:17px}
+  .cards{grid-template-columns:1fr}
+  td:first-child{white-space:normal}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Connectd task &middot; September 2026</p>
+  <h1>Which three senior people does this startup actually need?</h1>
+  <p class="lede">A lead magnet for acquiring startups, and the agentic funnel behind it.
+  A founder enters their website. Ninety seconds later they have a read on their own
+  leadership that is specific enough to argue with.</p>
+  <p class="by">Hannah Tomi Ajiboye &middot;
+  <a href="https://www.linkedin.com/in/tomi-ajiboye/">linkedin.com/in/tomi-ajiboye</a></p>
+</header>
+
+<h2>The idea</h2>
+<p class="big">Connectd's offer to a startup is <strong>up to three senior experts, pro
+bono, for three to six months</strong>. So the lead magnet's output is deliberately
+<strong>three named senior advisory gaps</strong>, in a fixed vocabulary, each carrying
+the evidence it rests on.</p>
+
+<div class="callout">Which means the magnet does not generate a lead for someone else to
+qualify. <strong>It generates the placement brief.</strong> The artefact the founder
+wants and the artefact the business needs are the same object.</div>
+
+<p>There is a second output that earns its place. Aggregated across runs, the
+diagnostic tells you which advisory archetypes founders keep needing and cannot get.
+That is a demand forecast for exec side recruitment. The startup funnel becomes an
+instrument pointed at the exec funnel.</p>
+
+<h2>Four real runs</h2>
+<p>Real UK companies, read from their own public websites on 24 September 2026. Nothing
+is invented. <strong>Two of the four produced no report at all, and those two are the
+exhibits I would look at first.</strong></p>
+
+<div class="cards">
+  <a class="card" href="samples/anemo-labs.html">
+    <span class="pill ok">3 gaps</span>
+    <p class="name">Anemo Labs</p>
+    <p class="why">London deep tech, 700k pre-seed, three named staff. Regulatory,
+    domain advisory and data protection, each sourced to a page.</p>
+  </a>
+  <a class="card" href="samples/ridelogix.html">
+    <span class="pill ok">1 gap, 2 discarded</span>
+    <p class="name">Ridelogix</p>
+    <p class="why">The adversarial pass killed two claims that cited a named enterprise
+    customer as proof the company could not sell to enterprises.</p>
+  </a>
+  <a class="card" href="samples/chatterbox.html">
+    <span class="pill acc">Out of profile</span>
+    <p class="name">Chatterbox</p>
+    <p class="why">29 staff, blue chip client, past the stage this is built for.
+    Screened before any judgement about gaps was made.</p>
+  </a>
+  <a class="card" href="samples/rule-money.html">
+    <span class="pill warn">Refused</span>
+    <p class="name">Rule</p>
+    <p class="why">A 615 character site. No team, no roles. It declined to diagnose a
+    leadership gap with no visibility of the leadership.</p>
+  </a>
+</div>
+
+<p>A diagnostic that only knows how to produce a diagnosis will produce one whether or
+not it should. Two of these four are the system deciding not to.</p>
+
+<h2>How it works</h2>
+<pre><code>URL
+ |
+ |-- 1  fetch          known paths only: /, /about, /team, /careers, /pricing
+ |
+ |-- 2  confirm        "we found X, is this you?"   &lt;- the only per-run human gate
+ |                      cheap, deterministic, and it gates spend: nothing
+ |                      expensive runs until the subject is confirmed
+ |
+ |-- 3  extract        cheap model -> evidence record, every field with a source
+ |                      URL and a date. Unknowns recorded, never guessed.
+ |
+ |-- 3b qualify        ICP screen: stage, size, disqualifiers -> may exit
+ |
+ |-- 3c refusal gate   enough evidence? leadership visible? -> may exit
+ |
+ |-- 4  classify       stronger model -> up to 3 archetypes from a CLOSED list,
+ |                      each with quoted evidence, a source, a confidence tier
+ |
+ |-- 5  adversarial    a different model tries to FALSIFY each claim, 4 checks,
+ |      pass            then two deterministic checks in code
+ |
+ |-- 6  render         report on screen, then the capture actions</code></pre>
+
+<h3>Why a closed taxonomy</h3>
+<p>21 advisory archetypes in a config file. The classifier picks from that list and may
+not invent one. That single constraint does two jobs. It <strong>collapses the
+hallucination surface</strong>, because "which of these 21 applies, and cite your
+evidence" is classification rather than invention, and a human can check it in seconds.
+And it <strong>makes the output routable</strong>, because gap names have to sit in the
+same vocabulary the exec bench is indexed by. Free text gap descriptions cannot be
+matched to a person.</p>
+<p>It is the difference between a doctor writing a free form note and picking a
+diagnostic code.</p>
+
+<h2>The seams</h2>
+<p>The interesting part of a system like this is never the individual agent. It is the
+seams, where one agent's output becomes another's input, because that is where a
+plausible but wrong answer does the most damage. So the gates belong there, not
+sprinkled everywhere by default.</p>
+
+<h3>The expensive seam: evidence to named gap</h3>
+<p class="big">Every other failure in this funnel costs a lead. This one costs
+credibility, in writing, in a document a founder may forward to their board, with
+Connectd's name on it. And it costs it with exactly the population Connectd needs to be
+trusted by.</p>
+
+<table>
+<thead><tr><th>Gate</th><th>What it stops</th></tr></thead>
+<tbody>
+<tr><td>Closed taxonomy</td><td>Invented gaps</td></tr>
+<tr><td>Mandatory citation</td><td>Unfalsifiable claims</td></tr>
+<tr><td>Fewer than three allowed</td><td>Reaching a target for its own sake</td></tr>
+<tr><td>Adversarial pass</td><td>Contradicted and inverted claims</td></tr>
+<tr><td>Leadership visibility</td><td>Diagnosing from a missing page</td></tr>
+<tr><td>Confidence cap</td><td>The model over rating its own certainty</td></tr>
+<tr><td>Shared evidence check</td><td>Two gaps resting on one piece of evidence</td></tr>
+<tr><td>Unknowns section</td><td>Filling silence with inference</td></tr>
+</tbody>
+</table>
+
+<p>The last three live in <strong>code, not in the prompt</strong>, and that distinction
+is the point. Asking a model more firmly to respect its own confidence definitions is
+not a control. A rule is.</p>
+
+<h3>Where there is deliberately no gate</h3>
+<p>Worth stating, because it is what makes the principle real rather than decorative.
+No gate on extraction, which is cheap and whose worst failure step 2 catches. No gate on
+copy variants. And <strong>no human review of an individual report</strong> when every
+gap rule passed, because a human in that seat at volume rubber stamps, and a rubber
+stamp is worse than a rule since it looks like oversight. The human gate sits instead at
+the point a brief would reach a senior exec, which is the first moment a wrong answer
+consumes a scarce person rather than a cheap API call.</p>
+
+<h2>Three defects found by reading real output</h2>
+<p>Not found by testing. Found by reading four reports about real companies and
+disagreeing with them. All three are fixed, and the fixes are more interesting than the
+build.</p>
+
+<div class="panel">
+<h3 style="margin-top:0">1. The qualification step did not exist</h3>
+<p style="margin-bottom:0"><code>icp.yml</code> was written first and then never wired
+into the pipeline, so a 29 person company with a blue chip client got a full report. A
+funnel that reports on everything it is handed does not have an ideal customer profile.
+It has a preference.</p>
+</div>
+
+<div class="panel">
+<h3 style="margin-top:0">2. Customer logos cited as evidence of a sales gap</h3>
+<p style="margin-bottom:0">Two claims cited "Holland &amp; Barrett, approximately 100
+stores" and "BNP Paribas Portugal" as evidence the company could not sell to
+enterprises. Those are named enterprise customers. The evidence pointed the opposite
+way. The adversarial pass now runs an explicit <strong>evidence inversion</strong> check
+and drops both.</p>
+</div>
+
+<div class="panel">
+<h3 style="margin-top:0">3. Confidence over rated on inference from absence</h3>
+<p style="margin-bottom:0">A gap was rated <code>medium</code> where the reasoning was,
+in effect, "there is no team page, so there is no compliance lead". That is inference
+from a missing page, not evidence about the company. Two fixes: a refusal gate requiring
+leadership visibility at all, and a mechanical confidence cap no prompt can talk its way
+past.</p>
+</div>
+
+<h2>The optimisation loop</h2>
+<p class="big">An honest description first. At thirty runs a week this is not an
+optimiser. It is a disciplined experiment log with an automated analyst attached, and
+its real value is that it makes it impossible to change three things at once and then
+argue about what worked.</p>
+<p>It becomes a genuine optimiser somewhere in the low hundreds of runs a month.
+Claiming self improvement before that is a claim about statistics the sample size does
+not support.</p>
+
+<p><strong>North star: accepted placement briefs per 100 diagnostic starts.</strong>
+Downstream enough to be real, and the only metric that cannot be gamed by generating
+engagement that never becomes a placement. A thousand completions producing no accepted
+briefs is a failed system that looks like a successful one.</p>
+
+<p><strong>Three label sources, in rank order</strong>, because an optimiser is only as
+good as its ground truth:</p>
+<ul>
+<li><strong>Strongest:</strong> the human accept, edit or reject per gap. Skin in the game, low volume.</li>
+<li><strong>Medium:</strong> behaviour. Completed, shared, returned, booked.</li>
+<li><strong>Weakest:</strong> the founder's own yes, partly or no. Cheap, high volume,
+biased towards politeness. Sets direction, never decides alone.</li>
+</ul>
+
+<p><strong>What it reads:</strong> a 26 column run log. Every variable the loop can
+change and every outcome it can read has a column. Deciding the log schema is deciding
+what the loop is capable of learning, which is why the schema was designed before the
+loop was written.</p>
+
+<p><strong>What it writes:</strong> a versioned config file, and nothing else. Never the
+code. Never the taxonomy.</p>
+
+<p><strong>Two clocks.</strong> Fast, weekly, copy only, one variable per surface, and
+nothing promoted below n=30 because at low n concurrent changes are unattributable.
+Slow, monthly, looking for archetypes named often and rejected often, which are the
+taxonomy's bad entries. It opens a proposal and <strong>never merges</strong>, because
+the taxonomy decides what a founder gets told about their own company.</p>
+
+<div class="callout"><strong>Guardrails, any breach reverts and halts:</strong> brief
+reject rate, gap accuracy, cost ceilings, and a <strong>minimum refusal rate</strong>.
+That last one exists because the loop could otherwise learn to lift bookings by naming
+more dramatic gaps. A system that stops refusing has learned to guess.</div>
+
+<h2>Distribution</h2>
+<p>An artefact with no route to founders is not a funnel.</p>
+
+<h3>1. Through the exec side of the marketplace</h3>
+<p>Give every senior exec on Connectd's books a personalised diagnostic link to send
+into their own network. Three things make this the right first route, and no other route
+has all three. The distributor is motivated by something better than goodwill, because a
+placement is the outcome they are already chasing. The relationships are warm, so it
+needs no verified email and no cold sender. And <strong>no competitor can copy it</strong>,
+because nobody else has a motivated senior exec network pointed at early stage
+startups.</p>
+
+<h3>2. The funding signal agent</h3>
+<p>A startup that just closed a round is the best qualified lead this funnel will ever
+see, because "get senior leadership in place fast" becomes urgent exactly when the cash
+lands and the board starts asking about the plan. The agent watches funding signals
+against the ICP and <strong>runs the diagnostic automatically on a match</strong>, so the
+outreach opens with a real read of their leadership rather than a template. The lead
+magnet becomes the outbound personalisation layer.</p>
+<p>The verification gate is what makes that safe, and it is not theoretical. Accept only
+<code>valid</code> and <code>deliverable</code>. Reject <code>catch_all</code>,
+<code>accept_all</code>, <code>risky</code>, <code>unknown</code>, blank, and anything
+unrecognised, failing safe by default. A catch all domain accepts any address whether
+the mailbox exists or not, which is the exact condition that produces a mass hard bounce
+and gets a campaign pulled.</p>
+
+<h3>Then, in order</h3>
+<p>Accelerator and syndicate platform teams, whose job is handing portfolio companies
+useful free things. Connectd's own surfaces and previously unconverted startups, which
+is where the first thirty runs come from and therefore what unblocks the loop. Founder
+communities, posting rather than scraping. Paid, deliberately after the free conversion
+rate is known, because paid multiplies whatever rate you already have. And manual human
+outreach on LinkedIn, which is effective, available today, and <strong>not agentic</strong>,
+which is worth saying rather than dressing up.</p>
+
+<h2>How it expands</h2>
+<table>
+<thead><tr><th>When</th><th>What</th></tr></thead>
+<tbody>
+<tr><td>Week 1</td><td>Live on real URLs. Taxonomy v0. Own surfaces only. Human reviews
+everything. Target thirty runs, not for conversion but for a config baseline and to find
+out how the classifier fails on real inputs.</td></tr>
+<tr><td>Month 1</td><td>Per exec links with attribution. Fast loop on. Booking webhook
+exits the nurture. First slow loop pass on the taxonomy using real reject reasons.</td></tr>
+<tr><td>Quarter</td><td>Cohort distribution through partnerships. Archetype level demand
+reporting feeding exec recruitment, which is where the startup funnel starts paying for
+itself twice. Tiered review. Six month re runs producing before and after case studies
+without anyone remembering to write them.</td></tr>
+</tbody>
+</table>
+
+<h3>What breaks first</h3>
+<ul>
+<li><strong>The human accept gate.</strong> The only per lead human step. Comfortable at
+ten a week, a full time job at a hundred, and it breaks quietly by degrading into rubber
+stamping. Fix: auto pass the clean cases, human review the mixed ones, random sample
+audit to keep the auto pass rule honest.</li>
+<li><strong>The exec bench.</strong> Demand outruns matchable supply, and no amount of
+funnel engineering fixes a supply problem. Naming it is what separates a marketplace
+plan from a lead generation plan. The archetype demand data tells exec recruitment which
+profiles to go and find.</li>
+<li><strong>Scrape reliability</strong>, then unit cost, then attribution once several
+routes are live.</li>
+</ul>
+
+<h2>What this does not claim</h2>
+<table>
+<thead><tr><th>Not claimed</th><th>The honest version</th></tr></thead>
+<tbody>
+<tr><td>End to end</td><td>The diagnostic runs end to end on real companies. The routing
+and nurture layer is designed and has a working precedent in another stack. It is not
+connected here.</td></tr>
+<tr><td>Knows the business</td><td>Built from the public offer. No access to the CRM, the
+bench, the real ICP or the real thresholds. Both config files exist so that is an hour of
+work to fix, not a rebuild.</td></tr>
+<tr><td>Loop is running</td><td>Specified, with the schema and config in place and four
+rows of data. It needs about thirty runs per variant before its output means
+anything.</td></tr>
+<tr><td>Report is accurate</td><td>Accurate about what is publicly visible, and it says
+so in the body rather than a footnote. Where it cannot see, it says so and asks.</td></tr>
+<tr><td>Emails sent</td><td>Capture, consent logging and templates are built. The send is
+wired and was not fired.</td></tr>
+</tbody>
+</table>
+
+<h3>Known limitations</h3>
+<ul>
+<li><strong>Static fetch only.</strong> No JavaScript execution. One report notes a
+"Scientific Advisory Board" heading with no members listed, which is real in the fetched
+HTML but could be a tab rendered client side. A claim resting on an absence a renderer
+would have filled is a real false positive risk, and the mitigation is that the founder
+confirms or corrects at step 2.</li>
+<li><strong>Run to run variance.</strong> Temperature is zero and runs still differ. On
+one run the adversarial pass demoted a gap and on the next it did not. A safety gate that
+fires probabilistically is weaker than one that fires deterministically, which is why
+three checks were moved into code.</li>
+<li><strong>Four runs.</strong> Everything about the loop is specification, not result.</li>
+</ul>
+
+<h2>A note on the order of work</h2>
+<p>The taxonomy and the ICP were written before the engine, and that was not sequencing
+for its own sake.</p>
+<p>At a previous company I was the sole marketing hire across five product divisions,
+each selling a different technical product to a different industrial buyer. Five ideal
+customer profiles, five narratives, one person. I defined the positioning separately for
+each before building the engine that executed against it: five interconnected workflows
+handling research, drafting, image generation and publishing across five divisional
+sites. It cut a two day cycle to under two hours and still runs.</p>
+<p><strong>The part that mattered was the order.</strong> Without the ICP work first, I
+would have built a faster way to publish the wrong thing five times over. Same here. The
+taxonomy and the evidence rules are the prior work that gives the loop something worth
+optimising. A loop pointed at the wrong definition of a good lead just finds the wrong
+leads faster.</p>
+
+<hr class="rule" style="margin-top:60px">
+<div style="padding-top:34px">
+<a class="btn" href="samples/anemo-labs.html">Read a full report</a>
+<a class="btn ghost" href="samples/rule-money.html">Read the refusal</a>
+<a class="btn ghost" id="repo" href="../">Source</a>
+</div>
+
+<footer>
+<p>Built with Claude Code over an afternoon on 24 September 2026. The gap taxonomy and
+the qualification rules are inferred from Connectd's public offer, not from their bench
+or their CRM, and both live in editable config files for exactly that reason.</p>
+<p>n8n would be the natural production home for the routing and scheduling layer.
+Two walkthroughs on that tooling, including why I moved off n8n Cloud and how to wire
+Google Cloud into it, are on the AI with Hannah channel:
+<a href="https://youtube.com/watch?v=tZNzfJvQ0EE">why I cancelled n8n Cloud</a> and
+<a href="https://youtube.com/watch?v=lucBq6iw37g">connecting Google Cloud to n8n</a>.</p>
+<p>Hannah Tomi Ajiboye &middot;
+<a href="https://www.linkedin.com/in/tomi-ajiboye/">linkedin.com/in/tomi-ajiboye</a></p>
+</footer>
+
+</div>
+</body>
+</html>

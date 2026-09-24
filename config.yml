@@ -1,0 +1,83 @@
+# The surface the optimisation loop is allowed to change.
+#
+# Everything the loop may touch lives here. Everything it may not touch lives in
+# code or in taxonomy.yml. That boundary is the whole safety model: the loop can
+# change what a page says, never what the system is willing to assert about
+# someone's company.
+#
+# Every run records the config version in force, which is what makes a revert
+# possible. Without that column in the log, "roll back to the last good config"
+# is a sentence rather than an operation.
+
+version: 3
+changed: 2026-09-24
+changed_by: human
+rationale: initial config, no loop data yet
+
+# ---------------------------------------------------------------------------
+# Variables the FAST loop may change. Weekly, or every 30 completed runs.
+# One variable per surface per cycle, because at low n concurrent changes are
+# unattributable and the honest answer is that you would not know which one did it.
+# ---------------------------------------------------------------------------
+
+landing:
+  headline: "Which three senior people does your startup actually need right now?"
+  subhead: "Enter your website. Get a leadership gap read in about ninety seconds, with the evidence behind every claim."
+  cta: "Run the diagnostic"
+  fields_before_result: 1        # the URL only. Email is asked for after the value lands.
+
+confirmation:
+  question: "Is this your company?"
+  optional_fields_position: after   # after | before
+
+report:
+  cta_primary: "Book a ten minute call"
+  cta_email: "Email me a copy"
+  cta_share: "Send to my co-founder or board"
+  unknowns_framing: "What we could not see"
+  gap_order: confidence_desc        # confidence_desc | taxonomy_order
+
+followup:
+  subject: "Your leadership gap read, {company}"
+  first_line: "Three things your public footprint suggests, and the two questions it could not answer."
+
+# ---------------------------------------------------------------------------
+# Thresholds. The loop may PROPOSE a change here. A human merges it.
+# These decide what the system is willing to say about a real company, which is
+# not a copy test.
+# ---------------------------------------------------------------------------
+
+thresholds:
+  min_evidence_fields: 4
+  require_leadership_visibility: true
+  max_gaps: 3
+
+# ---------------------------------------------------------------------------
+# Loop governance
+# ---------------------------------------------------------------------------
+
+loop:
+  fast:
+    cadence_days: 7
+    or_after_runs: 30
+    min_sample_per_variant: 30      # nothing is promoted below this
+    max_changes_per_cycle: 1
+    may_change: [landing, confirmation, report, followup]
+
+  slow:
+    cadence_days: 30
+    or_after_reviewed_briefs: 100
+    may_change: []                  # proposal only
+    may_propose: [thresholds, taxonomy]
+    merge: human
+
+  guardrails:
+    # Any breach reverts to the last known good config version and halts the loop.
+    # These exist because the loop could otherwise learn to raise bookings by
+    # naming more dramatic gaps, which is the failure mode that costs the most and
+    # shows up in the metrics the latest.
+    max_brief_reject_rate: 0.25
+    min_gap_accuracy_yes_or_partly: 0.70
+    min_refusal_rate: 0.05          # a loop that never refuses has learned to guess
+    max_cost_per_run_usd: 0.25
+    max_cost_per_week_usd: 50.00

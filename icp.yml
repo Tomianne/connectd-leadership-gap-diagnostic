@@ -1,0 +1,122 @@
+# Who this diagnostic is for, and who it is not for.
+#
+# Inferred entirely from Connectd's public offer: early stage startups who get up
+# to 3 senior experts, pro bono, for 3 to 6 months, to build out a board or C suite.
+# Nothing here comes from Connectd's own CRM, bench or qualification criteria,
+# because I have no access to any of those.
+#
+# Replacing this file with Connectd's real thresholds is an hour of work and it is
+# the first thing to do on day one. It is a config file for exactly that reason.
+
+meta:
+  version: 0
+  authored: 2026-09-24
+  source: inferred from Connectd's public offer
+
+# A note on why this file exists at all, and why it comes before the automation.
+#
+# At Novocomms I was the sole marketing hire across five product divisions, each
+# selling a different technical product to a different industrial buyer. I defined
+# the ICP and positioning separately for each before building the engine that
+# executed against it. The order mattered more than the tooling. Without the ICP
+# work first, I would have built a faster way to publish the wrong thing five
+# times over.
+#
+# Same principle here. The taxonomy and these qualification rules are the prior
+# work that gives the optimisation loop something worth optimising. A loop pointed
+# at the wrong definition of a good lead just finds the wrong leads faster.
+
+target:
+  stage:
+    - pre-seed
+    - seed
+    - series-a-early
+  rationale: >
+    The offer is senior expertise the company cannot yet afford to employ. That is
+    most valuable, and most obviously missing, between first product and first
+    scaled commercial function.
+
+  team_size:
+    min: 3
+    max: 60
+    rationale: >
+      Below three there is usually no organisation to advise. Above sixty the
+      company can normally afford the hire outright, so pro bono advisory is a
+      weaker fit than a search.
+
+  geography:
+    primary: United Kingdom
+    secondary: [Ireland, Netherlands, Nordics]
+    rationale: Where a UK based exec bench can realistically sit on a board and attend in person.
+
+  funding_signals_that_raise_priority:
+    - Closed a round in the last 90 days
+    - Accelerator cohort in the last 12 months
+    - Innovate UK or comparable grant award
+    - First senior commercial hire advertised
+  rationale: >
+    A startup that just closed a round is the best qualified lead this funnel will
+    ever see, because "get senior leadership in place fast" becomes urgent exactly
+    when the cash lands and the board starts asking about the plan.
+
+  sectors_of_interest:
+    - B2B software and SaaS
+    - fintech and financial infrastructure
+    - health and life sciences technology
+    - climate, energy and industrial technology
+    - marketplaces and platforms
+    - deep tech and hardware
+    - education technology
+
+# Disqualifiers are explicit and checked before a report is offered. A funnel
+# without a stated disqualifier list does not have an ICP, it has a preference.
+disqualify:
+  - id: pre-idea
+    test: No product, no website content beyond a landing page, no named team
+    reason: Nothing to diagnose. A conversation is more useful than a report.
+  - id: agency-or-consultancy
+    test: Sells billable human time as the primary product
+    reason: Not a startup in the sense the offer is built for. Advisory need is different in kind.
+  - id: solo-operator
+    test: One named person, no team, no hiring signals
+    reason: No organisation to build a board around.
+  - id: full-c-suite-present
+    test: Named CEO, CFO or finance lead, and commercial lead already in place
+    reason: >
+      The gap the offer fills is already filled. Naming a gap here would be the
+      classifier inventing one, which is the exact failure this system is built to
+      avoid.
+  - id: enterprise-or-listed
+    test: Over 250 staff, or publicly listed, or a subsidiary of either
+    reason: Buys advisory through search firms and non executive recruitment, not this route.
+  - id: non-target-geography
+    test: No UK or nearby European presence and no stated plan to establish one
+    reason: A UK exec bench cannot serve the board.
+  - id: already-connectd-customer
+    test: Existing Connectd relationship
+    reason: Route to account management, not to acquisition.
+
+# The lawful basis for processing, carried over from the pattern used on prior
+# lead work. Stated here because a lead magnet that captures contact data needs a
+# basis before it needs a funnel, and because an inferred basis is not a basis.
+data_protection:
+  self_service_route:
+    basis: Consent, UK GDPR Article 6(1)(a)
+    mechanism: >
+      The founder enters their own company URL and, only after reading the report,
+      chooses whether to supply an email address. Consent is captured explicitly at
+      that point, logged against the run id with a timestamp, and is separable for
+      the report copy and for any follow up.
+  outbound_route:
+    basis: Legitimate interests, UK GDPR Article 6(1)(f)
+    conditions:
+      - Business contact data only, never personal addresses
+      - A verified deliverable address, never an inferred or pattern guessed one
+      - Opt out in every message, honoured on receipt
+      - Balancing test recorded before a campaign runs
+    note: >
+      The verification condition is not boilerplate. A previous campaign on a
+      different project was pulled after inferred addresses on catch all domains
+      produced a mass hard bounce. The rule that came out of it is that a domain
+      resolving in DNS is not an email existing, and nothing is sent to an address
+      that has not returned a deliverable status.

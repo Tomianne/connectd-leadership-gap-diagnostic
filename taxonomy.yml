@@ -1,0 +1,369 @@
+# Advisory archetype taxonomy, v0
+#
+# This is a CLOSED vocabulary. The classifier selects from this list and may not
+# invent an archetype. That single constraint does two jobs at once:
+#
+#   1. It collapses the hallucination surface. "What does this company need" is an
+#      invitation to invent. "Which of these applies, and cite your evidence" is
+#      classification, and a human can check it in seconds.
+#   2. It makes the output routable. Gap names have to sit in the same vocabulary
+#      the exec bench is indexed by, or a named gap cannot be matched to a person.
+#      Free text gap descriptions are unroutable.
+#
+# v0 is inferred from Connectd's public offer. Replacing it with Connectd's real
+# bench vocabulary is an hour of work and it is the first thing to do on day one.
+# The slow loop may PROPOSE changes here. It may never merge them.
+
+meta:
+  version: 0
+  authored: 2026-09-24
+  source: inferred from Connectd's public offer, not from their bench data
+  max_gaps_per_report: 3   # because the offer is "up to 3 senior experts"
+
+confidence_tiers:
+  high:
+    definition: Direct positive evidence of the gap, from at least two independent sources.
+    example: No commercial role anywhere on the team page, and an open "first sales hire" role advertised.
+    outbound_use: permitted, framed as a question
+  medium:
+    definition: One clear piece of evidence, or consistent indirect evidence.
+    example: Team page lists five engineers and no commercial function.
+    outbound_use: not permitted
+  low:
+    definition: Inference from absence only, with no positive evidence.
+    example: No mention of finance anywhere, on a site that does not list any team.
+    outbound_use: never
+    render_as: open question, not a finding
+
+refusal:
+  # A thin footprint produces a refusal, never a thin report. A refusal is a
+  # better outcome than a guess: it converts a weak input into a higher intent
+  # path. Refusal rate is a monitored metric precisely so this cannot drift to
+  # zero, because a system that never refuses has learned to guess.
+  min_evidence_fields: 4
+  # Leadership visibility is a separate, harder requirement, enforced in code by
+  # has_leadership_visibility(). A leadership gap cannot be diagnosed from a site
+  # that shows no leadership: that is inference from a missing page, not evidence.
+  require_leadership_visibility: true
+  require_any_of: [team_members, open_roles]
+  message: >
+    We could not see enough of your business to do this properly. Rather than
+    guess, here is a ten minute call with someone who will ask the four questions
+    a website cannot answer.
+
+archetypes:
+
+  - id: commercial-revenue-leader
+    name: Commercial and revenue leader
+    covers: First repeatable revenue engine. Moving off founder led selling.
+    signals:
+      - No commercial, sales, revenue or growth title anywhere on the team
+      - Founders are technical or product by background, with no commercial counterpart
+      - An advertised first sales or first commercial hire
+      - Product is live and paid but no named owner of revenue
+    unfilled_six_months: Founder time stays inside the deal cycle, so the roadmap slips and revenue stays tied to one person's calendar.
+    profile: Has built a first revenue function from nothing, not inherited one. Carried a number. Has hired and managed the first two or three sellers.
+    first_questions:
+      - What was the first repeatable channel you built, and how long did it take to trust it
+      - Where did founder led selling stop working for you, and what did you change
+      - What did you stop doing to make room for it
+
+  - id: fractional-cfo
+    name: Fractional CFO and financial control
+    covers: Runway modelling, unit economics, board reporting, raise readiness.
+    signals:
+      - No finance title on the team, at a company with revenue or institutional funding
+      - Recent raise with no named finance function
+      - Bookkeeper or accountant mentioned but no strategic finance
+      - Public plans to raise again
+    unfilled_six_months: Decisions get made on cash in the bank rather than on modelled runway, and the next raise starts from a standing position rather than a prepared one.
+    profile: Has taken a company through at least one priced round. Comfortable at both the model and the board pack.
+    first_questions:
+      - How many months of runway do you have, and what assumption is that most sensitive to
+      - What is your gross margin per unit, and how confident are you in it
+      - Who currently owns the board pack
+
+  - id: enterprise-sales-gtm
+    name: Enterprise and complex sales
+    covers: Multi stakeholder deals, procurement, security reviews, long cycles.
+    signals:
+      - Enterprise or large logos named as target customers
+      - Self serve or SMB motion described, but enterprise ambition stated
+      - No named enterprise sales experience on the team
+      - Pricing page with a "contact us" tier and nobody visibly owning it
+    unfilled_six_months: Enterprise deals stall in procurement and security review, and the pipeline reports progress that never closes.
+    profile: Has closed six figure contracts into regulated or large organisations. Knows what a security questionnaire and a DPA do to a deal cycle.
+    first_questions:
+      - Walk me through the last enterprise deal you lost, and at which stage
+      - Who signs, and who can veto
+      - What does your security review pack look like today
+
+  - id: product-marketing-positioning
+    name: Positioning and product marketing
+    covers: Who it is for, what it replaces, why now. The words before the funnel.
+    signals:
+      - Homepage describes the technology rather than the buyer or the outcome
+      - Multiple audiences addressed with one undifferentiated message
+      - No named customer segment anywhere
+      - Frequent recent rebrand or repositioning signals
+    unfilled_six_months: Every channel underperforms for the same upstream reason, and the team concludes the channels are broken.
+    profile: Has repositioned a company and can show the before and after. Works from customer interviews, not from a workshop.
+    first_questions:
+      - Who is this not for
+      - What do customers use instead of you today
+      - What did the last ten closed won deals have in common
+
+  - id: demand-generation
+    name: Demand generation and pipeline
+    covers: Repeatable top of funnel. Channel selection and measurement.
+    signals:
+      - No marketing function, with a commercial team present
+      - No content, no blog activity, or last post over six months old
+      - Paid ads running with no visible owner
+      - Inbound described as word of mouth only
+    unfilled_six_months: Growth stays proportional to founder network, which caps it at the size of that network.
+    profile: Has built a channel from zero to a predictable monthly number, and can name the channels that did not work.
+    first_questions:
+      - What is your current cost to acquire, and how do you know
+      - Which channel would you shut off tomorrow
+      - What is your inbound to qualified rate
+
+  - id: people-talent-first-50
+    name: People and talent through the first 50
+    covers: Hiring systems, onboarding, performance, the shift from team to organisation.
+    signals:
+      - Team visibly between 15 and 60 with no people or HR function
+      - Several open roles advertised at once
+      - Recent funding with stated hiring plans
+      - Glassdoor or careers page signalling rapid growth
+    unfilled_six_months: Hiring quality drops just as hiring volume rises, and the cost surfaces 12 months later as attrition.
+    profile: Has scaled an organisation through the 20 to 100 transition. Has built a hiring process, not just filled roles.
+    first_questions:
+      - What is your time to hire, and your first year attrition
+      - Who owns onboarding today
+      - What is the last role you got wrong, and why
+
+  - id: regulatory-compliance
+    name: Regulatory and compliance
+    covers: Sector specific authorisation, licensing, supervisory relationships.
+    signals:
+      - Operates in a regulated sector such as financial services, health, education, energy, gambling
+      - No compliance, legal, risk or regulatory title on the team
+      - Claims about authorisation with no named owner
+      - Sells to regulated buyers
+    unfilled_six_months: A regulatory requirement is discovered during a deal or an audit rather than before it, and the remediation lands on the critical path.
+    profile: Has held a regulated role or run a compliance function in the specific sector. Not a generalist lawyer.
+    first_questions:
+      - Which regime applies to you, and are you authorised or exempt
+      - Who is the accountable person today
+      - What happens in your first supervisory conversation
+
+  - id: data-protection-privacy
+    name: Data protection and privacy
+    covers: UK GDPR, lawful basis, DPAs, data subject rights, international transfers.
+    signals:
+      - Handles personal or special category data at scale
+      - AI or analytics product trained on user data
+      - No privacy notice, or a generic template one
+      - No DPO or privacy owner named
+    unfilled_six_months: An enterprise buyer's DPA review becomes the longest item in the sales cycle, and a data subject request has no owner.
+    profile: Has run privacy for a company processing similar data. Practical about lawful basis rather than absolutist.
+    first_questions:
+      - What is your lawful basis for the core processing
+      - Where does personal data leave the UK or EEA
+      - Who answers a data subject access request today
+
+  - id: technical-leadership-cto
+    name: Technical leadership
+    covers: Architecture ownership, build versus buy, managing an outsourced build.
+    signals:
+      - Non technical founding team with a software product
+      - Development described as outsourced or agency built
+      - No engineering leadership title
+      - Job ads for developers with nobody senior to manage them
+    unfilled_six_months: Technical decisions get made by whoever is cheapest to ask, and the cost arrives as a rebuild.
+    profile: Has owned architecture at a comparable stage and has managed an agency relationship from the client side.
+    first_questions:
+      - Who decides your architecture today
+      - What would it cost to move away from your current build partner
+      - What is on your critical path that only one person understands
+
+  - id: platform-scalability
+    name: Platform and scalability engineering
+    covers: Reliability, technical debt, cost per unit of compute, scaling under load.
+    signals:
+      - Rapid user or volume growth stated publicly
+      - Status page incidents, or public reliability complaints
+      - Engineering team present but flat, with no principal or staff level
+      - AI or data heavy product with a visible cost profile
+    unfilled_six_months: Reliability becomes the product's reputation, and infrastructure cost grows faster than revenue.
+    profile: Has taken a platform through an order of magnitude of growth. Talks about cost per transaction, not just uptime.
+    first_questions:
+      - What breaks first at ten times your current volume
+      - What is your infrastructure cost as a share of revenue
+      - What is your deployment frequency
+
+  - id: customer-success-retention
+    name: Customer success and retention
+    covers: Onboarding, adoption, churn, expansion revenue.
+    signals:
+      - Subscription or recurring model with no customer success function
+      - Heavy acquisition signals with no retention signals
+      - Support described but not success
+      - Public reviews mentioning onboarding difficulty
+    unfilled_six_months: Acquisition spend funds a leaking bucket, and the leak is invisible in top line growth for about a year.
+    profile: Has owned net revenue retention as a number. Has built an onboarding motion, not just a support queue.
+    first_questions:
+      - What is your gross and net retention
+      - When does a customer first get value, measured in days
+      - Which customers churn, and what did they have in common
+
+  - id: partnerships-channel
+    name: Partnerships and channel
+    covers: Distribution through other people's customer relationships.
+    signals:
+      - Product that naturally sits inside another vendor's workflow
+      - Integrations page with no named partnerships owner
+      - Target market that is fragmented and expensive to reach directly
+      - Marketplace or reseller ambitions stated
+    unfilled_six_months: Partnerships stay at the logo swap stage and never produce pipeline, which is the usual outcome when nobody owns them.
+    profile: Has built a channel that produced measurable revenue, and can explain the partner's incentive in their own words.
+    first_questions:
+      - What does the partner get, in their language
+      - Which partnership produced revenue, and how long did it take
+      - Who owns the partner relationship after signature
+
+  - id: international-expansion
+    name: International expansion
+    covers: Entering a new geography. Entity, hiring, localisation, regulatory difference.
+    signals:
+      - Stated plans to enter a new market
+      - Recent raise with expansion named as the use of funds
+      - Careers page advertising a first hire in a new country
+      - Single market revenue with international ambitions
+    unfilled_six_months: The new market gets treated as the home market with a different currency, and the first year is spent discovering why that does not work.
+    profile: Has opened a market, not just sold into one. Knows the entity, employment and tax mechanics.
+    first_questions:
+      - Why this market first, and what made you rule out the alternative
+      - Who is your first hire there, and who do they report to
+      - What is different about the buying process there
+
+  - id: pricing-monetisation
+    name: Pricing and monetisation
+    covers: Price architecture, packaging, discounting discipline.
+    signals:
+      - No public pricing, in a category where pricing is normally public
+      - Single price point for visibly different customer sizes
+      - Free tier with no stated path to paid
+      - Frequent pricing page changes
+    unfilled_six_months: Revenue growth requires proportionally more customers, because the account value never moves.
+    profile: Has run a pricing change and measured what happened. Comfortable with willingness to pay research.
+    first_questions:
+      - When did you last raise prices, and what happened
+      - What is your discount rate, and who approves it
+      - What does your best customer pay versus your median
+
+  - id: fundraising-investor-relations
+    name: Fundraising and investor relations
+    covers: Raise narrative, process management, investor reporting.
+    signals:
+      - Public signals of an upcoming or in progress raise
+      - Previous round 18 or more months ago
+      - No named finance or corporate development function
+      - Grant funded with no equity investors yet
+    unfilled_six_months: The raise starts cold, takes twice as long, and is negotiated from a weaker position because the process was reactive.
+    profile: Has run a process from both sides, or has raised at this stage more than once. Knows what a partner meeting actually turns on.
+    first_questions:
+      - What is the one number an investor will push hardest on
+      - What is your raise timeline, working backwards from the cash out date
+      - Who on your cap table will lead or follow
+
+  - id: board-governance
+    name: Board and governance
+    covers: Board composition, chairing, decision rights, reporting cadence.
+    signals:
+      - Institutional investors present with no independent director
+      - Founder majority board at a company past seed
+      - No chair named
+      - Governance requirements from a grant or a regulated activity
+    unfilled_six_months: The board stays an investor update meeting rather than a decision making body, which costs most at the moment a hard decision is needed.
+    profile: Has chaired or sat on boards at this stage. Can hold a founder to account without breaking the relationship.
+    first_questions:
+      - What decision does your board actually own
+      - What is on your board agenda that should not be
+      - Who challenges you today
+
+  - id: operations-supply-chain
+    name: Operations and supply chain
+    covers: Physical fulfilment, manufacturing, logistics, inventory.
+    signals:
+      - Physical product or hardware component
+      - Manufacturing or fulfilment mentioned with no named operations lead
+      - Stated capacity constraints or lead time issues
+      - Direct to consumer with a physical good
+    unfilled_six_months: Demand is met unevenly, working capital gets trapped in stock, and margin leaks in places nobody is measuring.
+    profile: Has run operations at the relevant scale and for the relevant product type. Talks in lead times and unit economics.
+    first_questions:
+      - What is your current lead time, and what drives it
+      - How much cash is in inventory right now
+      - What is your single supplier risk
+
+  - id: brand-communications
+    name: Brand and communications
+    covers: External voice, press, category narrative, founder profile.
+    signals:
+      - No press coverage and no visible external communications
+      - Technically strong product with no public narrative
+      - Founders absent from public channels
+      - Recent funding with no announcement footprint
+    unfilled_six_months: The company stays unknown to people who would buy from it, and the category conversation is shaped by a competitor.
+    profile: Has built a public narrative for a company at this stage, and can show coverage that produced something other than vanity.
+    first_questions:
+      - What do you want to be known for, in one sentence
+      - Who is currently the loudest voice in your category
+      - What coverage produced a customer conversation
+
+  - id: security-infosec
+    name: Security and information security
+    covers: Security posture, certification, enterprise assurance.
+    signals:
+      - Enterprise or regulated buyers named
+      - No security title on the team
+      - No trust page, no certification claimed
+      - Handles sensitive data or integrates deeply into customer systems
+    unfilled_six_months: Security review becomes the gate every enterprise deal dies at, and certification starts only after the first deal is already lost.
+    profile: Has taken a company through certification and has sat on the answering side of enterprise security review.
+    first_questions:
+      - What does a buyer's security questionnaire currently cost you in days
+      - Are you certified, in progress, or not started
+      - Who owns your incident response
+
+  - id: domain-scientific-advisory
+    name: Domain and scientific advisory
+    covers: Credibility and correctness in a specialist field.
+    signals:
+      - Health, life sciences, climate, energy, legal or education product
+      - Strong engineering team with no domain qualified expert
+      - Claims requiring specialist validation
+      - Sells to specialists in a field the founders do not come from
+    unfilled_six_months: The product is built on a lay reading of a specialist field, and the error surfaces in front of the specialist buyer.
+    profile: Qualified and practising or recently practising in the field. Credible to the buyer, not just to the team.
+    first_questions:
+      - Which claim would a specialist challenge first
+      - Who validates correctness today
+      - What would make a practitioner trust this
+
+  - id: public-sector-procurement
+    name: Public sector and procurement
+    covers: Framework routes, tendering, public buying cycles.
+    signals:
+      - Government, NHS, council or education named as target buyers
+      - No public sector experience on the team
+      - Commercial product with a stated public sector ambition
+      - Grant funded, moving towards public contracts
+    unfilled_six_months: Time goes into bids that were never winnable, because nobody could read which opportunities were already shaped for someone else.
+    profile: Has won public contracts and knows the framework routes. Can tell a real opportunity from a pre wired one.
+    first_questions:
+      - Which framework are you on, or planning for
+      - What is the budget cycle of your target buyer
+      - Which bid did you lose, and did you find out why

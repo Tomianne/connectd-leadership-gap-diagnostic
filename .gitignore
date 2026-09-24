@@ -1,0 +1,13 @@
+# secrets, never commit
+.env
+.env.local
+
+# run outputs (samples/ is committed deliberately, runs/ is not)
+runs/
+*.pyc
+__pycache__/
+.streamlit/secrets.toml
+
+# os
+.DS_Store
+Thumbs.db
