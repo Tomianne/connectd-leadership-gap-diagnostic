@@ -14,3 +14,6 @@ Thumbs.db
 
 # capture log holds real email addresses, never commit it
 captures.csv
+
+# streamlit secrets, never commit
+.streamlit/secrets.toml
