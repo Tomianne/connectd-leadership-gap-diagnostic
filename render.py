@@ -68,6 +68,7 @@ p { margin: 0 0 13px; }
 ul { margin: 0 0 13px; padding-left: 20px; }
 li { margin-bottom: 7px; }
 .gap { border: 1px solid var(--line); border-radius: 10px; padding: 24px 24px 20px; margin-bottom: 18px; }
+.gap h3 .num { color: var(--accent); font-variant-numeric: tabular-nums; }
 .gap-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
 .covers { color: var(--ink-soft); font-size: 14px; margin: 2px 0 18px; }
 .tag {
@@ -83,17 +84,25 @@ li { margin-bottom: 7px; }
   padding: 13px 15px; margin: 0 0 15px; font-size: 14.5px;
 }
 .ev .label {
-  display: block; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--ink-faint); margin-bottom: 6px; font-weight: 640;
+  display: block; font-size: 14px; color: var(--ink);
+  margin-bottom: 5px; font-weight: 680;
 }
 .ev cite { font-style: normal; display: block; margin-top: 7px; font-size: 12.5px; color: var(--ink-faint); }
 .field { margin-bottom: 18px; }
 .field .v { display: block; }
 h2.doc-title { margin-top: 0; margin-bottom: 14px; }
 .field .k {
-  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--ink-faint); font-weight: 640; display: block; margin-bottom: 3px;
+  font-size: 14px; color: var(--ink); font-weight: 680;
+  display: block; margin-bottom: 4px; letter-spacing: -.005em;
 }
+.gap .field { padding-left: 14px; border-left: 2px solid var(--line); }
+.gap .field.answer {
+  border-left: 3px solid var(--accent); background: var(--panel);
+  padding: 15px 16px; border-radius: 0 7px 7px 0; margin-bottom: 16px;
+}
+.gap .field.answer .k { color: var(--accent); font-size: 15px; font-weight: 700; }
+.gap .field.answer .v { color: var(--ink); }
+.gap .field .v { color: var(--ink-soft); }
 .note {
   background: #fdf6ec; border: 1px solid #f0dcc0; border-radius: 8px;
   padding: 15px 17px; font-size: 14.5px; margin-bottom: 18px;
@@ -152,7 +161,22 @@ def field(label, value):
     enhancement here, not a dependency.
     """
     return (
-        '<div class="field"><span class="k">' + e(label) + '</span><br>'
+        '<div class="field"><strong class="k">' + e(label) + '</strong><br>'
+        '<span class="v">' + value + '</span></div>'
+    )
+
+
+def answer_field(label, value):
+    """
+    Same shape as field(), given visual weight.
+
+    "The person who fills it" is the payoff line. Everything above it describes a
+    problem the reader already half knew about; this is the part they act on. It
+    was rendering with the same weight as its siblings, so it read as one more
+    attribute rather than as the answer.
+    """
+    return (
+        '<div class="field answer"><strong class="k">' + e(label) + '</strong><br>'
         '<span class="v">' + value + '</span></div>'
     )
 
@@ -363,20 +387,24 @@ def render_delivered(r, audience="founder"):
     # part 2 and 3: the gaps
     if gaps:
         out.append("<h2>Where the gaps are</h2>")
-        for g in gaps:
+        for i, g in enumerate(gaps, 1):
             conf = g.get("confidence", "low")
-            label = {"high": "Well evidenced", "medium": "Evidenced", "low": "Open question"}[conf]
+            label = {
+                "high": "Confidence: well evidenced",
+                "medium": "Confidence: evidenced",
+                "low": "Confidence: open question",
+            }[conf]
             out.append('<div class="gap">')
             out.append(
-                f'<div class="gap-head"><h3>{e(g.get("name"))}</h3>'
+                f'<div class="gap-head"><h3><span class="num">{i}.</span> {e(g.get("name"))}</h3>'
                 f'<span class="tag {conf}">{e(label)}</span></div>'
             )
-            out.append(f'<p class="covers">{e(g.get("covers"))}</p>')
+            out.append(field("What this covers", e(g.get("covers"))))
 
             if g.get("quoted_evidence"):
                 src = g.get("source_url") or ""
                 out.append(
-                    '<div class="ev"><span class="label">The evidence this rests on</span><br>'
+                    '<div class="ev"><strong class="label">The evidence this rests on</strong><br>'
                     f"{e(g['quoted_evidence'])}"
                     + (f'<br><cite>Source: <a href="{e(src)}">{e(src)}</a></cite>' if src else "")
                     + "</div>"
@@ -390,7 +418,7 @@ def render_delivered(r, audience="founder"):
                     field("If this stays unfilled for six months", e(g["unfilled_six_months"]))
                 )
             if g.get("profile"):
-                out.append(field("The person who fills it", e(g["profile"])))
+                out.append(answer_field("Who fills it", e(g["profile"])))
             fq = g.get("first_questions") or []
             if fq:
                 out.append(field(
