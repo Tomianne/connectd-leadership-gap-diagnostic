@@ -855,6 +855,28 @@ def flag_person_inversion(gaps, ev):
     return kept, dropped
 
 
+IRRELEVANT_TO_DIAGNOSIS = [
+    "office", "address", "headquarters", "location", "founding date", "founded",
+    "phone", "contact detail", "social media", "logo", "press coverage", "blog",
+    "product specification", "technical documentation", "screenshot", "roadmap",
+]
+
+
+def prune_not_visible(ev):
+    """
+    Keep only gaps in our reading that bear on a leadership diagnosis.
+
+    A founder does not care that we could not find their office address or their
+    founding date. Listing those turns the section into padding around the two or
+    three items that actually matter, and invites the reader to skip all of it.
+    """
+    ev["not_visible"] = [
+        x for x in (ev.get("not_visible") or [])
+        if not any(k in str(x).lower() for k in IRRELEVANT_TO_DIAGNOSIS)
+    ]
+    return ev
+
+
 def clean_not_visible(ev):
     """
     Anything we know was simply unrendered must not also be reported to the founder
@@ -1063,7 +1085,7 @@ def run(url, slug=None, confirm=True):
         print(f"      drop, cited a person as proof a person is missing: {d['archetype_id']}")
     demotions.extend(person_drops)
 
-    ev = clean_not_visible(ev)
+    ev = prune_not_visible(clean_not_visible(ev))
 
     kept, absence_drops = guard_absence(kept, unrendered)
     demotions.extend(absence_drops)

@@ -69,6 +69,14 @@ ul { margin: 0 0 13px; padding-left: 20px; }
 li { margin-bottom: 7px; }
 .gap { border: 1px solid var(--line); border-radius: 10px; padding: 24px 24px 20px; margin-bottom: 18px; }
 .gap h3 .num { color: var(--accent); font-variant-numeric: tabular-nums; }
+.lead-tag {
+  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); font-weight: 700; margin: 0 0 10px;
+}
+.intro {
+  background: var(--panel); border-radius: 10px;
+  padding: 18px 22px; margin: 0 0 30px; font-size: 15px;
+}
 .gap-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
 .covers { color: var(--ink-soft); font-size: 14px; margin: 2px 0 18px; }
 .tag {
@@ -226,6 +234,45 @@ def header(report, strapline, audience="founder"):
 </header>"""
 
 
+def provenance(ev):
+    """
+    Where the answer came from. Real, checkable, deliberately near the bottom.
+
+    This used to open the report, on the reasoning that a reader should see what
+    was read before they see what was concluded. Read as the founder, it is a
+    screen of their own website recited back at them before anything useful
+    arrives. They know what their company does. It belongs as provenance for
+    anyone who wants to check the working, not as the opening move.
+    """
+    out = ["<h2>Where this came from</h2>", '<div class="panel">']
+    for k, v in [
+        ("What we understood you to do", ev.get("what_they_sell")),
+        ("Who we understood you to sell to", ev.get("who_they_sell_to")),
+    ]:
+        if v:
+            out.append(field(k, e(v)))
+
+    team = ev.get("team_members") or []
+    if team:
+        names = "".join(f"<li>{e(t.get('name'))}, {e(t.get('role'))}</li>" for t in team[:14])
+        more = f"<li>and {len(team) - 14} others</li>" if len(team) > 14 else ""
+        out.append(field("The people we could see", f"<ul>{names}{more}</ul>"))
+
+    fund = ev.get("funding_mentions") or []
+    if fund:
+        out.append(field(
+            "Funding mentioned on the site",
+            "<ul>" + "".join(f"<li>{e(f.get('detail'))}</li>" for f in fund) + "</ul>",
+        ))
+
+    srcs = ev.get("sources") or []
+    if srcs:
+        out.append(field("Pages read", '<span class="sources">'
+                         + " &middot; ".join(e(x) for x in srcs) + "</span>"))
+    out.append("</div>")
+    return "".join(out)
+
+
 def method_footer():
     return """<footer>
 <p><strong>What this is, and what it is not.</strong> This report was produced by
@@ -304,8 +351,8 @@ def capture_block(report):
     """
     return f"""<div class="cta">
 <h2>Next</h2>
-<p class="big">Two questions this report could not answer are listed above. They are
-the right place to start a conversation.</p>
+<p class="big">Ten minutes is enough to work out whether we have read this right, and
+which of the people we described is worth meeting.</p>
 <p>
   <a class="btn" href="#book">Book a ten minute call</a>
   <a class="btn ghost" href="#email">Email me a copy</a>
@@ -319,14 +366,21 @@ form.</p>
 
 def render_delivered(r, audience="founder"):
     """
-    `audience` decides what the reader is shown, and it is a real distinction
-    rather than a setting.
+    Ordered for the person receiving it.
 
-    A founder wants the conclusion and the evidence for it. The list of claims the
-    system considered and threw away is internal working: to the person it is
-    about, "we also wondered whether you had no commercial leadership, but decided
-    against it" is not reassuring, it is unsettling. That section is genuinely
-    interesting, but to Connectd, not to the subject.
+    The first version opened with the tool's limitations, then recited the
+    reader's own website back at them, put the gaps two screens down, and left
+    the offer until after a list of things it could not find. It also never said
+    who sent it, which for an unsolicited document about somebody's company is
+    their first question.
+
+    Order now: who this is from, the gaps, the offer, then the caveats and the
+    working for anyone who wants to check it.
+
+    `audience` is a real distinction rather than a setting. The list of claims
+    the system considered and discarded is internal: to the person it is about,
+    "we also wondered whether you had no commercial leadership but decided
+    against it" is unsettling rather than reassuring.
     """
     ev = r.get("evidence", {})
     gaps = r.get("gaps", [])
@@ -338,7 +392,7 @@ def render_delivered(r, audience="founder"):
 
     n = len(gaps)
     if n == 0:
-        strap = "No advisory gap could be evidenced from the public footprint."
+        strap = "We could not evidence an advisory gap from your public footprint."
     elif n == 1:
         strap = "One senior advisory gap, with the evidence behind it."
     else:
@@ -346,45 +400,16 @@ def render_delivered(r, audience="founder"):
 
     out = [header(r, strap, audience)]
 
-    unrendered = r.get("unrendered_pages") or []
-    if unrendered:
-        out.append(
-            '<div class="note"><strong>A note on what we could read.</strong> '
-            + e(str(len(unrendered)))
-            + " page(s) on this site build their content with scripts that we do not "
-            "run, so parts of the site were invisible to us. Nothing in this report "
-            "rests on something appearing to be missing from those pages, because an "
-            "empty section there tells you about our reader, not about the company.</div>"
-        )
+    # Who this is from and why it arrived. The report never said, anywhere.
+    out.append(
+        '<div class="intro"><p style="margin-bottom:0"><strong>This came from '
+        "Connectd.</strong> We place senior operators into early stage companies as "
+        "advisors and non executives. Nobody asked us to look at you, and nobody has "
+        "spoken to your team. This was read off your public website in about ninety "
+        "seconds, so treat it as something to argue with rather than an assessment. "
+        "Every claim below shows the evidence it rests on.</p></div>"
+    )
 
-    # part 1: what we can see
-    out.append("<h2>What we can see</h2>")
-    rows = [
-        ("What it does", ev.get("what_they_sell")),
-        ("Who it sells to", ev.get("who_they_sell_to")),
-        ("Sector", ev.get("sector")),
-        ("Apparent stage", ev.get("apparent_stage")),
-    ]
-    out.append('<div class="panel">')
-    for k, v in rows:
-        if v:
-            out.append(field(k, e(v)))
-    team = ev.get("team_members") or []
-    if team:
-        names = "".join(
-            f"<li>{e(t.get('name'))}, {e(t.get('role'))}</li>" for t in team[:14]
-        )
-        more = f"<li>and {len(team) - 14} others</li>" if len(team) > 14 else ""
-        out.append(field("Team visible on the site", f"<ul>{names}{more}</ul>"))
-    fund = ev.get("funding_mentions") or []
-    if fund:
-        out.append(field(
-            "Funding mentioned on the site",
-            "<ul>" + "".join(f"<li>{e(f.get('detail'))}</li>" for f in fund) + "</ul>",
-        ))
-    out.append("</div>")
-
-    # part 2 and 3: the gaps
     if gaps:
         out.append("<h2>Where the gaps are</h2>")
         for i, g in enumerate(gaps, 1):
@@ -395,6 +420,8 @@ def render_delivered(r, audience="founder"):
                 "low": "Confidence: open question",
             }[conf]
             out.append('<div class="gap">')
+            if i == 1 and len(gaps) > 1:
+                out.append('<p class="lead-tag">Where we would start</p>')
             out.append(
                 f'<div class="gap-head"><h3><span class="num">{i}.</span> {e(g.get("name"))}</h3>'
                 f'<span class="tag {conf}">{e(label)}</span></div>'
@@ -414,9 +441,8 @@ def render_delivered(r, audience="founder"):
                 out.append(f'<div class="note">{e(g["cap_reason"])}</div>')
 
             if g.get("unfilled_six_months"):
-                out.append(
-                    field("If this stays unfilled for six months", e(g["unfilled_six_months"]))
-                )
+                out.append(field("If this stays unfilled for six months",
+                                 e(g["unfilled_six_months"])))
             if g.get("profile"):
                 out.append(answer_field("Who fills it", e(g["profile"])))
             fq = g.get("first_questions") or []
@@ -427,15 +453,13 @@ def render_delivered(r, audience="founder"):
                 ))
             out.append("</div>")
 
-    # the dropped claims, shown deliberately
+    # internal working, never shown to the subject
     drops = [d for d in (r.get("demotions") or []) if d.get("action") == "drop"]
     if drops and audience == "internal":
         out.append("<h2>Claims we tested and discarded</h2>")
         out.append(
             "<p>A second model reviewed every candidate gap and tried to disprove it "
-            "from the same evidence. These did not survive that check, so they are not "
-            "in the report above. They are shown because a diagnostic that only shows "
-            "what it concluded is hiding half its working.</p>"
+            "from the same evidence. These did not survive.</p>"
         )
         out.append('<div class="panel">')
         for d in drops:
@@ -445,32 +469,37 @@ def render_delivered(r, audience="founder"):
             ))
         out.append("</div>")
 
-    # part 5: the unknowns
-    nv = r.get("not_visible") or ev.get("not_visible") or []
-    oq = r.get("open_questions") or []
-    if nv or oq:
-        out.append("<h2>What we could not see</h2>")
-        out.append('<div class="panel">')
-        if nv:
-            out.append(field(
-                "What we could not find on your website",
-                "<ul>" + "".join(f"<li>{e(x)}</li>" for x in nv[:10]) + "</ul>",
-            ))
-        if oq:
-            out.append(field(
-                "The questions that would change this answer",
-                "<ul>" + "".join(f"<li>{e(x)}</li>" for x in oq[:6]) + "</ul>",
-            ))
-        out.append("</div>")
-
-    srcs = ev.get("sources") or []
-    if srcs:
-        out.append("<h2>Pages read</h2>")
-        out.append('<p class="sources">' + " &middot; ".join(e(s) for s in srcs) + "</p>")
-
+    # the offer, directly after the problem rather than three sections later
     out.append(offer_block(gaps))
-    out.append(feedback_block(r))
     out.append(capture_block(r))
+
+    # caveats and working, for anyone who wants to check it
+    oq = [q for q in (r.get("open_questions") or []) if q][:3]
+    if oq:
+        out.append("<h2>What we would need to ask you</h2>")
+        out.append('<div class="panel"><ul>'
+                   + "".join(f"<li>{e(x)}</li>" for x in oq) + "</ul></div>")
+
+    nv = (r.get("not_visible") or ev.get("not_visible") or [])[:5]
+    if nv:
+        out.append('<div class="panel" style="margin-top:14px">' + field(
+            "Things your site did not tell us",
+            "<ul>" + "".join(f"<li>{e(x)}</li>" for x in nv) + "</ul>",
+        ) + "</div>")
+
+    unrendered = r.get("unrendered_pages") or []
+    if unrendered:
+        word = "page" if len(unrendered) == 1 else "pages"
+        out.append(
+            '<div class="note"><strong>Some of your site we could not read.</strong> '
+            + e(str(len(unrendered))) + f" {word} build content with scripts we do not "
+            "run, so parts were invisible to us. Nothing above rests on something "
+            "appearing to be missing from those pages. If we have missed something "
+            "that is plainly there, this report is wrong and we would rather know.</div>"
+        )
+
+    out.append(provenance(ev))
+    out.append(feedback_block(r))
     out.append(method_footer())
     return shell(f"Leadership gaps: {r.get('company_name')}", "".join(out))
 
