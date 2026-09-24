@@ -71,7 +71,12 @@ OUTCOME_BLURB = {
 
 
 def load_run(slug):
-    p = ROOT / "runs" / f"{slug}.json"
+    """
+    Demo records live in samples/ alongside the rendered HTML, not in runs/.
+    runs/ is gitignored for ad hoc runs, so reading demo data from there would
+    work locally and break the moment the app is deployed.
+    """
+    p = ROOT / "samples" / f"{slug}.json"
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
 
@@ -115,7 +120,7 @@ if mode.startswith("Demo"):
     report = load_run(slug)
 
     if not report:
-        st.error(f"Sample {slug} is missing from runs/.")
+        st.error(f"Sample {slug} is missing from samples/.")
     else:
         outcome = report.get("outcome", "error")
         c1, c2 = st.columns([1, 3])

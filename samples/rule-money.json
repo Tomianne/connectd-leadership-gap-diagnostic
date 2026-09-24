@@ -1,0 +1,48 @@
+{
+  "run_id": "562b87b05558",
+  "slug": "rule-money",
+  "url": "https://rulemoney.co.uk",
+  "company_name": "Rule Finance Ltd",
+  "outcome": "refused",
+  "refusal_reason": "no leadership visibility: no team members and no open roles were found, so any gap named would be inferred from the absence of a page rather than from evidence about the company",
+  "refusal_message": "We could not see enough of your business to do this properly. Rather than guess, here is a ten minute call with someone who will ask the four questions a website cannot answer.",
+  "evidence": {
+    "company_name": "Rule Finance Ltd",
+    "one_line": "Turn your money into a game, with a pet squirrel by your side",
+    "what_they_sell": "Budgeting application that gamifies money management",
+    "who_they_sell_to": "Individual consumers",
+    "sector": "Fintech / Personal Finance",
+    "apparent_stage": "seed",
+    "team_members": [],
+    "team_size_estimate": null,
+    "open_roles": [],
+    "funding_mentions": [],
+    "customer_or_logo_claims": [],
+    "pricing_visible": false,
+    "regulated_sector_signals": [
+      "FCA regulated - Rule Finance Ltd acts as agent of TrueLayer",
+      "TrueLayer is Authorised and Regulated by the Financial Conduct Authority under Payment Services Regulations 2017 and Electronic Money Regulations 2011",
+      "FCA Firm Reference Number: 901096"
+    ],
+    "handles_personal_data_signals": [
+      "Provides Account Information Service (requires access to user financial accounts)",
+      "Privacy policy referenced"
+    ],
+    "physical_product_signals": [],
+    "last_activity_seen": "2026 (copyright year shown)",
+    "not_visible": [
+      "Team members - no team page or bios found",
+      "Team size - no indication provided",
+      "Open roles - no careers page visible",
+      "Funding information - no funding announcements or investor mentions",
+      "Customer logos or testimonials - none visible",
+      "Pricing details - no pricing page accessible",
+      "Detailed product features - only tagline and pet squirrel mascot mentioned"
+    ],
+    "sources": [
+      "https://rulemoney.co.uk"
+    ],
+    "_extracted_at": "2026-09-24T14:37:27+00:00"
+  },
+  "evidence_completeness": "5/8"
+}

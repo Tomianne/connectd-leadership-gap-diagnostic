@@ -1,0 +1,118 @@
+{
+  "run_id": "2655103b4fd3",
+  "slug": "ridelogix",
+  "url": "https://ridelogix.com",
+  "outcome": "delivered",
+  "company_name": "Ridelogix",
+  "one_line": "Next-generation inventory ecosystem for urban retail with sustainable, zero-emissions delivery",
+  "generated_at": "2026-09-24T14:38:03+00:00",
+  "taxonomy_version": 0,
+  "evidence": {
+    "company_name": "Ridelogix",
+    "one_line": "Next-generation inventory ecosystem for urban retail with sustainable, zero-emissions delivery",
+    "what_they_sell": "End-to-end platform combining intelligent urban inventory optimization software with zero-emissions e-cargo bike deliveries for retail store replenishment",
+    "who_they_sell_to": "Urban retailers (mentioned: Holland & Barrett)",
+    "sector": "Supply chain / Logistics / Retail technology",
+    "apparent_stage": "seed",
+    "team_members": [
+      {
+        "name": "Serhat Kyuchuk-Pakyuz",
+        "role": "Co-Founder & CEO",
+        "source_url": "https://ridelogix.com/about-us"
+      },
+      {
+        "name": "Lili Kyuchuk-Pakyuz",
+        "role": "Co-Founder & COO",
+        "source_url": "https://ridelogix.com/about-us"
+      },
+      {
+        "name": "Alfie Lobb",
+        "role": "Head of Development",
+        "source_url": "https://ridelogix.com/about-us"
+      },
+      {
+        "name": "Stephen Reynolds",
+        "role": "Head of Operations",
+        "source_url": "https://ridelogix.com/about-us"
+      }
+    ],
+    "team_size_estimate": 4,
+    "open_roles": [],
+    "funding_mentions": [],
+    "customer_or_logo_claims": [
+      "Holland & Barrett - approximately 100 stores in London supported with e-cargo bikes and inventory analytics software"
+    ],
+    "pricing_visible": false,
+    "regulated_sector_signals": [],
+    "handles_personal_data_signals": [],
+    "physical_product_signals": [
+      "E-cargo bikes used for zero-emissions urban deliveries",
+      "Physical store inventory management and replenishment"
+    ],
+    "last_activity_seen": "2026 (copyright year on website)",
+    "not_visible": [
+      "Specific funding amounts or rounds - no funding information disclosed",
+      "Team size beyond the 4 named individuals - no headcount or hiring page visible",
+      "Pricing model - no pricing information on public website",
+      "Open job positions - no careers page linked",
+      "Specific founding date or company age",
+      "Geographic headquarters location (inferred as UK from Holland & Barrett London reference, but not explicitly stated)"
+    ],
+    "sources": [
+      "https://ridelogix.com",
+      "https://ridelogix.com/about",
+      "https://ridelogix.com/about-us"
+    ],
+    "_extracted_at": "2026-09-24T14:38:13+00:00"
+  },
+  "evidence_completeness": "6/8",
+  "gaps": [
+    {
+      "archetype_id": "fractional-cfo",
+      "confidence": "medium",
+      "quoted_evidence": "Specific funding amounts or rounds - no funding information disclosed",
+      "source_url": "https://ridelogix.com/about-us",
+      "reasoning": "No finance, controller, or CFO title appears among the four named team members, and no funding history is disclosed despite the company operating a capital-intensive physical fleet (e-cargo bikes) and servicing a named enterprise client. This is consistent with the signal of a company with revenue or funding activity but no strategic finance function.",
+      "what_goes_wrong": "Unit economics on bike fleet operations, depot costs, and per-store delivery margins go untracked, runway assumptions are guessed rather than modelled, and any future raise or board conversation lacks credible financial narrative or reporting discipline.",
+      "name": "Fractional CFO and financial control",
+      "covers": "Runway modelling, unit economics, board reporting, raise readiness.",
+      "profile": "Has taken a company through at least one priced round. Comfortable at both the model and the board pack.",
+      "first_questions": [
+        "How many months of runway do you have, and what assumption is that most sensitive to",
+        "What is your gross margin per unit, and how confident are you in it",
+        "Who currently owns the board pack"
+      ],
+      "unfilled_six_months": "Unit economics on bike fleet operations, depot costs, and per-store delivery margins go untracked, runway assumptions are guessed rather than modelled, and any future raise or board conversation lacks credible financial narrative or reporting discipline."
+    }
+  ],
+  "open_questions": [
+    "Is Ridelogix bootstrapped, grant-funded, or does it have undisclosed institutional backing - and if a raise is planned, who is running that process?",
+    "How is the Holland & Barrett relationship structured commercially (contract, pricing, renewal terms), and who owns that account beyond the founders?",
+    "Given the physical e-cargo bike fleet, is there any operations or supply chain expertise beyond the named Head of Operations, e.g. fleet maintenance, depot logistics, or route planning at scale?"
+  ],
+  "not_visible": [
+    "Specific funding amounts or rounds - no funding information disclosed",
+    "Team size beyond the 4 named individuals - no headcount or hiring page visible",
+    "Pricing model - no pricing information on public website",
+    "Open job positions - no careers page linked",
+    "Specific founding date or company age",
+    "Geographic headquarters location (inferred as UK from Holland & Barrett London reference, but not explicitly stated)"
+  ],
+  "demotions": [
+    {
+      "archetype_id": "commercial-revenue-leader",
+      "action": "drop",
+      "failed_check": 2,
+      "contradicting_evidence": "Holland & Barrett - approximately 100 stores in London supported with e-cargo bikes and inventory analytics software"
+    },
+    {
+      "archetype_id": "enterprise-sales-gtm",
+      "action": "drop",
+      "failed_check": 2,
+      "contradicting_evidence": "Holland & Barrett - approximately 100 stores in London supported with e-cargo bikes and inventory analytics software"
+    }
+  ],
+  "notes_for_human": "Evidence base is thin - a single company website with no funding, pricing, or hiring signals disclosed, and only one named customer relationship. Confidence on all gaps is capped at medium because each rests on a single clear indicator (team roster plus one customer claim) rather than two independent sources. Operations-supply-chain and technical-leadership-cto archetypes were considered but disqualified: Stephen Reynolds is named Head of Operations and Alfie Lobb is named Head of Development, so those roles appear filled at a senior-title level even though seniority/depth cannot be verified from this evidence.",
+  "classifier_failed": null,
+  "adversary_failed": null
+}

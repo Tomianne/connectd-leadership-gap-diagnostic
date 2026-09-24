@@ -1,0 +1,208 @@
+{
+  "run_id": "f8d911b65477",
+  "slug": "chatterbox",
+  "url": "https://www.chatterbox.io",
+  "company_name": "Chatterbox",
+  "outcome": "out_of_icp",
+  "icp_reasons": [
+    "apparent stage 'later' is outside the target stages (pre-seed, seed, series-a-early)"
+  ],
+  "evidence": {
+    "company_name": "Chatterbox",
+    "one_line": "Award-winning corporate language training platform powered by marginalised talent",
+    "what_they_sell": "Online corporate language training combining AI-powered self-study modules with live immersive classes taught by native-speaking coaches. Offers courses in French, Arabic, English, Dutch, German, and Spanish aligned with CEFR framework.",
+    "who_they_sell_to": "Global businesses and corporate teams seeking language training and cultural intelligence development for employees",
+    "sector": "EdTech / Corporate Training / Language Learning",
+    "apparent_stage": "later",
+    "team_members": [
+      {
+        "name": "Mursal",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Christian",
+        "role": "Product team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Dale",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Mollie",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Isa",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Nathan",
+        "role": "Product team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Mhairi",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Anne",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Anna",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Emma",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Amy",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Claire",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Amy",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Otavio",
+        "role": "Product team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Tim",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Guillemette",
+        "role": "Product team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Farheen",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Joanna",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "N\u00f3ra",
+        "role": "Product team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Hugo",
+        "role": "Product team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Lily",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Fatema",
+        "role": "Growth team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Amanda",
+        "role": "Product team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Emefa",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Mohammad",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "John",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Morelba",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Ne Kunda",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      },
+      {
+        "name": "Harriet",
+        "role": "Languages team",
+        "source_url": "https://www.chatterbox.io/about-us"
+      }
+    ],
+    "team_size_estimate": 29,
+    "open_roles": [
+      {
+        "title": "See open positions",
+        "source_url": "https://www.chatterbox.io/about-us"
+      }
+    ],
+    "funding_mentions": [
+      {
+        "detail": "Backing from leading investors in Europe and Silicon Valley",
+        "source_url": "https://www.chatterbox.io/about-us"
+      }
+    ],
+    "customer_or_logo_claims": [
+      "BNP Paribas Portugal",
+      "FTI Consulting"
+    ],
+    "pricing_visible": false,
+    "regulated_sector_signals": [],
+    "handles_personal_data_signals": [
+      "Learner personal and professional interests used for AI-powered coach matching",
+      "Admin dashboard with reporting and analytics for organisations",
+      "Learner satisfaction monitoring and progress tracking"
+    ],
+    "physical_product_signals": [],
+    "last_activity_seen": "March 27, 2025",
+    "not_visible": [
+      "Specific pricing amounts or tiers - described as 'custom built to fit precise needs and budget'",
+      "Exact founding date - only stated as 'humble beginnings' helping Syrian refugees",
+      "Total funding amount or specific investor names",
+      "Exact employee count - team list shows 29 individuals but may not be complete",
+      "Specific revenue or customer count metrics",
+      "Leadership team / founders / executives by name and title"
+    ],
+    "sources": [
+      "https://www.chatterbox.io",
+      "https://www.chatterbox.io/about-us",
+      "https://www.chatterbox.io/company",
+      "https://www.chatterbox.io/pricing"
+    ],
+    "_extracted_at": "2026-09-24T14:37:22+00:00"
+  },
+  "evidence_completeness": "8/8",
+  "message": "This company sits outside the profile this diagnostic is built for. Producing a leadership gap report anyway would mean inventing a gap to fill a template."
+}
