@@ -420,6 +420,23 @@ between them. Selecting test companies by how readable they were selected agains
 ICP, which is worth knowing before anyone concludes from three tries that the thing never
 reports.</div>
 
+<h3>A filter only one side spoke</h3>
+<p>Then a second defect, and a better one. Six companies in a row produced no report.
+The cause was that <code>icp.yml</code> targeted the stage <code>series-a-early</code>,
+while the extractor's schema only ever emits <code>pre-seed</code>, <code>seed</code>,
+<code>series-a</code>, <code>later</code> or <code>unknown</code>. The two sides spoke
+different vocabularies, so <strong>every Series A company was rejected silently.</strong></p>
+
+<div class="callout">It failed as a plausible result rather than as an error. Each
+company was screened out with a confident, correctly worded explanation, and nothing
+looked broken. The four sample runs are pre-seed, seed and later, so none of them could
+ever have exposed it. Only companies I had not chosen could.</div>
+
+<p>The fix is a startup check that refuses to run if the ICP names a stage the extractor
+cannot produce. A filter only one side speaks is not a filter, it is a silent reject.
+With the vocabularies agreed, the same company that was screened out produces three
+gaps.</p>
+
 <p>It also exposed a design miss. A screened-out company was a dead end, and it should
 not have been. Connectd is a two sided marketplace, and the senior operators inside a
 company too far along to need advisors are exactly who the other side of it recruits.
