@@ -175,14 +175,16 @@ with tab_live:
             "Reload to reset it, or clone the repo and run it on your own key."
         )
     else:
-        bits = []
-        if remaining is not None:
-            bits.append(f"about {max(int(remaining / 0.12), 0)} runs left in the demo budget")
-        bits.append(f"{SESSION_RUN_CAP - runs_used} left this session")
+        budget = (
+            f"About {max(int(remaining / 0.12), 0)} runs left in the shared budget, "
+            if remaining is not None
+            else "Shared budget, "
+        )
         st.caption(
             "Runs on my key, so you need nothing. Three model calls, typically six to "
-            "fifteen pence, and the run record below shows what it actually cost. "
-            + " &middot; ".join(bits)
+            "fifteen pence, and each run reports what it actually spent. "
+            + budget
+            + f"{SESSION_RUN_CAP - runs_used} left this session."
         )
 
         url = st.text_input(
