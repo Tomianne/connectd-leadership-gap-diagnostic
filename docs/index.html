@@ -132,6 +132,12 @@ exhibits I would look at first.</strong></p>
 <p>A diagnostic that only knows how to produce a diagnosis will produce one whether or
 not it should. Two of these four are the system deciding not to.</p>
 
+<p>The delivery leg is live. A report copy and an onward share to a second recipient
+both send, consent is logged per capture with a timestamp, and a malformed address is
+rejected before anything goes out. Sends are transactional rather than campaign, because
+a campaign attaches a List-Unsubscribe header that routes a one to one message somebody
+asked for into the promotions tab.</p>
+
 <h2>How it works</h2>
 <pre><code>URL
  |
@@ -359,8 +365,10 @@ rows of data. It needs about thirty runs per variant before its output means
 anything.</td></tr>
 <tr><td>Report is accurate</td><td>Accurate about what is publicly visible, and it says
 so in the body rather than a footnote. Where it cannot see, it says so and asks.</td></tr>
-<tr><td>Emails sent</td><td>Capture, consent logging and templates are built. The send is
-wired and was not fired.</td></tr>
+<tr><td>Emails sent at volume</td><td>The delivery leg is live and tested end to end: a
+report copy and an onward share both sent, and a malformed address was rejected without
+sending. Three sends is a working mechanism, not a campaign. No list has been
+mailed.</td></tr>
 </tbody>
 </table>
 

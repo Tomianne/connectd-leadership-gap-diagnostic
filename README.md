@@ -60,6 +60,12 @@ two are the exhibits I would look at first.**
 A diagnostic that only knows how to produce a diagnosis will produce one whether
 or not it should. Two of these four are the system deciding not to.
 
+The delivery leg is live. A report copy and an onward share to a second recipient
+both send through a transactional endpoint, consent is logged per capture with a
+timestamp, and a malformed address is rejected before anything goes out. Sends are
+transactional rather than campaign, because a campaign attaches a List-Unsubscribe
+header that routes a one to one message somebody asked for into the promotions tab.
+
 ---
 
 ## How it works
@@ -320,7 +326,7 @@ to write them.
 | The taxonomy is validated | It is a v0 drafted from the public offer. Its errors are the slow loop's first job. |
 | The loop is self optimising | It is specified, the schema and config exist, and it has four rows of data. It needs about thirty runs per variant before its output means anything. |
 | The report is accurate | It is accurate about what is publicly visible, and it says so in the body rather than a footnote. Where it cannot see, it says so and asks. |
-| Emails are sent | The capture, consent logging and templates are built. The send is wired to a transactional endpoint and was not fired, because the only verified sender on the account is under a brand that does not belong on this piece of work. |
+| Emails are sent at volume | The delivery leg is live and tested end to end: a report copy and an onward share both sent through a transactional endpoint, and a malformed address was rejected without sending. Three sends is a working mechanism, not a campaign, and no list has been mailed. |
 | Fully autonomous | Two human gates, at named seams, with a stated reason for each. Everything else runs unattended. |
 
 ### Known limitations
