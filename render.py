@@ -29,131 +29,102 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 
 CSS = """
-:root {
+.lgd {
   --ink: #16181d;
   --ink-soft: #565b66;
   --ink-faint: #8b909c;
-  --bg: #ffffff;
   --panel: #f7f7f5;
   --line: #e4e4e0;
   --accent: #b4532a;
   --high: #1f6b3f;
   --medium: #8a6100;
   --low: #6b6f7a;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg);
   color: var(--ink);
-  font: 16px/1.62 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
 }
-.wrap { max-width: 760px; margin: 0 auto; padding: 56px 16px 96px; }
-header { border-bottom: 1px solid var(--line); padding-bottom: 26px; margin-bottom: 34px; }
-.eyebrow {
-  font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--ink-faint); margin: 0 0 14px;
-}
-h1 { font-size: 30px; line-height: 1.22; margin: 0 0 8px; font-weight: 640; letter-spacing: -.015em; }
-.sub { color: var(--ink-soft); margin: 0; font-size: 16px; }
-.meta { margin-top: 18px; font-size: 13px; color: var(--ink-faint); }
-.meta a { color: var(--ink-faint); }
-h2 {
-  font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--ink-faint); margin: 46px 0 16px; font-weight: 620;
-}
-h3 { font-size: 19px; margin: 0 0 4px; font-weight: 620; letter-spacing: -.01em; }
-p { margin: 0 0 13px; }
-ul { margin: 0 0 13px; padding-left: 20px; }
-li { margin-bottom: 7px; }
-.gap { border: 1px solid var(--line); border-radius: 10px; padding: 24px 24px 20px; margin-bottom: 18px; }
-.gap h3 .num { color: var(--accent); font-variant-numeric: tabular-nums; }
-.lead-tag {
-  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--accent); font-weight: 700; margin: 0 0 10px;
-}
-.intro {
-  background: var(--panel); border-radius: 10px;
-  padding: 18px 22px; margin: 0 0 30px; font-size: 15px;
-}
-.gap-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-.covers { color: var(--ink-soft); font-size: 14px; margin: 2px 0 18px; }
-.tag {
-  font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase;
+.lgd * { box-sizing: border-box; }
+.lgd header { border-bottom: 1px solid var(--line); padding-bottom: 26px; margin-bottom: 34px; }
+.lgd .eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-faint); margin: 0 0 14px; font-weight: 620; }
+.lgd h1 { font-size: 30px; line-height: 1.22; margin: 0 0 8px; font-weight: 640;
+  letter-spacing: -.015em; color: var(--ink); }
+.lgd .sub { color: var(--ink-soft); margin: 0; font-size: 16px; }
+.lgd .meta { margin-top: 18px; font-size: 13px; color: var(--ink-faint); }
+.lgd .meta a { color: var(--ink-faint); }
+.lgd h2 { font-size: 12px !important; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-faint) !important; margin: 44px 0 16px !important; font-weight: 620 !important;
+  padding: 0 !important; }
+.lgd h3 { font-size: 19px !important; margin: 0 0 4px !important; font-weight: 620 !important;
+  letter-spacing: -.01em; color: var(--ink) !important; padding: 0 !important; }
+.lgd p { margin: 0 0 13px; color: var(--ink); }
+.lgd ul, .lgd ol { margin: 0 0 13px; padding-left: 20px; }
+.lgd li { margin-bottom: 7px; color: var(--ink); }
+.lgd a { color: var(--accent); }
+.lgd .big { font-size: 18px; line-height: 1.55; }
+.lgd .intro { background: var(--panel); border-radius: 10px; padding: 18px 22px;
+  margin: 0 0 30px; font-size: 15px; }
+.lgd .gap { border: 1px solid var(--line); border-radius: 10px;
+  padding: 24px 24px 20px; margin-bottom: 18px; background: #fff; }
+.lgd .gap-head { display: flex; align-items: baseline; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; }
+.lgd .gap h3 .num { color: var(--accent); font-variant-numeric: tabular-nums; }
+.lgd .lead-tag { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); font-weight: 700; margin: 0 0 10px; }
+.lgd .tag { font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase;
   padding: 4px 9px; border-radius: 3px; white-space: nowrap; font-weight: 640;
-  border: 1px solid currentColor;
-}
-.tag.high { color: var(--high); }
-.tag.medium { color: var(--medium); }
-.tag.low { color: var(--low); }
-.ev {
-  background: var(--panel); border-left: 2px solid var(--accent);
-  padding: 13px 15px; margin: 0 0 15px; font-size: 14.5px;
-}
-.ev .label {
-  display: block; font-size: 14px; color: var(--ink);
-  margin-bottom: 5px; font-weight: 680;
-}
-.ev cite { font-style: normal; display: block; margin-top: 7px; font-size: 12.5px; color: var(--ink-faint); }
-.field { margin-bottom: 18px; }
-.field .v { display: block; }
-h2.doc-title { margin-top: 0; margin-bottom: 14px; }
-.field .k {
-  font-size: 14px; color: var(--ink); font-weight: 680;
-  display: block; margin-bottom: 4px; letter-spacing: -.005em;
-}
-.gap .field { padding-left: 14px; border-left: 2px solid var(--line); }
-.gap .field.answer {
-  border-left: 3px solid var(--accent); background: var(--panel);
-  padding: 15px 16px; border-radius: 0 7px 7px 0; margin-bottom: 16px;
-}
-.gap .field.answer .k { color: var(--accent); font-size: 15px; font-weight: 700; }
-.gap .field.answer .v { color: var(--ink); }
-.gap-cta {
-  display: inline-block; margin-top: 9px; font-weight: 640;
-  color: var(--accent); font-size: 14px;
-}
-.gap .field .v { color: var(--ink-soft); }
-.note {
-  background: #fdf6ec; border: 1px solid #f0dcc0; border-radius: 8px;
-  padding: 15px 17px; font-size: 14.5px; margin-bottom: 18px;
-}
-.panel { background: var(--panel); border-radius: 10px; padding: 26px; }
-.cta { border-top: 1px solid var(--line); margin-top: 52px; padding-top: 32px; }
-.feedback {
-  border: 1px solid var(--line); border-radius: 10px;
-  padding: 24px 26px; margin: 34px 0 0;
-}
-.btn {
-  display: inline-block; background: var(--ink); color: #fff; text-decoration: none;
-  padding: 13px 22px; border-radius: 7px; font-size: 14.5px; font-weight: 560;
-  margin: 0 9px 10px 0;
-}
-.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-footer {
-  margin-top: 58px; padding-top: 22px; border-top: 1px solid var(--line);
-  font-size: 12.5px; color: var(--ink-faint);
-}
-.sources { font-size: 12.5px; color: var(--ink-faint); word-break: break-all; }
-.big { font-size: 19px; line-height: 1.55; }
+  border: 1px solid currentColor; }
+.lgd .tag.high { color: var(--high); }
+.lgd .tag.medium { color: var(--medium); }
+.lgd .tag.low { color: var(--low); }
+.lgd .ev { background: var(--panel); border-left: 2px solid var(--accent);
+  padding: 13px 15px; margin: 0 0 15px; font-size: 14.5px; }
+.lgd .ev .label { display: block; font-size: 14px; color: var(--ink);
+  margin-bottom: 5px; font-weight: 680; }
+.lgd .ev cite { font-style: normal; display: block; margin-top: 7px;
+  font-size: 12.5px; color: var(--ink-faint); }
+.lgd .field { margin-bottom: 18px; }
+.lgd .field .k { font-size: 14px; color: var(--ink); font-weight: 680;
+  display: block; margin-bottom: 4px; letter-spacing: -.005em; }
+.lgd .field .v { display: block; color: var(--ink); }
+.lgd .gap .field { padding-left: 14px; border-left: 2px solid var(--line); }
+.lgd .gap .field .v { color: var(--ink-soft); }
+.lgd .gap .field.answer { border-left: 3px solid var(--accent); background: var(--panel);
+  padding: 15px 16px; border-radius: 0 7px 7px 0; margin-bottom: 16px; }
+.lgd .gap .field.answer .k { color: var(--accent); font-size: 15px; font-weight: 700; }
+.lgd .gap .field.answer .v { color: var(--ink); }
+.lgd .gap-cta { display: inline-block; margin-top: 9px; font-weight: 640;
+  color: var(--accent); font-size: 14px; }
+.lgd .note { background: #fdf6ec; border: 1px solid #f0dcc0; border-radius: 8px;
+  padding: 15px 17px; font-size: 14.5px; margin-bottom: 18px; }
+.lgd .panel { background: var(--panel); border-radius: 10px; padding: 24px 26px; }
+.lgd .cta { border-top: 1px solid var(--line); margin-top: 48px; padding-top: 30px; }
+.lgd .feedback { border: 1px solid var(--line); border-radius: 10px;
+  padding: 24px 26px; margin: 34px 0 0; }
+.lgd .btn { display: inline-block; background: var(--ink); color: #fff !important;
+  text-decoration: none; padding: 12px 20px; border-radius: 7px; font-size: 14.5px;
+  font-weight: 560; margin: 0 9px 10px 0; }
+.lgd .btn.ghost { background: transparent; color: var(--ink) !important;
+  border: 1px solid var(--line); }
+.lgd footer { margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--line);
+  font-size: 12.5px; color: var(--ink-faint); }
+.lgd footer p { color: var(--ink-faint); font-size: 12.5px; }
+.lgd .sources { font-size: 12.5px; color: var(--ink-faint); word-break: break-all; }
 @media (max-width: 600px) {
-  .wrap { padding: 34px 16px 72px; }
-  h1 { font-size: 25px; }
+  .lgd h1 { font-size: 25px; }
+  .lgd .gap { padding: 18px 18px 14px; }
 }
 """
 
-
-# Model output arrives with em dashes and double hyphens in it. Everything the
-# reader sees passes through e(), so the house style is enforced once, here,
-# rather than hoped for in three separate prompts.
-_DASH_FIXES = [
-    ("—", ", "),   # em dash
-    ("–", " to "),  # en dash, almost always a range in this output
-    (" -- ", ", "),
-    ("--", ", "),
-]
-
+# The standalone page adds only what a full document needs. The report styling
+# itself is identical in both hosts, which is the point: one stylesheet, two
+# places, rather than a copy that drifts.
+PAGE_CSS = """
+body { margin: 0; background: #fff; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 56px 16px 96px; }
+@media (max-width: 600px) { .wrap { padding: 34px 16px 72px; } }
+"""
 
 def load_offer():
     """
@@ -167,6 +138,17 @@ def load_offer():
         return (cfg or {}).get("offer") or {}
     except Exception:  # noqa: BLE001
         return {}
+
+
+# Model output arrives with em dashes and double hyphens in it. Everything the
+# reader sees passes through e(), so the house style is enforced once, here,
+# rather than hoped for in three separate prompts.
+_DASH_FIXES = [
+    ("—", ", "),   # em dash
+    ("–", " to "),  # en dash, almost always a range in this output
+    (" -- ", ", "),
+    ("--", ", "),
+]
 
 
 def e(x):
@@ -207,22 +189,12 @@ def answer_field(label, value):
     )
 
 
-EMBED_CSS = """
-body { background: transparent; }
-.wrap { max-width: 100%; padding: 0 2px 8px; }
-header { padding-bottom: 20px; margin-bottom: 26px; }
-h1 { font-size: 26px; }
-h2:first-of-type { margin-top: 26px; }
-"""
-
-
 def shell(title, body, company=None, embed=False):
     """
-    `embed` strips the page chrome so the report sits inside a host page rather
-    than looking like a document dropped into one. The host already supplies the
-    width, the background and the scroll container.
+    `embed` is now only about the document wrapper. The report styling is the
+    same either way, because the host injects the same stylesheet. An iframe was
+    the thing keeping them apart.
     """
-    extra = EMBED_CSS if embed else ""
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -230,9 +202,9 @@ def shell(title, body, company=None, embed=False):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title>
 <meta name="robots" content="noindex">
-<style>{CSS}{extra}</style>
+<style>{CSS}{PAGE_CSS}</style>
 </head>
-<body><div class="wrap">{body}</div></body>
+<body><div class="wrap lgd">{body}</div></body>
 </html>
 """
 

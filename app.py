@@ -45,6 +45,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+import render as _render
+
+st.markdown(
+    "<style>" + _render.CSS + "</style>", unsafe_allow_html=True
+)
+
 st.markdown(
     """
 <style>
@@ -179,27 +185,6 @@ def load_html(slug):
     return render.render(report, embed=True).split("<body>")[1].split("</body>")[0]
 
 
-def embed_height(body_html):
-    """
-    Fallback only, for Streamlit versions without st.iframe, which sizes to its
-    content on its own.
-
-    Estimate the rendered height so the report does not scroll inside a page that
-    already scrolls. A box with its own scrollbar is the thing that made this read
-    as an attachment rather than as part of the page.
-
-    Overshooting a little is fine, the host page just shows white. Undershooting
-    reintroduces the scrollbar, so the estimate leans long.
-    """
-    import re as _re
-
-    text = _re.sub(r"<[^>]+>", " ", body_html or "")
-    text = _re.sub(r"\s+", " ", text)
-    lines = len(text) / 78          # characters per line at this width
-    blocks = body_html.count('class="field"') + body_html.count('class="gap"')
-    return int(min(max(lines * 27 + blocks * 26 + 320, 700), 9000))
-
-
 def show_report(report, body_html=None, key_prefix=""):
     """
     The app supplies the heading that the embedded report no longer carries, so
@@ -239,15 +224,10 @@ def show_report(report, body_html=None, key_prefix=""):
         st.write("")
 
     if body_html:
-        doc = f'<div style="background:#fff">{body_html}</div>'
-        # st.iframe takes the HTML positionally and sizes to the content, which
-        # is what removes the inner scrollbar. st.components.v1.html was
-        # deprecated in June 2026 but is kept as a fallback for older versions,
-        # where the height has to be estimated instead.
-        if hasattr(st, "iframe"):
-            st.iframe(doc, height="content")
-        else:
-            st.components.v1.html(doc, height=embed_height(body_html), scrolling=False)
+        # Straight into the page, not into an iframe. The stylesheet is already
+        # loaded above, scoped under .lgd, so this inherits the page's width,
+        # scroll and font resolution instead of fighting them.
+        st.markdown(f'<div class="lgd">{body_html}</div>', unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
