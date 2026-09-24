@@ -1,19 +1,19 @@
 {
-  "run_id": "2655103b4fd3",
+  "run_id": "0673a20f21eb",
   "slug": "ridelogix",
   "url": "https://ridelogix.com",
   "outcome": "delivered",
   "company_name": "Ridelogix",
   "one_line": "Next-generation inventory ecosystem for urban retail with sustainable, zero-emissions delivery",
-  "generated_at": "2026-09-24T14:38:03+00:00",
+  "generated_at": "2026-09-24T15:31:48+00:00",
   "taxonomy_version": 0,
   "evidence": {
     "company_name": "Ridelogix",
     "one_line": "Next-generation inventory ecosystem for urban retail with sustainable, zero-emissions delivery",
-    "what_they_sell": "End-to-end platform combining intelligent urban inventory optimization software with zero-emissions e-cargo bike deliveries for retail store replenishment",
-    "who_they_sell_to": "Urban retailers (mentioned: Holland & Barrett)",
-    "sector": "Supply chain / Logistics / Retail technology",
-    "apparent_stage": "seed",
+    "what_they_sell": "End-to-end platform combining smart urban inventory management software with zero-emissions e-cargo bike deliveries for retail store replenishment",
+    "who_they_sell_to": "Urban retailers managing multiple store locations",
+    "sector": "Supply chain technology, urban logistics, retail operations",
+    "apparent_stage": "unknown",
     "team_members": [
       {
         "name": "Serhat Kyuchuk-Pakyuz",
@@ -47,72 +47,83 @@
     "handles_personal_data_signals": [],
     "physical_product_signals": [
       "E-cargo bikes used for zero-emissions urban deliveries",
-      "Physical store inventory management and replenishment"
+      "Physical inventory management across retail store locations"
     ],
-    "last_activity_seen": "2026 (copyright year on website)",
+    "last_activity_seen": "2026 (copyright year shown on website)",
     "not_visible": [
-      "Specific funding amounts or rounds - no funding information disclosed",
-      "Team size beyond the 4 named individuals - no headcount or hiring page visible",
-      "Pricing model - no pricing information on public website",
-      "Open job positions - no careers page linked",
-      "Specific founding date or company age",
-      "Geographic headquarters location (inferred as UK from Holland & Barrett London reference, but not explicitly stated)"
+      "Specific funding information or investment stage not mentioned on public pages",
+      "Pricing or pricing model not visible",
+      "Full team size - only 4 named individuals visible",
+      "Open job positions or careers page not found",
+      "Specific founding date or company age not stated"
     ],
+    "unrendered_sections": [],
     "sources": [
       "https://ridelogix.com",
       "https://ridelogix.com/about",
       "https://ridelogix.com/about-us"
     ],
-    "_extracted_at": "2026-09-24T14:38:13+00:00"
+    "_extracted_at": "2026-09-24T15:31:56+00:00"
   },
-  "evidence_completeness": "6/8",
+  "evidence_completeness": "5/8",
   "gaps": [
     {
-      "archetype_id": "fractional-cfo",
+      "archetype_id": "enterprise-sales-gtm",
       "confidence": "medium",
-      "quoted_evidence": "Specific funding amounts or rounds - no funding information disclosed",
+      "quoted_evidence": "Holland & Barrett - approximately 100 stores in London supported with e-cargo bikes and inventory analytics software",
       "source_url": "https://ridelogix.com/about-us",
-      "reasoning": "No finance, controller, or CFO title appears among the four named team members, and no funding history is disclosed despite the company operating a capital-intensive physical fleet (e-cargo bikes) and servicing a named enterprise client. This is consistent with the signal of a company with revenue or funding activity but no strategic finance function.",
-      "what_goes_wrong": "Unit economics on bike fleet operations, depot costs, and per-store delivery margins go untracked, runway assumptions are guessed rather than modelled, and any future raise or board conversation lacks credible financial narrative or reporting discipline.",
-      "name": "Fractional CFO and financial control",
-      "covers": "Runway modelling, unit economics, board reporting, raise readiness.",
-      "profile": "Has taken a company through at least one priced round. Comfortable at both the model and the board pack.",
+      "reasoning": "The company's flagship named account is a large multi-site enterprise retailer, indicating a complex, multi-stakeholder sales motion (procurement, operations, sustainability sign-off across ~100 stores). The named team consists of a CEO, COO, Head of Development and Head of Operations, none of which carry an enterprise sales, account management, or commercial title.",
+      "what_goes_wrong": "Without someone experienced in navigating enterprise procurement and multi-stakeholder buying committees, expansion within accounts like Holland & Barrett or replication with similar large retailers stalls, and deals get stuck in pilot purgatory.",
+      "name": "Enterprise and complex sales",
+      "covers": "Multi stakeholder deals, procurement, security reviews, long cycles.",
+      "profile": "Has closed six figure contracts into regulated or large organisations. Knows what a security questionnaire and a DPA do to a deal cycle.",
       "first_questions": [
-        "How many months of runway do you have, and what assumption is that most sensitive to",
-        "What is your gross margin per unit, and how confident are you in it",
-        "Who currently owns the board pack"
+        "Walk me through the last enterprise deal you lost, and at which stage",
+        "Who signs, and who can veto",
+        "What does your security review pack look like today"
       ],
-      "unfilled_six_months": "Unit economics on bike fleet operations, depot costs, and per-store delivery margins go untracked, runway assumptions are guessed rather than modelled, and any future raise or board conversation lacks credible financial narrative or reporting discipline."
+      "unfilled_six_months": "Without someone experienced in navigating enterprise procurement and multi-stakeholder buying committees, expansion within accounts like Holland & Barrett or replication with similar large retailers stalls, and deals get stuck in pilot purgatory."
+    },
+    {
+      "archetype_id": "product-marketing-positioning",
+      "confidence": "medium",
+      "quoted_evidence": "Next-generation inventory ecosystem for urban retail with sustainable, zero-emissions delivery",
+      "source_url": "https://ridelogix.com",
+      "reasoning": "The company's own one-line description centers on the technology and mechanism ('inventory ecosystem', 'zero-emissions delivery') rather than a stated buyer problem or outcome. Combined with a team that has no commercial or marketing title, this suggests positioning has not been pressure-tested against a specific buyer's language.",
+      "what_goes_wrong": "Prospects and investors have to do the work of translating the pitch into 'why this, why now, for me' themselves, which slows qualification and weakens inbound conversion.",
+      "name": "Positioning and product marketing",
+      "covers": "Who it is for, what it replaces, why now. The words before the funnel.",
+      "profile": "Has repositioned a company and can show the before and after. Works from customer interviews, not from a workshop.",
+      "first_questions": [
+        "Who is this not for",
+        "What do customers use instead of you today",
+        "What did the last ten closed won deals have in common"
+      ],
+      "unfilled_six_months": "Prospects and investors have to do the work of translating the pitch into 'why this, why now, for me' themselves, which slows qualification and weakens inbound conversion."
     }
   ],
   "open_questions": [
-    "Is Ridelogix bootstrapped, grant-funded, or does it have undisclosed institutional backing - and if a raise is planned, who is running that process?",
-    "How is the Holland & Barrett relationship structured commercially (contract, pricing, renewal terms), and who owns that account beyond the founders?",
-    "Given the physical e-cargo bike fleet, is there any operations or supply chain expertise beyond the named Head of Operations, e.g. fleet maintenance, depot logistics, or route planning at scale?"
+    "Is there a finance function or fractional CFO supporting runway, unit economics on the bike/delivery side, or investor reporting, given no funding information is disclosed?",
+    "Who owns fleet operations, maintenance, and logistics scaling for the e-cargo bikes as store count grows \u00e2\u20ac\u201d is this fully covered by the single 'Head of Operations' role?",
+    "Has Ridelogix raised any institutional capital, and if so, is there governance or board structure in place?"
   ],
   "not_visible": [
-    "Specific funding amounts or rounds - no funding information disclosed",
-    "Team size beyond the 4 named individuals - no headcount or hiring page visible",
-    "Pricing model - no pricing information on public website",
-    "Open job positions - no careers page linked",
-    "Specific founding date or company age",
-    "Geographic headquarters location (inferred as UK from Holland & Barrett London reference, but not explicitly stated)"
+    "Specific funding information or investment stage not mentioned on public pages",
+    "Pricing or pricing model not visible",
+    "Full team size - only 4 named individuals visible",
+    "Open job positions or careers page not found",
+    "Specific founding date or company age not stated"
   ],
   "demotions": [
     {
       "archetype_id": "commercial-revenue-leader",
       "action": "drop",
       "failed_check": 2,
-      "contradicting_evidence": "Holland & Barrett - approximately 100 stores in London supported with e-cargo bikes and inventory analytics software"
-    },
-    {
-      "archetype_id": "enterprise-sales-gtm",
-      "action": "drop",
-      "failed_check": 2,
-      "contradicting_evidence": "Holland & Barrett - approximately 100 stores in London supported with e-cargo bikes and inventory analytics software"
+      "contradicting_evidence": "Lili Kyuchuk-Pakyuz holds the title Co-Founder & COO. While COO is an operations title rather than a sales/revenue title, the presence of a named COO directly contradicts the claim that there is no commercial leadership. A COO at a company with an active paying customer (Holland & Barrett) is evidence of commercial operations ownership, even if not titled 'Chief Revenue Officer' or 'VP Sales'. The claim conflates 'no sales title' with 'no commercial leadership', which are distinct."
     }
   ],
-  "notes_for_human": "Evidence base is thin - a single company website with no funding, pricing, or hiring signals disclosed, and only one named customer relationship. Confidence on all gaps is capped at medium because each rests on a single clear indicator (team roster plus one customer claim) rather than two independent sources. Operations-supply-chain and technical-leadership-cto archetypes were considered but disqualified: Stephen Reynolds is named Head of Operations and Alfie Lobb is named Head of Development, so those roles appear filled at a senior-title level even though seniority/depth cannot be verified from this evidence.",
+  "notes_for_human": "Evidence is thin (a 4-person team page and one customer logo). Several plausible gaps (finance, operations/supply chain depth, technical leadership) were considered but not included because the existing titles (COO, Head of Operations, Head of Development) plausibly already cover those functions, and rule 5 requires treating a filled role as a disqualifier absent evidence it's inadequate. Confidence is capped at medium throughout since only single-source, indirect evidence was available.",
+  "unrendered_pages": [],
   "classifier_failed": null,
   "adversary_failed": null
 }

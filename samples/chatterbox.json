@@ -1,5 +1,5 @@
 {
-  "run_id": "f8d911b65477",
+  "run_id": "abf574db816b",
   "slug": "chatterbox",
   "url": "https://www.chatterbox.io",
   "company_name": "Chatterbox",
@@ -10,8 +10,8 @@
   "evidence": {
     "company_name": "Chatterbox",
     "one_line": "Award-winning corporate language training platform powered by marginalised talent",
-    "what_they_sell": "Online corporate language training combining AI-powered self-study modules with live immersive classes taught by native-speaking coaches. Offers courses in French, Arabic, English, Dutch, German, and Spanish aligned with CEFR framework.",
-    "who_they_sell_to": "Global businesses and corporate teams seeking language training and cultural intelligence development for employees",
+    "what_they_sell": "Online corporate language training combining AI-powered self-study modules with live immersive classes taught by native-speaking coaches. Offers courses in French, Arabic, English, Dutch, German, and Spanish aligned with CEFR framework. Includes cultural intelligence development, business vocabulary training, and social impact metrics tracking.",
+    "who_they_sell_to": "Global businesses and multinational corporations seeking to provide employees with language training and cultural intelligence development. Described as serving 'all businesses' from startups to multinational corporations.",
     "sector": "EdTech / Corporate Training / Language Learning",
     "apparent_stage": "later",
     "team_members": [
@@ -77,7 +77,7 @@
       },
       {
         "name": "Amy",
-        "role": "Growth team",
+        "role": "Languages team",
         "source_url": "https://www.chatterbox.io/about-us"
       },
       {
@@ -181,19 +181,24 @@
     "pricing_visible": false,
     "regulated_sector_signals": [],
     "handles_personal_data_signals": [
-      "Learner personal and professional interests used for AI-powered coach matching",
+      "Learner personal and professional interests used for AI-powered coach matching algorithm",
       "Admin dashboard with reporting and analytics for organisations",
       "Learner satisfaction monitoring and progress tracking"
     ],
     "physical_product_signals": [],
     "last_activity_seen": "March 27, 2025",
     "not_visible": [
-      "Specific pricing amounts or tiers - described as 'custom built to fit precise needs and budget'",
-      "Exact founding date - only stated as 'humble beginnings' helping Syrian refugees",
-      "Total funding amount or specific investor names",
-      "Exact employee count - team list shows 29 individuals but may not be complete",
-      "Specific revenue or customer count metrics",
-      "Leadership team / founders / executives by name and title"
+      "Specific pricing amounts or pricing tiers - site states 'Chatterbox takes a consultative approach to pricing' with custom solutions",
+      "Founding date or year company was established",
+      "Specific funding amounts or funding rounds",
+      "Number of customers or market reach metrics",
+      "Executive leadership team names and titles",
+      "Specific awards won (section shows 'AWARDS' heading but no award details visible)"
+    ],
+    "unrendered_sections": [
+      "Awards section on about page shows heading but no award details rendered",
+      "Featured in section shows heading but no logos or details rendered",
+      "Newsletter signup form indicates missing storage configuration"
     ],
     "sources": [
       "https://www.chatterbox.io",
@@ -201,7 +206,7 @@
       "https://www.chatterbox.io/company",
       "https://www.chatterbox.io/pricing"
     ],
-    "_extracted_at": "2026-09-24T14:37:22+00:00"
+    "_extracted_at": "2026-09-24T15:33:29+00:00"
   },
   "evidence_completeness": "8/8",
   "message": "This company sits outside the profile this diagnostic is built for. Producing a leadership gap report anyway would mean inventing a gap to fill a template."

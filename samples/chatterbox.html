@@ -64,7 +64,9 @@ li { margin-bottom: 7px; }
   color: var(--ink-faint); margin-bottom: 6px; font-weight: 640;
 }
 .ev cite { font-style: normal; display: block; margin-top: 7px; font-size: 12.5px; color: var(--ink-faint); }
-.field { margin-bottom: 14px; }
+.field { margin-bottom: 18px; }
+.field .v { display: block; }
+h2.doc-title { margin-top: 0; margin-bottom: 14px; }
 .field .k {
   font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
   color: var(--ink-faint); font-weight: 640; display: block; margin-bottom: 3px;
@@ -75,6 +77,10 @@ li { margin-bottom: 7px; }
 }
 .panel { background: var(--panel); border-radius: 10px; padding: 26px; }
 .cta { border-top: 1px solid var(--line); margin-top: 52px; padding-top: 32px; }
+.feedback {
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 24px 26px; margin: 34px 0 0;
+}
 .btn {
   display: inline-block; background: var(--ink); color: #fff; text-decoration: none;
   padding: 13px 22px; border-radius: 7px; font-size: 14.5px; font-weight: 560;
@@ -94,15 +100,15 @@ footer {
 </style>
 </head>
 <body><div class="wrap"><header>
-  <p class="eyebrow">Leadership Gap Diagnostic</p>
+  <h2 class="eyebrow doc-title">Leadership Gap Diagnostic</h2>
   <h1>Chatterbox</h1>
   <p class="sub">Outside the profile this is built for.</p>
   <p class="meta">
     Read from <a href="https://www.chatterbox.io">https://www.chatterbox.io</a> on 
-    &middot; run f8d911b65477
+    &middot; run abf574db816b
     &middot; taxonomy v0
   </p>
-</header><h2>Why there is no report here</h2><p class="big">This company sits outside the profile this diagnostic is built for. Producing a leadership gap report anyway would mean inventing a gap to fill a template.</p><div class="panel"><div class="field"><span class="k">Screen</span>apparent stage &#x27;later&#x27; is outside the target stages (pre-seed, seed, series-a-early)</div></div><h2>The point of saying so</h2><p>This diagnostic is built for early stage companies that cannot yet afford the senior hire they need. A company past that point has a different problem, and the useful answer is to say so rather than to produce a report because a report is what the system knows how to make.</p><p>A funnel that reports on everything it is handed does not have an ideal customer profile. It has a preference.</p><footer>
+</header><h2>Why there is no report here</h2><p class="big">This company sits outside the profile this diagnostic is built for. Producing a leadership gap report anyway would mean inventing a gap to fill a template.</p><div class="panel"><div class="field"><span class="k">Screen</span><br><span class="v">apparent stage &#x27;later&#x27; is outside the target stages (pre-seed, seed, series-a-early)</span></div></div><h2>The point of saying so</h2><p>This diagnostic is built for early stage companies that cannot yet afford the senior hire they need. A company past that point has a different problem, and the useful answer is to say so rather than to produce a report because a report is what the system knows how to make.</p><p>A funnel that reports on everything it is handed does not have an ideal customer profile. It has a preference.</p><footer>
 <p><strong>What this is, and what it is not.</strong> This report was produced by
 reading the company's own public website. Nobody has spoken to the team. It records
 what is publicly visible and, where it cannot see something, it says so rather than
@@ -112,5 +118,8 @@ dismissed in seconds.</p>
 <p>A gap marked <strong>open question</strong> is not a finding. It means the
 evidence pointed that way but was not strong enough to stand behind, and the honest
 thing is to ask rather than assert.</p>
+<p><strong>Where it says we could not find something, that means exactly that.</strong>
+It is a statement about what your website shows us, not a claim about your company. If
+we have missed something that is there, the report is wrong and we would rather know.</p>
 </footer></div></body>
 </html>

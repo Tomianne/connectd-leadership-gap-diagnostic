@@ -1,18 +1,18 @@
 {
-  "run_id": "129a426d35b9",
+  "run_id": "b84653e2b0a4",
   "slug": "anemo-labs",
   "url": "https://anemolabs.com",
   "outcome": "delivered",
   "company_name": "Anemo Labs",
   "one_line": "Digitizing Smell",
-  "generated_at": "2026-09-24T14:35:15+00:00",
+  "generated_at": "2026-09-24T15:30:52+00:00",
   "taxonomy_version": 0,
   "evidence": {
     "company_name": "Anemo Labs",
     "one_line": "Digitizing Smell",
-    "what_they_sell": "Olfactory sensors combining proprietary hardware with in-house AI models for disease detection and biomarker monitoring",
-    "who_they_sell_to": "Healthcare sector for screening and monitoring biomarkers; implied focus on cancer detection and early disease intervention",
-    "sector": "Healthcare Technology / Medical Devices / Diagnostics",
+    "what_they_sell": "Olfactory sensors combining proprietary hardware with in-house AI models for disease detection and biomarker monitoring through non-invasive screening of volatile organic compounds (VOCs) in bodily fluids",
+    "who_they_sell_to": "Healthcare sector for early disease detection and health monitoring",
+    "sector": "Healthcare Technology / Diagnostics / Medical Devices",
     "apparent_stage": "seed",
     "team_members": [
       {
@@ -42,69 +42,51 @@
       {
         "detail": "Raised \u00a3700K to digitise smell",
         "source_url": "https://anemolabs.com"
-      },
-      {
-        "detail": "Anemo Labs at the CRL Accelerator",
-        "source_url": "https://anemolabs.com"
       }
     ],
     "customer_or_logo_claims": [],
     "pricing_visible": false,
     "regulated_sector_signals": [
       "Medical device development (olfactory sensors for disease detection)",
-      "Healthcare diagnostics and biomarker monitoring",
-      "Cancer screening and early disease detection"
+      "Healthcare diagnostics",
+      "Biomarker monitoring for cancer and disease screening"
     ],
     "handles_personal_data_signals": [
-      "Biomarker monitoring from bodily fluids (urine, sweat)",
+      "Monitoring biomarkers in bodily fluids (urine, sweat)",
       "Health and wellness data collection"
     ],
     "physical_product_signals": [
       "Olfactory chip hardware",
-      "Olfactory sensors",
-      "Electronic nose for disease detection",
-      "Wearable sensors (mentioned in team member background)"
+      "Wearable sensors mentioned in team member background",
+      "Electronic nose for disease detection"
     ],
     "last_activity_seen": "September 10, 2026 (press release about \u00a3700K funding)",
     "not_visible": [
-      "Scientific Advisory Board members not listed despite section header present",
-      "Specific customer names or logos",
       "Pricing information",
-      "Exact team size beyond three named members",
-      "Current hiring details or specific open roles"
+      "Detailed product specifications or technical documentation",
+      "Company founding date",
+      "Office location or headquarters address",
+      "Number of employees beyond founding team"
+    ],
+    "unrendered_sections": [
+      "Scientific Advisory Board section appears to have heading but no member details rendered",
+      "Backed By section appears to have heading but no investor logos or names rendered"
     ],
     "sources": [
       "https://anemolabs.com",
       "https://anemolabs.com/team"
     ],
-    "_extracted_at": "2026-09-24T14:35:25+00:00"
+    "_extracted_at": "2026-09-24T15:31:02+00:00"
   },
   "evidence_completeness": "8/8",
   "gaps": [
-    {
-      "archetype_id": "domain-scientific-advisory",
-      "confidence": "medium",
-      "quoted_evidence": "Scientific Advisory Board members not listed despite section header present",
-      "source_url": "https://anemolabs.com/team",
-      "reasoning": "The team page itself has a Scientific Advisory Board section, indicating the company recognises the need for named clinical/scientific credibility, but no members are shown. The named team (CEO, Head of Electronics, Lead Research Chemist) has no visible clinical, oncology, or diagnostics-medicine background despite the product targeting cancer detection and biomarker screening.",
-      "what_goes_wrong": "Clinical and scientific claims about disease detection go unvalidated by an independent domain expert, creating credibility risk with clinicians, regulators, and investors, and increasing the chance of a scientifically unsound product-market fit.",
-      "name": "Domain and scientific advisory",
-      "covers": "Credibility and correctness in a specialist field.",
-      "profile": "Qualified and practising or recently practising in the field. Credible to the buyer, not just to the team.",
-      "first_questions": [
-        "Which claim would a specialist challenge first",
-        "Who validates correctness today",
-        "What would make a practitioner trust this"
-      ],
-      "unfilled_six_months": "Clinical and scientific claims about disease detection go unvalidated by an independent domain expert, creating credibility risk with clinicians, regulators, and investors, and increasing the chance of a scientifically unsound product-market fit."
-    },
     {
       "archetype_id": "regulatory-compliance",
       "confidence": "medium",
       "quoted_evidence": "Medical device development (olfactory sensors for disease detection)",
       "source_url": "https://anemolabs.com",
-      "reasoning": "The company operates squarely in a regulated sector (medical devices, diagnostics, cancer screening) yet the three named team members are CEO, Head of Electronics, and Lead Research Chemist \u2014 no compliance, regulatory affairs, or quality/legal title appears anywhere.",
-      "what_goes_wrong": "Without a named regulatory owner, device classification, clinical evidence requirements, and market authorisation pathways (e.g. MHRA/FDA/CE) can be misjudged or delayed, risking costly redesigns or blocked market entry.",
+      "reasoning": "Anemo Labs is building a medical device for disease detection, placing it squarely in a regulated healthcare sector, yet the only three named team members are a CEO, a Head of Electronics, and a Lead Research Chemist \u2014 no compliance, regulatory affairs, or clinical/quality title is present.",
+      "what_goes_wrong": "Without a named regulatory owner, the company risks building toward a device classification, clinical evidence pathway, or market authorisation (e.g. MHRA/FDA/CE) that doesn't match its actual product claims, causing costly redesign or delayed market entry.",
       "name": "Regulatory and compliance",
       "covers": "Sector specific authorisation, licensing, supervisory relationships.",
       "profile": "Has held a regulated role or run a compliance function in the specific sector. Not a generalist lawyer.",
@@ -113,15 +95,15 @@
         "Who is the accountable person today",
         "What happens in your first supervisory conversation"
       ],
-      "unfilled_six_months": "Without a named regulatory owner, device classification, clinical evidence requirements, and market authorisation pathways (e.g. MHRA/FDA/CE) can be misjudged or delayed, risking costly redesigns or blocked market entry."
+      "unfilled_six_months": "Without a named regulatory owner, the company risks building toward a device classification, clinical evidence pathway, or market authorisation (e.g. MHRA/FDA/CE) that doesn't match its actual product claims, causing costly redesign or delayed market entry."
     },
     {
       "archetype_id": "data-protection-privacy",
       "confidence": "medium",
-      "quoted_evidence": "Biomarker monitoring from bodily fluids (urine, sweat)",
+      "quoted_evidence": "Monitoring biomarkers in bodily fluids (urine, sweat)",
       "source_url": "https://anemolabs.com",
-      "reasoning": "The product collects and analyses special category health data (biomarkers, disease indicators) via AI models, but no privacy, data protection officer, or legal/compliance title is named on the three-person team.",
-      "what_goes_wrong": "Special category health data processed without a named privacy owner risks non-compliant lawful basis, inadequate consent flows, or data subject rights failures, which is especially consequential for a diagnostics company seeking clinical partners or regulatory sign-off.",
+      "reasoning": "The product's core function involves collecting and analysing biological samples tied to individual health status, which constitutes special category health data under UK GDPR. No privacy, legal, or data protection role appears among the three listed team members.",
+      "what_goes_wrong": "Special category health data processed without a named privacy owner risks unlawful processing, weak data subject rights handling, and international transfer issues as the company scales sample collection or partners with clinics.",
       "name": "Data protection and privacy",
       "covers": "UK GDPR, lawful basis, DPAs, data subject rights, international transfers.",
       "profile": "Has run privacy for a company processing similar data. Practical about lawful basis rather than absolutist.",
@@ -130,23 +112,34 @@
         "Where does personal data leave the UK or EEA",
         "Who answers a data subject access request today"
       ],
-      "unfilled_six_months": "Special category health data processed without a named privacy owner risks non-compliant lawful basis, inadequate consent flows, or data subject rights failures, which is especially consequential for a diagnostics company seeking clinical partners or regulatory sign-off."
+      "unfilled_six_months": "Special category health data processed without a named privacy owner risks unlawful processing, weak data subject rights handling, and international transfer issues as the company scales sample collection or partners with clinics."
     }
   ],
   "open_questions": [
-    "Does Anemo Labs have an unpublished or informal Scientific Advisory Board that simply isn't listed on the website yet?",
-    "Is regulatory strategy for the diagnostic device pathway being handled by an external advisor or consultant not visible on the public team page?",
-    "Has a data protection officer or privacy counsel been engaged informally given the small three-person team size?"
+    "The page has a 'Scientific Advisory Board' heading with no members listed \u2014 is this section simply unrendered, or does no such board currently exist? This cannot be treated as evidence either way.",
+    "The 'Backed By' section heading appears with no investor names \u2014 is there an institutional investor base that isn't rendering, and if so, does it come with governance expectations?",
+    "Is there any finance function behind the \u00a3700K raise, and are there plans for a further round that would require dedicated fundraising support?"
   ],
   "not_visible": [
-    "Scientific Advisory Board members not listed despite section header present",
-    "Specific customer names or logos",
     "Pricing information",
-    "Exact team size beyond three named members",
-    "Current hiring details or specific open roles"
+    "Detailed product specifications or technical documentation",
+    "Company founding date",
+    "Office location or headquarters address",
+    "Number of employees beyond founding team"
   ],
-  "demotions": [],
-  "notes_for_human": "Team is very small (3 named members) and pre-revenue/seed stage, so several conventional gaps (commercial, CFO, people/talent, demand gen) are premature to flag given company size \u2014 they were excluded as not yet evidenced by the record. The strongest signals relate to the regulated, health-data-handling nature of the product outpacing the visible advisory bench. Worth directly verifying with the founders whether any of the three flagged gaps are already covered by informal advisors, since the website is sparse and may simply be behind on public disclosure (e.g. the empty SAB section header is a notable self-reported gap).",
+  "demotions": [
+    {
+      "archetype_id": "domain-scientific-advisory",
+      "action": "drop",
+      "failed_check": 2,
+      "contradicting_evidence": "Scientific Advisory Board section appears to have heading but no member details rendered"
+    }
+  ],
+  "notes_for_human": "Team page and homepage content are thin (3 named people, two unrendered sections), which limits how much can be confidently asserted. The strongest, evidence-backed gaps relate to the regulated, health-data-handling nature of the product versus a small technical-only founding team. Advisory board and investor claims could not be used as evidence per citation rules since the sections did not render any content \u2014 flagged as open questions instead of findings.",
+  "unrendered_pages": [
+    "https://anemolabs.com",
+    "https://anemolabs.com/team"
+  ],
   "classifier_failed": null,
   "adversary_failed": null
 }

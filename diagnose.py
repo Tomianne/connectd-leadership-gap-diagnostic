@@ -178,7 +178,24 @@ def crawl(base_url, max_pages=8):
         m = re.search(r"(?is)<title[^>]*>(.*?)</title>", html)
         if m:
             title = strip_html(m.group(1))[:200]
-        pages.append({"url": url, "title": title, "text": text[:14_000]})
+
+        # A very low text to markup ratio means most of this page's content is
+        # assembled by JavaScript we did not execute. That matters enormously,
+        # because on such a page an empty section is not evidence that the section
+        # is empty. It is evidence that we did not render it.
+        #
+        # This check exists because the system got this exactly wrong on a real
+        # company: it read a "Scientific Advisory Board" heading with nothing under
+        # it and reported the board as unfilled. The board has three members. They
+        # are loaded by script and appear nowhere in the served HTML.
+        ratio = len(text) / max(len(html), 1)
+        pages.append({
+            "url": url,
+            "title": title,
+            "text": text[:14_000],
+            "render_ratio": round(ratio, 4),
+            "likely_js_rendered": ratio < 0.02,
+        })
     return pages
 
 
@@ -293,6 +310,12 @@ importance:
    record.
 4. Do not assess the company. Do not name strengths, weaknesses or gaps. That is
    someone else's job and doing it here corrupts the evidence.
+5. NEVER record an empty or missing section as a fact. If you see a heading, a tab
+   label or a nav item with no content under it, that is almost always content
+   built by scripts that were not run, not content that does not exist. Put it in
+   `unrendered_sections`, never in `not_visible`, and never phrase it as an absence.
+6. `not_visible` means "I could not see this on these pages". It does NOT mean the
+   company does not have it. Phrase every entry that way.
 
 Return only JSON matching this shape:
 
@@ -314,6 +337,7 @@ Return only JSON matching this shape:
   "physical_product_signals": [str],
   "last_activity_seen": str|null,
   "not_visible": [str],
+  "unrendered_sections": [str],
   "sources": [str]
 }"""
 
@@ -446,6 +470,12 @@ Hard rules:
    valid answer.
 3. Every gap requires a `quoted_evidence` string lifted verbatim from the evidence
    record, and the `source_url` it came from. No citation means no gap.
+3b. THE CITATION MUST BE SOMETHING THAT IS PRESENT, not something that is absent.
+   "No CFO on the team page" is not evidence. "Four named people, all engineering
+   or operations titles" is evidence, and it is a different sentence with a
+   different standard behind it. Cite what you saw, never what you did not see.
+   A claim built on absence is at best an open question, and on a page whose
+   content did not render it is worth nothing at all.
 4. Assign confidence honestly against the supplied definitions. Inference from
    absence alone is `low` and must be phrased as an open question.
 5. A disqualifier overrides everything. If the evidence shows the role is already
@@ -520,14 +550,29 @@ CHECK 1, direct contradiction.
 Does the evidence show the role is already filled? A named CFO contradicts a
 finance gap. A head of sales contradicts a commercial gap.
 
-CHECK 2, evidence inversion. This is the most important check and the one most
-often missed.
-Does the quoted evidence actually support the claim, or does it support the
-OPPOSITE? A named blue chip customer is evidence the company CAN sell to
-enterprises, not evidence that it cannot. A published pricing page is evidence
-pricing exists. A detailed privacy notice is evidence someone thought about
-privacy. If the citation points the other way, the claim is inverted and must be
-dropped, however plausible the surrounding reasoning sounds.
+CHECK 2, evidence inversion. The most important check, and the one most often
+missed. It is also the easiest to over apply, so read the second half carefully.
+
+Does the quoted evidence support the claim, or the OPPOSITE? A published pricing
+page is evidence pricing exists. A detailed privacy notice is evidence someone
+thought about privacy. A named specialist on the team is evidence of domain
+expertise. If the citation points the other way, the claim is inverted and must
+be dropped, however plausible the surrounding reasoning sounds.
+
+BUT BE PRECISE ABOUT WHAT IS CONTRADICTED. A capability and an owner are
+different claims, and conflating them throws away true gaps:
+
+  A named enterprise customer DOES contradict "this company cannot sell to
+  enterprises". It does NOT contradict "nobody owns revenue here". Early stage
+  companies win real customers through founder led selling, and that is precisely
+  what a missing commercial leader looks like. Do not drop a leadership gap on the
+  grounds that the company has customers.
+
+  Similarly, a shipped product does not contradict a technical leadership gap, and
+  a published blog does not contradict a demand generation gap.
+
+So: only drop when the evidence contradicts THE SPECIFIC CLAIM being made, not
+when it merely shows the company is functioning in the same general area.
 
 CHECK 3, relevance of the citation.
 Does the quoted evidence actually bear on THIS archetype? A missing advisory board
@@ -538,8 +583,14 @@ CHECK 4, shared evidence.
 If two or more claims rest on the same quoted evidence, at most one of them is
 genuinely evidenced. Demote the others.
 
+CHECK 5, absence and rendering.
+Does the claim rest on something NOT being visible? If so it is an open question at
+best, never a finding. And if the evidence record lists any unrendered sections, a
+claim resting on absence from those pages must be dropped outright: an empty tab is
+evidence that scripts did not run, not evidence about the company.
+
 Do not assess whether a claim is reasonable or commercially sensible. Only run
-these four checks.
+these five checks.
 
 For each claim return:
 
@@ -548,15 +599,16 @@ For each claim return:
     {
       "archetype_id": str,
       "contradicted": true|false,
-      "failed_check": 1|2|3|4|null,
+      "failed_check": 1|2|3|4|5|null,
       "contradicting_evidence": str|null,
       "recommended_action": "keep"|"demote_to_question"|"drop"
     }
   ]
 }
 
-Use "drop" for check 1 or check 2 failures, because both mean the claim is wrong
-rather than merely uncertain. Use "demote_to_question" for check 3 and check 4.
+Use "drop" for check 1 and check 2 failures, and for check 5 where the page did not
+render, because all three mean the claim is wrong rather than merely uncertain. Use
+"demote_to_question" for check 3, check 4, and ordinary check 5 absences.
 Return only JSON."""
 
 
@@ -566,6 +618,7 @@ def adversarial_pass(ev, gaps, key):
     user = json.dumps(
         {
             "evidence": ev,
+            "unrendered_sections": ev.get("unrendered_sections") or [],
             "claims": [
                 {
                     "archetype_id": g["archetype_id"],
@@ -609,6 +662,224 @@ def flag_shared_evidence(gaps):
         else:
             seen[q] = g["archetype_id"]
     return gaps
+
+
+
+
+# --------------------------------------------------------------------------
+# absence is not evidence
+#
+# The single most damaging thing this system can do is treat "I did not see it"
+# as "it is not there". Those are different claims, and only the first one is
+# supported by reading a website.
+#
+# It did exactly that once, on a real company, and the claim was wrong: a
+# Scientific Advisory Board heading rendered with no members because the tab is
+# built by JavaScript. Three named advisors sit behind it.
+#
+# So absence gets handled three ways: detected here, suppressed entirely on pages
+# we know we could not render, and never allowed above the lowest confidence tier
+# anywhere else.
+# --------------------------------------------------------------------------
+
+ABSENCE_PATTERNS = [
+    r"\bnot (?:listed|named|shown|visible|disclosed|mentioned|present|found)\b",
+    r"\bno (?:named|visible|specific|dedicated|clear|explicit)\b",
+    r"\bno \w+ (?:title|role|lead|owner|function|member|officer|page)s?\b",
+    r"\bno (?:finance|commercial|sales|compliance|privacy|regulatory|marketing)\b",
+    r"\babsence of\b", r"\bdespite .{0,40}(?:header|section|heading|tab)\b",
+    r"section header present", r"\bcould not (?:find|see|locate|identify)\b",
+    r"\bnone (?:listed|visible|named|found)\b", r"\black(?:s|ing)? (?:a|any)\b",
+    r"\bmissing\b", r"\bnot appear\b", r"\bnobody\b",
+    r"\bno \w+(?: \w+)? (?:disclosed|available|provided|published|listed|given)\b",
+    r"\bno (?:funding|revenue|pricing|customer|investor|board)\b",
+    r"\bis not (?:a|any|listed|named)\b", r"\bwithout (?:a|any) \w+\b",
+]
+_ABSENCE_RE = re.compile("|".join(ABSENCE_PATTERNS), re.I)
+
+
+def is_absence_claim(text):
+    """Does this quoted evidence assert that something was NOT there?"""
+    return bool(text and _ABSENCE_RE.search(text))
+
+
+def any_page_unrendered(pages):
+    return [p["url"] for p in pages if p.get("likely_js_rendered")]
+
+
+def guard_absence(gaps, unrendered_urls):
+    """
+    Absence based claims are demoted everywhere, and dropped outright when they
+    come from a page we know we could not render.
+    """
+    kept, dropped = [], []
+    for g in gaps:
+        q = g.get("quoted_evidence") or ""
+        if not is_absence_claim(q):
+            kept.append(g)
+            continue
+
+        src = g.get("source_url") or ""
+        from_unrendered = any(src.startswith(u) or u.startswith(src) for u in unrendered_urls)
+
+        if from_unrendered:
+            dropped.append({
+                "archetype_id": g["archetype_id"],
+                "action": "drop",
+                "failed_check": 5,
+                "contradicting_evidence": (
+                    f"This claim rests on something being absent from {src}, but that "
+                    f"page is assembled by JavaScript that was not executed. An empty "
+                    f"section there is evidence of a rendering limit, not evidence "
+                    f"about the company."
+                ),
+            })
+            continue
+
+        g["confidence"] = "low"
+        g["absence_based"] = True
+        g["cap_reason"] = (
+            "This rests on something not appearing on the website. A website not "
+            "showing something is not the same as a company not having it, so this "
+            "is an open question rather than a finding."
+        )
+        kept.append(g)
+    return kept, dropped
+
+
+
+
+# Words that tie an unrendered section heading to an archetype it would evidence.
+# A heading is a positive signal: a site does not put "Scientific Advisory Board"
+# on a page unless it has one.
+SECTION_TO_ARCHETYPE = {
+    "domain-scientific-advisory": ["advisory board", "scientific advisor", "advisors", "advisers", "scientific board"],
+    "board-governance": ["board of directors", "our board", "governance", "non-executive"],
+    "fundraising-investor-relations": ["backed by", "investors", "our investors", "funding"],
+    "people-talent-first-50": ["our people", "careers", "join us", "team"],
+    "commercial-revenue-leader": ["sales team", "commercial team"],
+    "security-infosec": ["security", "trust centre", "trust center", "certifications"],
+    "data-protection-privacy": ["privacy", "data protection"],
+    "regulatory-compliance": ["compliance", "regulatory", "quality"],
+}
+
+
+def suppress_by_unrendered_sections(gaps, ev):
+    """
+    A heading we could not render is evidence the thing exists, not evidence it
+    does not. This is the fix for the one genuinely wrong claim this system has
+    produced: it read a "Scientific Advisory Board" heading with no members under
+    it and reported the board as unfilled. The board has three members, loaded by
+    script.
+    """
+    sections = [str(x).lower() for x in (ev.get("unrendered_sections") or [])]
+    if not sections:
+        return gaps, []
+
+    kept, dropped = [], []
+    for g in gaps:
+        aid = g.get("archetype_id")
+        cues = SECTION_TO_ARCHETYPE.get(aid, [])
+        hit = next((c for c in cues if any(c in sec for sec in sections)), None)
+        if hit:
+            dropped.append({
+                "archetype_id": aid,
+                "action": "drop",
+                "failed_check": 6,
+                "contradicting_evidence": (
+                    f"The site carries a section about '{hit}' whose contents did not "
+                    f"render for us. A heading is evidence the thing exists. Naming "
+                    f"this as a gap would mean reporting our own rendering limit as a "
+                    f"fact about the company."
+                ),
+            })
+            continue
+        kept.append(g)
+    return kept, dropped
+
+
+# Role words that would make a given archetype redundant. If the classifier cites a
+# person whose role matches the archetype's own subject, it has cited the cure as
+# proof of the disease.
+ROLE_DISPROVES_ARCHETYPE = {
+    "domain-scientific-advisory": ["chemist", "scientist", "research", "phd", "dr.", "dr ", "professor", "prof."],
+    "fractional-cfo": ["cfo", "finance", "financial", "controller", "accountant", "treasur"],
+    "commercial-revenue-leader": ["sales", "revenue", "commercial", "cro", "business development", "growth"],
+    "enterprise-sales-gtm": ["enterprise sales", "account executive", "sales director", "head of sales"],
+    "technical-leadership-cto": ["cto", "chief technology", "vp engineering", "head of engineering"],
+    "people-talent-first-50": ["people", "talent", "hr", "human resources", "chief people"],
+    "regulatory-compliance": ["compliance", "regulatory", "quality assurance", "legal counsel"],
+    "data-protection-privacy": ["privacy", "data protection", "dpo"],
+    "security-infosec": ["security", "ciso", "infosec"],
+    "product-marketing-positioning": ["product marketing", "brand", "marketing"],
+    "demand-generation": ["demand generation", "growth marketing", "performance marketing"],
+}
+
+
+def flag_person_inversion(gaps, ev):
+    """
+    Drop a gap only when the cited person is the very expertise the gap claims is
+    missing. A CEO does not disprove a commercial leadership gap; a Lead Research
+    Chemist does disprove a scientific advisory gap.
+    """
+    team = [
+        (str(t.get("role") or "").strip().lower(), str(t.get("name") or "").strip().lower())
+        for t in (ev.get("team_members") or [])
+    ]
+    if not team:
+        return gaps, []
+
+    kept, dropped = [], []
+    for g in gaps:
+        q = (g.get("quoted_evidence") or "").strip().lower()
+        aid = g.get("archetype_id")
+        cues = ROLE_DISPROVES_ARCHETYPE.get(aid, [])
+
+        cited_person = next(
+            (role for role, name in team if q and (q == role or q == name or q in role or (name and q in name))),
+            None,
+        )
+        if cited_person and any(c in cited_person for c in cues):
+            dropped.append({
+                "archetype_id": aid,
+                "action": "drop",
+                "failed_check": 2,
+                "contradicting_evidence": (
+                    f"The cited evidence, '{g.get('quoted_evidence')}', is a person on the "
+                    f"team whose role is the expertise this gap says is missing. That is "
+                    f"evidence against the gap, not for it."
+                ),
+            })
+            continue
+        kept.append(g)
+    return kept, dropped
+
+
+def clean_not_visible(ev):
+    """
+    Anything we know was simply unrendered must not also be reported to the founder
+    as something their website does not show. It does show it. We failed to read it.
+    """
+    sections = [str(x).lower() for x in (ev.get("unrendered_sections") or [])]
+    if not sections:
+        return ev
+    cleaned = []
+    for item in (ev.get("not_visible") or []):
+        low = str(item).lower()
+        if any(_overlap(low, sec) for sec in sections):
+            continue
+        cleaned.append(item)
+    ev["not_visible"] = cleaned
+    return ev
+
+
+def _overlap(a, b):
+    """Crude shared-phrase test. Two strings about the same missing section."""
+    aw = {w for w in re.findall(r"[a-z]{4,}", a)}
+    bw = {w for w in re.findall(r"[a-z]{4,}", b)}
+    if not aw or not bw:
+        return False
+    return len(aw & bw) >= 2
 
 
 def cap_confidence(gaps, ev):
@@ -777,6 +1048,25 @@ def run(url, slug=None, confirm=True):
     print("[5/6] adversarial pass")
     verdicts = adversarial_pass(ev, raw_gaps, key)
     kept, demotions = adjudicate(raw_gaps, verdicts)
+    unrendered = any_page_unrendered(pages)
+
+    kept, section_drops = suppress_by_unrendered_sections(kept, ev)
+    for d in section_drops:
+        print(f"      drop, a heading for it exists but did not render: {d['archetype_id']}")
+    demotions.extend(section_drops)
+
+    kept, person_drops = flag_person_inversion(kept, ev)
+    for d in person_drops:
+        print(f"      drop, cited a person as proof a person is missing: {d['archetype_id']}")
+    demotions.extend(person_drops)
+
+    ev = clean_not_visible(ev)
+
+    kept, absence_drops = guard_absence(kept, unrendered)
+    demotions.extend(absence_drops)
+    for d in absence_drops:
+        print(f"      drop, absence on an unrendered page: {d['archetype_id']}")
+
     kept = flag_shared_evidence(kept)
     kept = cap_confidence(kept, ev)
     shared = [g["archetype_id"] for g in kept if g.get("shared_evidence_with")]
@@ -810,6 +1100,7 @@ def run(url, slug=None, confirm=True):
         "not_visible": ev.get("not_visible", []),
         "demotions": demotions,
         "notes_for_human": result.get("notes_for_human", ""),
+        "unrendered_pages": unrendered,
         "classifier_failed": result.get("classifier_failed"),
         "adversary_failed": verdicts.get("adversary_failed"),
     }

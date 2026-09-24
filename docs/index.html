@@ -104,16 +104,17 @@ exhibits I would look at first.</strong></p>
 
 <div class="cards">
   <a class="card" href="samples/anemo-labs.html">
-    <span class="pill ok">3 gaps</span>
+    <span class="pill ok">2 gaps</span>
     <p class="name">Anemo Labs</p>
-    <p class="why">London deep tech, 700k pre-seed, three named staff. Regulatory,
-    domain advisory and data protection, each sourced to a page.</p>
+    <p class="why">London deep tech, 700k pre-seed, three named staff. A third gap was
+    named, published, found to be wrong by a human, and is now structurally impossible
+    to produce.</p>
   </a>
   <a class="card" href="samples/ridelogix.html">
-    <span class="pill ok">1 gap, 2 discarded</span>
+    <span class="pill ok">2 gaps</span>
     <p class="name">Ridelogix</p>
-    <p class="why">The adversarial pass killed two claims that cited a named enterprise
-    customer as proof the company could not sell to enterprises.</p>
+    <p class="why">Claims citing a named enterprise customer as proof the company could
+    not sell to enterprises were discarded by the adversarial pass.</p>
   </a>
   <a class="card" href="samples/chatterbox.html">
     <span class="pill acc">Out of profile</span>
@@ -212,10 +213,47 @@ stamp is worse than a rule since it looks like oversight. The human gate sits in
 the point a brief would reach a senior exec, which is the first moment a wrong answer
 consumes a scarce person rather than a cheap API call.</p>
 
-<h2>Three defects found by reading real output</h2>
-<p>Not found by testing. Found by reading four reports about real companies and
-disagreeing with them. All three are fixed, and the fixes are more interesting than the
-build.</p>
+<h2>The one that got through, and what it changed</h2>
+
+<div class="callout"><strong>The first version of this system published a false claim
+about a real company.</strong> It reported that Anemo Labs had a Scientific Advisory
+Board section with no members. Anemo Labs has three advisors: Mr Nim Arumainayagam,
+Prof Sergey Piletsky and Dr Todd Cowen. They are loaded into the page by JavaScript and
+appear nowhere in the HTML a scraper receives.</div>
+
+<p>Every gate described above passed it. The claim carried a citation, it named a real
+page, and it survived the adversarial pass, because it was not contradicted by anything
+in the evidence. The evidence was simply incomplete in a way the system could not see.</p>
+
+<p class="big">A human read the report and knew it was wrong. That is the only reason it
+was caught, and it is the argument for the human gate rather than a decoration on it.</p>
+
+<p>The root error was a reasoning mistake, not a scraping one, and it took a while to
+see it clearly. <strong>A heading is evidence that the thing exists.</strong> A company
+does not put "Scientific Advisory Board" on its team page unless it has one. The system
+read that heading as evidence of absence, which is close to exactly backwards.</p>
+
+<h3>What changed as a result</h3>
+<ul>
+<li><strong>Pages we could not render are detected.</strong> Text to markup ratio below
+two per cent means most of the content was assembled by scripts. Anemo Labs measures
+0.54 per cent. Ridelogix, a conventional site, measures six.</li>
+<li><strong>A heading for an unrendered section now suppresses the matching archetype
+outright.</strong> If the site says it has an advisory board, no advisory gap can be
+named, full stop.</li>
+<li><strong>Absence can no longer be a citation.</strong> A deterministic check rejects
+quoted evidence phrased as a negative, and drops it entirely when it comes from a page
+that did not render.</li>
+<li><strong>The report says what it could not read</strong>, at the top, before any
+finding.</li>
+</ul>
+
+<p>These are in code, not in the prompt, because this was never a matter of asking the
+model more firmly.</p>
+
+<h2>Three more defects found the same way</h2>
+<p>All found by reading reports about real companies and disagreeing with them, rather
+than by testing. The fixes are more interesting than the build.</p>
 
 <div class="panel">
 <h3 style="margin-top:0">1. The qualification step did not exist</h3>
@@ -374,11 +412,10 @@ mailed.</td></tr>
 
 <h3>Known limitations</h3>
 <ul>
-<li><strong>Static fetch only.</strong> No JavaScript execution. One report notes a
-"Scientific Advisory Board" heading with no members listed, which is real in the fetched
-HTML but could be a tab rendered client side. A claim resting on an absence a renderer
-would have filled is a real false positive risk, and the mitigation is that the founder
-confirms or corrects at step 2.</li>
+<li><strong>Static fetch only.</strong> No JavaScript execution. This produced the
+false claim described above. The system now detects unrendered pages and refuses to build
+claims on absence from them, which contains the failure without removing the underlying
+limit: there is content on some sites it simply cannot read.</li>
 <li><strong>Run to run variance.</strong> Temperature is zero and runs still differ. On
 one run the adversarial pass demoted a gap and on the next it did not. A safety gate that
 fires probabilistically is weaker than one that fires deterministically, which is why

@@ -52,8 +52,8 @@ two are the exhibits I would look at first.**
 
 | Company | Outcome | What it demonstrates |
 |---|---|---|
-| **Anemo Labs** | 3 gaps | London deep tech, 700k pre-seed, three named staff. Regulatory, domain advisory and data protection gaps, each sourced. |
-| **Ridelogix** | 1 gap, **2 discarded** | The adversarial pass killed two claims that cited a named enterprise customer as proof the company could not sell to enterprises. |
+| **Anemo Labs** | 2 gaps | London deep tech, 700k pre-seed, three named staff. A third gap was named, published, found wrong by a human, and is now structurally impossible to produce. See below. |
+| **Ridelogix** | 2 gaps | Claims citing a named enterprise customer as proof the company could not sell to enterprises were discarded by the adversarial pass. |
 | **Chatterbox** | **Out of profile** | 29 staff, blue chip client, past the stage this is built for. Screened before any gap judgement was made. |
 | **Rule** | **Refused** | A 615 character site. No team, no roles. The system declined to diagnose a leadership gap with no visibility of the leadership. |
 
@@ -159,11 +159,47 @@ Worth stating, because it is what makes the principle real rather than decorativ
 
 ---
 
-## Three defects found by reading real output
+## The one that got through
 
-These were not found by testing. They were found by reading four reports about
-real companies and disagreeing with them. All three are fixed, and they are
-documented here because the fixes are more interesting than the build.
+**The first version of this system published a false claim about a real company.**
+
+It reported that Anemo Labs had a Scientific Advisory Board section with no members
+listed. Anemo Labs has three advisors: Mr Nim Arumainayagam, Prof Sergey Piletsky
+and Dr Todd Cowen. They are loaded into the page by JavaScript and appear nowhere
+in the HTML a scraper receives.
+
+Every gate above passed it. The claim carried a citation. It named a real page. It
+survived the adversarial pass, because nothing in the evidence contradicted it. The
+evidence was incomplete in a way the system could not detect.
+
+A human read the report and knew it was wrong. That is the only reason it was
+caught, and it is the argument for keeping a human gate rather than a decoration
+on it.
+
+The root error was reasoning, not scraping. **A heading is evidence the thing
+exists.** A company does not put "Scientific Advisory Board" on its team page
+unless it has one. The system read that heading as evidence of absence, which is
+close to exactly backwards.
+
+### What changed
+
+| Fix | Where |
+|---|---|
+| Detect pages we could not render, by text to markup ratio under 2 per cent. Anemo Labs measures 0.54 per cent, a conventional site measures 6. | `crawl()` |
+| A heading for an unrendered section suppresses the matching archetype outright | `suppress_by_unrendered_sections()` |
+| Absence can never be a citation, and is dropped entirely from unrendered pages | `guard_absence()`, `is_absence_claim()` |
+| Citing a person whose role IS the missing expertise is an inversion | `flag_person_inversion()` |
+| The report states what it could not read, above any finding | `render_delivered()` |
+
+All in code, not in the prompt. This was never a matter of asking the model more
+firmly.
+
+---
+
+## Three more defects found the same way
+
+Found by reading reports about real companies and disagreeing with them, rather
+than by testing. The fixes are more interesting than the build.
 
 **1. The qualification step did not exist.** `icp.yml` was written first and then
 never wired into the pipeline, so Chatterbox, a 29 person company with a blue chip
@@ -331,11 +367,12 @@ to write them.
 
 ### Known limitations
 
-- **Static fetch only.** No JavaScript execution. Anemo Labs' report notes a
-  "Scientific Advisory Board" heading with no members listed, which is real in the
-  fetched HTML but could be a tab rendered client side. A claim resting on an
-  absence that a renderer would have filled is a real false positive risk, and the
-  honest mitigation is that the founder confirms or corrects at step 2.
+- **Static fetch only.** No JavaScript execution. This produced the false claim
+  described above. The system now detects unrendered pages and refuses to build
+  claims on absence from them, which contains the failure but does not remove the
+  underlying limit: there is content on some sites it simply cannot read. The
+  mitigations are the rendering notice on the report, the suppression rules, and the
+  founder confirming or correcting at step 2.
 - **Run to run variance.** Temperature is zero and runs still differ. On one run the
   adversarial pass demoted Anemo Labs' domain advisory gap, and on the next it did
   not. A safety gate that fires probabilistically is a weaker gate than one that
