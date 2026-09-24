@@ -352,10 +352,10 @@ def show_report(report, body_html=None, key_prefix=""):
 
 # ---------------------------------------------------------------------------
 st.markdown('<p class="eyebrow">Leadership Gap Diagnostic</p>', unsafe_allow_html=True)
-st.title("Which three senior people does this startup actually need?")
+st.title("Which senior people does your startup actually need?")
 st.markdown(
-    '<p class="lede">Give it an early stage startup\'s website. It names up to three '
-    "senior advisory gaps, each with the evidence behind it, in about ninety seconds.</p>",
+    '<p class="lede">Put in your website. It names up to three senior advisory gaps, '
+    "each with the evidence behind it, in about ninety seconds.</p>",
     unsafe_allow_html=True,
 )
 
@@ -402,9 +402,9 @@ with tab_live:
     else:
         default_url = st.session_state.get("prefill", "")
         url = st.text_input(
-            "Startup website",
+            "Your website",
             value=default_url,
-            placeholder="https://example.com",
+            placeholder="https://yourcompany.com",
             label_visibility="collapsed",
         )
 
