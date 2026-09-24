@@ -51,6 +51,15 @@ try:
 except ImportError:
     sys.exit("PyYAML is required: pip install pyyaml")
 
+# Per run cost accounting. OpenRouter reports real cost per call, so this is
+# measured rather than modelled.
+COST = {"usd": 0.0, "calls": 0, "prompt_tokens": 0, "completion_tokens": 0}
+
+
+def reset_cost():
+    COST.update(usd=0.0, calls=0, prompt_tokens=0, completion_tokens=0)
+
+
 class LLMEmptyResponse(RuntimeError):
     """The model returned no usable content. Distinct from a transport failure."""
 
@@ -251,6 +260,12 @@ def llm(model, system, user, key, max_tokens=3000, temperature=0.0):
             body = json.loads(r.read().decode())
     except urllib.error.HTTPError as e:
         sys.exit(f"OpenRouter returned {e.code}: {e.read().decode()[:400]}")
+
+    usage = body.get("usage") or {}
+    COST["usd"] += float(usage.get("cost") or 0.0)
+    COST["calls"] += 1
+    COST["prompt_tokens"] += int(usage.get("prompt_tokens") or 0)
+    COST["completion_tokens"] += int(usage.get("completion_tokens") or 0)
 
     choices = body.get("choices") or []
     if not choices:
@@ -981,6 +996,7 @@ def enrich(gaps, taxonomy):
 
 def run(url, slug=None, confirm=True):
     taxonomy = load_yaml("taxonomy.yml")
+    reset_cost()
     key = api_key()
     run_id = uuid.uuid4().hex[:12]
     started = dt.datetime.now(dt.timezone.utc)
@@ -1018,6 +1034,7 @@ def run(url, slug=None, confirm=True):
             "url": url,
             "company_name": ev.get("company_name"),
             "outcome": "refused",
+            "run_cost": dict(COST),
             "generated_at": started.isoformat(timespec="seconds"),
             "refusal_reason": why,
             "refusal_message": taxonomy["refusal"]["message"].strip(),
@@ -1035,6 +1052,7 @@ def run(url, slug=None, confirm=True):
             "url": url,
             "company_name": ev.get("company_name"),
             "outcome": "out_of_icp",
+            "run_cost": dict(COST),
             "generated_at": started.isoformat(timespec="seconds"),
             "icp_reasons": why,
             "evidence": ev,
@@ -1059,6 +1077,7 @@ def run(url, slug=None, confirm=True):
             "url": url,
             "company_name": ev.get("company_name"),
             "outcome": "error",
+            "run_cost": dict(COST),
             "generated_at": started.isoformat(timespec="seconds"),
             "error": f"classification failed: {result['classifier_failed']}",
             "evidence": ev,
@@ -1107,7 +1126,10 @@ def run(url, slug=None, confirm=True):
         print("      no contradictions found")
 
     gaps = enrich(kept, taxonomy)
-    print(f"[6/6] {len(gaps)} gaps confirmed")
+    print(
+        f"[6/6] {len(gaps)} gaps confirmed  "
+        f"({COST['calls']} calls, ${COST['usd']:.4f})"
+    )
 
     return {
         "run_id": run_id,
@@ -1125,6 +1147,15 @@ def run(url, slug=None, confirm=True):
         "not_visible": ev.get("not_visible", []),
         "demotions": demotions,
         "notes_for_human": result.get("notes_for_human", ""),
+        "run_cost": dict(COST),
+        "duration_seconds": round(
+            (dt.datetime.now(dt.timezone.utc) - started).total_seconds(), 1
+        ),
+        "models": {
+            "extract": MODEL_EXTRACT,
+            "classify": MODEL_CLASSIFY,
+            "adversary": MODEL_ADVERSARY,
+        },
         "unrendered_pages": unrendered,
         "classifier_failed": result.get("classifier_failed"),
         "adversary_failed": verdicts.get("adversary_failed"),
@@ -1179,7 +1210,7 @@ def log_run(report, cost_usd=0.0):
         "founder_rating": "",
         "human_gap_verdicts": "",
         "brief_accepted": "",
-        "llm_cost_usd": f"{cost_usd:.5f}" if cost_usd else "",
+        "llm_cost_usd": f"{(report.get('run_cost') or {}).get('usd', cost_usd):.5f}",
     }
 
     path = ROOT / "runs.csv"

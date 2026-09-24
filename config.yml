@@ -81,3 +81,31 @@ loop:
     min_refusal_rate: 0.05          # a loop that never refuses has learned to guess
     max_cost_per_run_usd: 0.25
     max_cost_per_week_usd: 50.00
+
+# ---------------------------------------------------------------------------
+# What the report says about Connectd.
+#
+# These are facts about Connectd's business that this build has no access to, so
+# they live here rather than being invented in the renderer. Every line below is
+# a placeholder written to be true-but-vague; replace each with the real thing on
+# day one and the report gets sharper without a code change.
+# ---------------------------------------------------------------------------
+
+offer:
+  # Replace with the real figure, e.g. "Around 4,000 senior operators".
+  # Leave blank and the report falls back to describing curation without a number.
+  bench_size: ""
+  bench_line: >
+    Every one of them has been through our vetting and is actively looking for a
+    board or advisory seat, so this is a shortlist we draw from, not a directory
+    you search yourself.
+
+  # What actually happens on the call. Replace with Connectd's real process.
+  process:
+    - A short call with someone on our team, usually the same week
+    - We come back with named people against the gaps you agree are real
+    - You meet them. If the fit is wrong, you say so and we go again
+    - Three to six months, unpaid, no notice period and no fee at any point
+
+  # Shown per gap, turning the profile into an ask.
+  per_gap_cta: "Ask us who we have for this"

@@ -110,6 +110,10 @@ h2.doc-title { margin-top: 0; margin-bottom: 14px; }
 }
 .gap .field.answer .k { color: var(--accent); font-size: 15px; font-weight: 700; }
 .gap .field.answer .v { color: var(--ink); }
+.gap-cta {
+  display: inline-block; margin-top: 9px; font-weight: 640;
+  color: var(--accent); font-size: 14px;
+}
 .gap .field .v { color: var(--ink-soft); }
 .note {
   background: #fdf6ec; border: 1px solid #f0dcc0; border-radius: 8px;
@@ -149,6 +153,20 @@ _DASH_FIXES = [
     (" -- ", ", "),
     ("--", ", "),
 ]
+
+
+def load_offer():
+    """
+    Facts about Connectd that this build has no access to. Config driven so they
+    can be made true in an hour rather than invented here.
+    """
+    try:
+        import yaml
+
+        cfg = yaml.safe_load((ROOT / "config.yml").read_text(encoding="utf-8"))
+        return (cfg or {}).get("offer") or {}
+    except Exception:  # noqa: BLE001
+        return {}
 
 
 def e(x):
@@ -315,19 +333,21 @@ def provenance(ev):
 
 
 def method_footer():
+    """
+    One statement, not three.
+
+    The caveats were spread across an unrendered notice, a could-not-find list and
+    a three paragraph footer, all making the same point. Rigour read once reads as
+    rigour. Read three times it reads as uncertainty, which is not what Connectd
+    wants its name attached to.
+    """
     return """<footer>
-<p><strong>What this is, and what it is not.</strong> This report was produced by
-reading the company's own public website. Nobody has spoken to the team. It records
-what is publicly visible and, where it cannot see something, it says so rather than
-filling the gap with an assumption. Every gap named here carries the specific
-evidence it rests on and a confidence level, so any claim can be checked or
-dismissed in seconds.</p>
-<p>A gap marked <strong>open question</strong> is not a finding. It means the
-evidence pointed that way but was not strong enough to stand behind, and the honest
-thing is to ask rather than assert.</p>
-<p><strong>Where it says we could not find something, that means exactly that.</strong>
-It is a statement about what your website shows us, not a claim about your company. If
-we have missed something that is there, the report is wrong and we would rather know.</p>
+<p><strong>How this was made.</strong> Read from the company's public website, nothing
+else, with no contact with the team. Every gap carries the evidence behind it, so any
+claim here can be checked or dismissed in seconds. A gap marked <strong>open
+question</strong> is one the evidence pointed at without settling, and we would rather
+ask than assert. If we have missed something that is plainly on your site, tell us and
+we will correct it.</p>
 </footer>"""
 
 
@@ -335,26 +355,45 @@ def offer_block(gaps):
     """
     The answer to the problem the report just described.
 
-    Without this the report is a diagnosis with no treatment, and the reader's
-    reasonable next thought is that they need to go and hire three expensive
-    people. The offer is the reason the report exists.
+    Rewritten after reading it as Connectd's Head of GTM. The first version
+    defined the offer by what it was not, gave no sense of the bench that is the
+    actual asset, and asked for ten minutes without saying what happens in them.
     """
     if not gaps:
         return ""
+    offer = load_offer()
     count = len(gaps)
     noun = "gap" if count == 1 else "gaps"
+
+    bench_size = (offer.get("bench_size") or "").strip()
+    bench_line = (offer.get("bench_line") or "").strip()
+    opener = (
+        f"{e(bench_size)} are on Connectd's bench."
+        if bench_size
+        else "Connectd keeps a bench of senior operators."
+    )
+    follow = "We place up to three of them" if not bench_size else "Connectd places up to three of them"
+
+    steps = offer.get("process") or []
+    steps_html = (
+        "<ol>" + "".join(f"<li>{e(x)}</li>" for x in steps) + "</ol>" if steps else ""
+    )
+
     return f"""<h2>What you can do about it</h2>
 <div class="panel">
-<p class="big">Connectd places <strong>up to three senior operators</strong> with early
-stage companies, <strong>pro bono, for three to six months</strong>. Not a recruitment
-fee, not a retainer. People who have already done the thing you are about to do.</p>
-<p>The {count} {noun} above are written as a brief on purpose. They describe the
-experience that would fill each one, and the questions to put to someone in the first
-twenty minutes, so you can judge whether a given person is the right fit rather than
-taking anyone's word for it.</p>
-<p style="margin-bottom:0">If the {noun} we named are the wrong ones, that is useful too.
-A ten minute conversation will get to the right answer faster than a website ever
-could.</p>
+<p class="big"><strong>{opener}</strong> {follow} into a company like yours as advisors
+or non executives, for three to six months.</p>
+<p>{e(bench_line)}</p>
+<p>The {count} {noun} above are written as a brief for exactly that reason. Each one
+names the experience that fills it and the questions to put to whoever we introduce, so
+you are judging the person rather than taking our word for the match.</p>
+</div>
+
+<h3 style="margin-top:30px">What happens if you say yes</h3>
+<div class="panel">
+{steps_html}
+<p style="margin-bottom:0">If the {noun} we named are the wrong ones, say so on the call.
+Getting that wrong is more useful to us than you politely agreeing.</p>
 </div>"""
 
 
@@ -392,8 +431,6 @@ def capture_block(report):
     """
     return f"""<div class="cta">
 <h2>Next</h2>
-<p class="big">Ten minutes is enough to work out whether we have read this right, and
-which of the people we described is worth meeting.</p>
 <p>
   <a class="btn" href="#book">Book a ten minute call</a>
   <a class="btn ghost" href="#email">Email me a copy</a>
@@ -477,7 +514,11 @@ def render_delivered(r, audience="founder", context="self_serve"):
                 out.append(field("If this stays unfilled for six months",
                                  e(g["unfilled_six_months"])))
             if g.get("profile"):
-                out.append(answer_field("Who fills it", e(g["profile"])))
+                cta = (load_offer().get("per_gap_cta") or "").strip()
+                val = e(g["profile"])
+                if cta:
+                    val += f'<br><span class="gap-cta">{e(cta)}</span>'
+                out.append(answer_field("Who fills it", val))
             fq = g.get("first_questions") or []
             if fq:
                 out.append(field(
@@ -526,9 +567,8 @@ def render_delivered(r, audience="founder", context="self_serve"):
         out.append(
             '<div class="note"><strong>Some of your site we could not read.</strong> '
             + e(str(len(unrendered))) + f" {word} build content with scripts we do not "
-            "run, so parts were invisible to us. Nothing above rests on something "
-            "appearing to be missing from those pages. If we have missed something "
-            "that is plainly there, this report is wrong and we would rather know.</div>"
+            "run. Nothing above rests on something appearing to be missing from "
+            "those pages.</div>"
         )
 
     out.append(provenance(ev))
