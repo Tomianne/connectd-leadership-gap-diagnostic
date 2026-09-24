@@ -6,6 +6,36 @@ Built for Connectd, September 2026, by Hannah Tomi Ajiboye.
 
 ---
 
+## The task, and how I read it
+
+Four options were offered, with three to four hours, an explainer on how it
+expands, and a link.
+
+| Option | Where it is |
+|---|---|
+| **1. Lead magnet for acquiring startups, plus the funnel end to end** | This. Built and running, not described. |
+| **2. An agent loop optimising a marketing goal** | Inside it, as the optimisation layer. `loop.py`: log schema, versioned config, two clocks, guardrails. |
+| **3. A sample video or ad campaign** | Partly, and deliberately not fully. See below. |
+| **4. My own task, showing how I would deploy agents** | The framing. Three models with different jobs, one employed to disagree with another. |
+
+**Doing all four separately would have been the wrong answer.** Four things inside
+one budget is four sketches, and the scored part was the explainer on how it
+expands, which needs one system thought through rather than four started.
+
+### On option 3, and the unspent video budget
+
+Credits for roughly three eight second generated clips, unspent. The thing being
+sold is a mechanism and cinematic b-roll would have looked like a different task
+bolted on. The image budget went into `docs/diagram.png` instead, drawn in code
+rather than generated, because the argument it carries is structural: the gates
+cluster at one seam and are deliberately absent elsewhere. A generated image
+cannot be held to a structure. Every box in it is a function that runs.
+
+Choosing not to spend a budget on the flashier option, and being able to say why,
+is closer to the job than the clips would have been.
+
+---
+
 ## The idea in one paragraph
 
 Connectd's offer to a startup is **up to three senior experts, pro bono, for three
@@ -241,7 +271,7 @@ accepted briefs is a failed system that looks like a successful one.
 **Three label sources, in rank order**, because an optimiser is only as good as its
 ground truth:
 
-1. **Strongest:** the human accept, edit or reject per gap. Skin in the game, low volume, and **not yet built**, so the column exists and is empty.
+1. **Strongest:** the human accept, edit or reject per gap, written to `reviews.csv`. Skin in the game, low volume, and the slow loop reads it directly when looking for archetypes that are named often and rejected often.
 2. **Medium:** behaviour. Completed, shared, returned, booked.
 3. **Weakest:** the founder's own yes, partly or no. Cheap, high volume, biased
    towards politeness. Sets direction, never decides alone.
@@ -384,7 +414,7 @@ to write them.
 | The report is accurate | It is accurate about what is publicly visible, and it says so in the body rather than a footnote. Where it cannot see, it says so and asks. |
 | Emails are sent at volume | The delivery leg is live and tested end to end: a report copy and an onward share both sent through a transactional endpoint, and a malformed address was rejected without sending. Three sends is a working mechanism, not a campaign, and no list has been mailed. |
 | Fully autonomous | Two human gates are designed, at named seams, with a stated reason for each. |
-| **Both human gates are built** | **Only one is.** The identity confirmation at step 2 runs. The accept, edit or reject of each gap before a brief reaches an exec is specified and has no interface, so the loop's strongest label source currently collects nothing. It is the next thing to build, and the design depends on it more than on anything already working. |
+| Fully autonomous | Two human gates, both built. Identity confirmation at step 2, and accept, edit or reject per gap before a brief reaches an exec. Everything between them runs unattended. |
 
 ### Known limitations
 

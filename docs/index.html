@@ -82,6 +82,49 @@ footer{margin:80px 0 0;padding:30px 0 90px;border-top:1px solid var(--line);
   <a href="https://www.linkedin.com/in/tomi-ajiboye/">linkedin.com/in/tomi-ajiboye</a></p>
 </header>
 
+<h2>The task, and how I read it</h2>
+<p>You offered four options and asked for three to four hours, an explainer on how it
+expands, and a link.</p>
+
+<table>
+<thead><tr><th>Option</th><th>Where it is</th></tr></thead>
+<tbody>
+<tr><td><strong>1. A lead magnet for acquiring startups, and how to run that funnel
+end to end agentically</strong></td><td>This. Built and running, not described.</td></tr>
+<tr><td><strong>2. An agent loop for the marketing team, optimising a goal of my
+choice</strong></td><td>Inside it, as the optimisation layer. <code>loop.py</code>,
+a real file with a log schema, a versioned config, two clocks and guardrails. North
+star is accepted placement briefs per hundred diagnostic starts.</td></tr>
+<tr><td><strong>3. A sample video or ad campaign using current
+models</strong></td><td>Partly, and deliberately not fully. See below.</td></tr>
+<tr><td><strong>4. My own task, showing how I would deploy agents in your
+team</strong></td><td>The framing. Three models with different jobs, one of them
+employed to disagree with another, and the gates placed where a wrong answer is
+expensive rather than sprinkled evenly.</td></tr>
+</tbody>
+</table>
+
+<div class="callout"><strong>Doing all four separately would have been the wrong
+answer.</strong> Four things inside one budget is four sketches, and the scored part of
+the brief was the explainer on how it expands, which needs one system thought through
+rather than four started. Folding three into one also answers a question you did not
+ask but a GTM hire gets asked constantly: what did you decide not to build.</div>
+
+<h3>On option 3, and why the video budget is unspent</h3>
+<p>I had credits for roughly three eight second generated clips. I did not spend them.
+The thing being sold here is a mechanism, and cinematic b-roll would have looked like a
+different task bolted on. The image budget went into
+<a href="diagram.png">the diagram</a> instead, which is drawn in code rather than
+generated, because the argument it carries is that the gates cluster at one seam and are
+deliberately absent elsewhere. That is a claim about structure, and a generated image
+cannot be held to a structure. Every box in it is a function that runs.</p>
+<p>Choosing not to spend a budget on the flashier option, and being able to say why, is
+closer to the actual job than the clips would have been.</p>
+
+<p><a href="diagram.png"><img src="diagram.png" alt="The funnel, the six steps, and the
+seam where every quality gate sits" style="width:100%;border:1px solid var(--line);
+border-radius:10px;margin:22px 0 8px"></a></p>
+
 <h2>The idea</h2>
 <p class="big">Connectd's offer to a startup is <strong>up to three senior experts, pro
 bono, for three to six months</strong>. So the lead magnet's output is deliberately
@@ -248,6 +291,14 @@ trusted by.</p>
 <tr><td>Unknowns section</td><td>Filling silence with inference</td></tr>
 </tbody>
 </table>
+
+<p><strong>The second human gate is built.</strong> Before any brief reaches an exec, a
+person accepts, edits or rejects each gap individually, with a reason. Per gap rather
+than per report, because a report with one good gap and one bad one is the normal case
+and a whole-report verdict throws away exactly the distinction the loop needs. Those
+verdicts are the strongest label the optimisation loop reads, and the slow loop uses
+them to find archetypes that get named often and rejected often, which are the
+taxonomy's bad entries.</p>
 
 <p>The last three live in <strong>code, not in the prompt</strong>, and that distinction
 is the point. Asking a model more firmly to respect its own confidence definitions is
@@ -505,10 +556,7 @@ work to fix, not a rebuild.</td></tr>
 <tr><td>Loop is running</td><td>Specified, with the schema and config in place and four
 rows of data. It needs about thirty runs per variant before its output means
 anything.</td></tr>
-<tr><td>Both human gates are built</td><td><strong>Only one is.</strong> The identity
-confirmation runs. The accept or reject of each gap before a brief reaches an exec is
-specified and has no interface, so the loop's strongest label source collects nothing
-yet. It is the next thing to build.</td></tr>
+
 <tr><td>Report is accurate</td><td>Accurate about what is publicly visible, and it says
 so in the body rather than a footnote. Where it cannot see, it says so and asks.</td></tr>
 <tr><td>Emails sent at volume</td><td>The delivery leg is live and tested end to end: a

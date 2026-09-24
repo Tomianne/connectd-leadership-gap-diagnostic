@@ -20,3 +20,5 @@ captures.csv
 
 # feedback log, holds no PII but is per-deployment
 feedback.csv
+
+reviews.csv

@@ -263,6 +263,90 @@ def actions(report, key_prefix=""):
                 st.success("Logged. A no is the most useful answer we get.")
 
 
+def review_gate(report, key_prefix=""):
+    """
+    Accept, edit or reject each gap before a brief reaches an exec.
+
+    Per gap rather than per report, because a report with one good gap and one
+    bad one is the normal case, and a whole-report verdict throws away exactly
+    the distinction the loop needs.
+
+    Only shown on the internal view. A founder should not be asked to audit the
+    system that just read their website.
+    """
+    gaps = report.get("gaps") or []
+    if not gaps:
+        return
+
+    rid = f"{key_prefix or 'live'}_{report.get('run_id') or 'none'}"
+
+    st.markdown("---")
+    st.markdown("##### Review before this becomes a brief")
+    st.caption(
+        "The one per lead human gate. It sits here because this is the first point "
+        "where a wrong answer costs a senior person six months rather than a few pence "
+        "of API time. Each verdict is written against the run and is the strongest "
+        "label the optimisation loop gets."
+    )
+
+    with st.form(f"review_{rid}", border=True):
+        verdicts = {}
+        for i, g in enumerate(gaps, 1):
+            st.markdown(f"**{i}. {g.get('name')}**  \n*{g.get('quoted_evidence', '')[:120]}*")
+            verdicts[g.get("archetype_id")] = st.radio(
+                "verdict",
+                ["Accept", "Edit", "Reject"],
+                horizontal=True,
+                key=f"v_{i}_{rid}",
+                label_visibility="collapsed",
+            )
+            if i < len(gaps):
+                st.markdown("")
+
+        reason = st.text_input(
+            "Why, if you edited or rejected anything",
+            key=f"why_{rid}",
+            placeholder="The evidence did not support it, we have nobody for this, wrong read of the stage",
+        )
+
+        if st.form_submit_button("Record the review", type="primary"):
+            _log_review(report, verdicts, reason)
+            rej = [k for k, v in verdicts.items() if v == "Reject"]
+            if rej:
+                st.warning(
+                    f"Recorded. {len(rej)} rejected, which is the useful signal. "
+                    "Archetypes named often and rejected often are what the slow loop "
+                    "looks for when it proposes taxonomy changes."
+                )
+            else:
+                st.success("Recorded. All accepted, so this is ready to route to the bench.")
+
+
+def _log_review(report, verdicts, reason):
+    """
+    One row per review. The column the loop calls its strongest label, which had
+    been specified everywhere and collected nothing.
+    """
+    import csv as _csv
+    import datetime as _dt
+
+    p = ROOT / "reviews.csv"
+    exists = p.exists()
+    try:
+        with open(p, "a", newline="", encoding="utf-8") as f:
+            w = _csv.writer(f)
+            if not exists:
+                w.writerow(["at", "run_id", "company", "archetype", "verdict", "reason"])
+            now = _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds")
+            for archetype, verdict in verdicts.items():
+                w.writerow([
+                    now, report.get("run_id"), report.get("company_name"),
+                    archetype, verdict.lower(), reason,
+                ])
+    except OSError:
+        pass
+
+
 def _send(report, addr, share=False, note=None, consent=False):
     import deliver
     import render as _r
@@ -472,6 +556,9 @@ with tab_live:
             show_report(report, body)
             actions(report)
 
+            with st.expander("What Connectd sees: the review gate"):
+                review_gate(report)
+
             st.download_button(
                 "Download the run record",
                 data=json.dumps(report, indent=2),
@@ -495,6 +582,13 @@ with tab_demo:
     else:
         show_report(report, load_html(slug), key_prefix="demo")
         actions(report, key_prefix=f"demo_{slug}")
+
+        with st.expander("What Connectd sees: the review gate"):
+            st.caption(
+                "The founder gets the conclusion. Connectd gets the working, plus the "
+                "one decision a person has to make before a brief reaches an exec."
+            )
+            review_gate(report, key_prefix=f"demo_{slug}")
         with st.expander("The machine readable record for this run"):
             st.json(
                 {

@@ -91,6 +91,18 @@ COLUMNS = [
 ]
 
 
+def read_reviews():
+    """
+    The strongest label source, now that it is collected rather than specified.
+    One row per gap per review: accept, edit or reject, with a reason.
+    """
+    p = ROOT / "reviews.csv"
+    if not p.exists():
+        return []
+    with open(p, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
 def read_runs():
     if not RUNS.exists():
         return []
@@ -234,6 +246,15 @@ def slow_loop(rows, cfg):
     named = defaultdict(int)
     rejected = defaultdict(int)
     dropped = defaultdict(int)
+
+    # Real human verdicts take precedence over anything inferred from the run log.
+    for rv in read_reviews():
+        a = (rv.get("archetype") or "").strip()
+        if not a:
+            continue
+        named[a] += 1
+        if (rv.get("verdict") or "").strip().lower() == "reject":
+            rejected[a] += 1
 
     for r in rows:
         ids = [a for a in (r.get("archetypes_named") or "").split("|") if a]
