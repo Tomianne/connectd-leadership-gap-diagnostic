@@ -668,6 +668,15 @@ def render_out_of_icp(r, audience="founder", context="self_serve", embed=False):
         "conversation will sort it out faster than the website will.</p>"
     )
 
+    # A screened-out company is not a dead end, and treating it as one was a
+    # miss. Connectd is two sided: the senior people inside a company too far
+    # along to need pro bono advisors are exactly who the other side of the
+    # marketplace recruits. The screen changes which side of the business this
+    # is a lead for, not whether it is one.
+    out.append(
+        '<h2>There is a different conversation here</h2>\n<div class="panel">\n<p class="big">Connectd places senior operators into early stage companies as advisors\nand non executives. People at your stage are usually on the other side of that.</p>\n<p>Advising a startup for three to six months is how a lot of senior operators build a\nportfolio, get board experience before they want a board seat, and stay close to the\npart of the market that moves fastest. It is unpaid, it is a few hours a month, and it\ntends to be the most interesting meeting in the calendar.</p>\n<p style="margin-bottom:0">If that sounds like you, or like somebody on your team, it is\nworth ten minutes.</p>\n</div>'
+    )
+
     if audience == "internal":
         out.append("<h2>Internal</h2>")
         out.append('<div class="panel">')
@@ -679,7 +688,12 @@ def render_out_of_icp(r, audience="founder", context="self_serve", embed=False):
         )))
         out.append("</div>")
 
-    out.append('<div class="cta"><p><a class="btn" href="#book">Tell us if we read it wrong</a></p></div>')
+    out.append(
+        '<div class="cta"><p>'
+        '<a class="btn" href="#exec">Tell me about advisory roles</a>'
+        '<a class="btn ghost" href="#book">You read it wrong, we are earlier than that</a>'
+        "</p></div>"
+    )
     out.append(method_footer())
     return shell(f"Not the right fit: {r.get('company_name')}", "".join(out), embed=embed)
 
