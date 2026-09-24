@@ -28,11 +28,12 @@ their own leadership that is specific enough to argue with.
 |---|---|
 | The write up, the funnel, the loop | [`docs/index.html`](docs/) |
 | Four real runs, rendered | [`samples/`](samples/) |
-| The app | `streamlit run app.py`, or the hosted link in the repository description |
+| **The app, live** | **https://connectd-leadership-gap-diagnostic-s96wwu6voq2rzlm5yqqc94.streamlit.app/** |
 
-Demo mode needs no API key and costs nothing. Live mode asks for your own
-OpenRouter key, because a public app wired to one person's key is an open
-invitation to spend their money.
+The hosted app runs live on a capped key, so it needs nothing from you. The spend
+is bounded by a separate OpenRouter credit limit, a pre-flight balance check so a
+run cannot die half way, and a per visitor cap. When the budget is gone it falls
+back to the four completed runs rather than erroring.
 
 ```bash
 pip install -r requirements.txt
