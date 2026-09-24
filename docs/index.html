@@ -74,56 +74,43 @@ footer{margin:80px 0 0;padding:30px 0 90px;border-top:1px solid var(--line);
 
 <header>
   <p class="eyebrow">Connectd task &middot; September 2026</p>
-  <h1>Which three senior people does this startup actually need?</h1>
-  <p class="lede">A lead magnet for acquiring startups, and the agentic funnel behind it.
-  A founder enters their website. Ninety seconds later they have a read on their own
-  leadership that is specific enough to argue with.</p>
+  <h1>A lead magnet for acquiring startups, and the funnel behind it</h1>
+  <p class="lede">A founder enters their website. Ninety seconds later they have a read
+  on their own leadership that is specific enough to argue with, or a straight answer
+  about why we would not give them one.</p>
   <p class="by">Hannah Tomi Ajiboye &middot;
   <a href="https://www.linkedin.com/in/tomi-ajiboye/">linkedin.com/in/tomi-ajiboye</a></p>
 </header>
 
-<h2>The task, and how I read it</h2>
-<p>You offered four options and asked for three to four hours, an explainer on how it
-expands, and a link.</p>
+<div class="intro" style="margin-top:34px">
+<p style="margin-bottom:10px"><strong>In about a minute, if that is all you have.</strong></p>
+<ul style="margin-bottom:0">
+<li>Your offer to a startup is up to three senior experts, so the magnet's output is
+three named advisory gaps, each carrying its evidence. <strong>It does not produce a
+lead for somebody to qualify. It produces the placement brief.</strong></li>
+<li>Of the last six live companies, <strong>four produced no report</strong>: two
+screened out as past your stage, two declined for showing too little. That is the part
+worth checking first.</li>
+<li>Every quality gate sits at one seam, evidence to named gap, because that is the only
+failure that costs credibility rather than a lead. Three of the gates are deterministic
+code, not prompt wording.</li>
+<li><strong>It published a false claim about a real company once.</strong> A human caught
+it. What changed is below, and the fix was a reasoning one rather than a scraping one.</li>
+<li>A full report costs seven to fifteen pence. A refusal costs under half a penny,
+because it exits before the expensive step, so the quality gates are also cost gates.</li>
+</ul>
+</div>
 
-<table>
-<thead><tr><th>Option</th><th>Where it is</th></tr></thead>
-<tbody>
-<tr><td><strong>1. A lead magnet for acquiring startups, and how to run that funnel
-end to end agentically</strong></td><td>This. Built and running, not described.</td></tr>
-<tr><td><strong>2. An agent loop for the marketing team, optimising a goal of my
-choice</strong></td><td>Inside it, as the optimisation layer. <code>loop.py</code>,
-a real file with a log schema, a versioned config, two clocks and guardrails. North
-star is accepted placement briefs per hundred diagnostic starts.</td></tr>
-<tr><td><strong>3. A sample video or ad campaign using current
-models</strong></td><td>Partly, and deliberately not fully. See below.</td></tr>
-<tr><td><strong>4. My own task, showing how I would deploy agents in your
-team</strong></td><td>The framing. Three models with different jobs, one of them
-employed to disagree with another, and the gates placed where a wrong answer is
-expensive rather than sprinkled evenly.</td></tr>
-</tbody>
-</table>
+<h2>Run it yourself</h2>
+<p class="big">Paste any early stage startup's website and get a real report in about
+ninety seconds. No key, no signup.</p>
+<p><a class="btn" href="https://connectd-leadership-gap-diagnostic-s96wwu6voq2rzlm5yqqc94.streamlit.app/">Open the tool</a></p>
+<p>It runs on a capped key, so it costs you nothing and it cannot cost me much either:
+a separate credit limit, a pre-flight balance check so a run never dies half way, and a
+per visitor cap. When the budget goes it falls back to the completed runs below rather
+than erroring. Each run reports what it actually spent.</p>
 
-<div class="callout"><strong>Doing all four separately would have been the wrong
-answer.</strong> Four things inside one budget is four sketches, and the scored part of
-the brief was the explainer on how it expands, which needs one system thought through
-rather than four started. Folding three into one also answers a question you did not
-ask but a GTM hire gets asked constantly: what did you decide not to build.</div>
 
-<h3>On option 3, and why the video budget is unspent</h3>
-<p>I had credits for roughly three eight second generated clips. I did not spend them.
-The thing being sold here is a mechanism, and cinematic b-roll would have looked like a
-different task bolted on. The image budget went into
-<a href="diagram.png">the diagram</a> instead, which is drawn in code rather than
-generated, because the argument it carries is that the gates cluster at one seam and are
-deliberately absent elsewhere. That is a claim about structure, and a generated image
-cannot be held to a structure. Every box in it is a function that runs.</p>
-<p>Choosing not to spend a budget on the flashier option, and being able to say why, is
-closer to the actual job than the clips would have been.</p>
-
-<p><a href="diagram.png"><img src="diagram.png" alt="The funnel, the six steps, and the
-seam where every quality gate sits" style="width:100%;border:1px solid var(--line);
-border-radius:10px;margin:22px 0 8px"></a></p>
 
 <h2>The idea</h2>
 <p class="big">Connectd's offer to a startup is <strong>up to three senior experts, pro
@@ -140,14 +127,7 @@ diagnostic tells you which advisory archetypes founders keep needing and cannot 
 That is a demand forecast for exec side recruitment. The startup funnel becomes an
 instrument pointed at the exec funnel.</p>
 
-<h2>Run it yourself</h2>
-<p class="big">Paste any early stage startup's website and get a real report in about
-ninety seconds. No key, no signup.</p>
-<p><a class="btn" href="https://connectd-leadership-gap-diagnostic-s96wwu6voq2rzlm5yqqc94.streamlit.app/">Open the tool</a></p>
-<p>It runs on a capped key, so it costs you nothing and it cannot cost me much either:
-a separate credit limit, a pre-flight balance check so a run never dies half way, and a
-per visitor cap. When the budget goes it falls back to the completed runs below rather
-than erroring. Each run reports what it actually spent.</p>
+
 
 <h2>Four real runs</h2>
 <p>Real UK companies, read from their own public websites on 24 September 2026. Nothing
@@ -203,6 +183,8 @@ rejected before anything goes out. Sends are transactional rather than campaign,
 a campaign attaches a List-Unsubscribe header that routes a one to one message somebody
 asked for into the promotions tab.</p>
 
+
+
 <h2>How it works</h2>
 <pre><code>URL
  |
@@ -238,33 +220,18 @@ matched to a person.</p>
 <p>It is the difference between a doctor writing a free form note and picking a
 diagnostic code.</p>
 
-<h2>Three routes in, three different openings</h2>
-<p>A founder who typed their own URL into the tool does not need to be told who sent
-this or that nobody asked us to look at them. They asked, ten seconds ago. A founder
-whose co-founder forwarded it needs enough framing that the document stands alone. A
-founder reached by the funding signal agent needs to be told plainly that this was
-unsolicited.</p>
-<p>The first version used the cold outbound framing as the default for all three, which
-made the primary path open with a sentence that was not true.</p>
-<table>
-<thead><tr><th>Route</th><th>Opens with</th></tr></thead>
-<tbody>
-<tr><td>Self serve</td><td>"We read your public website, and nothing else." Scope and
-how to read it, nothing more. They typed a URL into a form ten seconds ago, so telling
-them nobody has spoken to their team is a disclaimer protecting the sender rather than
-information serving the reader.</td></tr>
-<tr><td>Shared</td><td>"Shared with you by someone who has already read it." Names
-Connectd and the offer, because the reader did not run it and may not know who we
-are.</td></tr>
-<tr><td>Outbound</td><td>"We ran a leadership gap analysis on X, and this is how we work
-out who might be worth introducing you to." States what was done and why it arrived.</td></tr>
-</tbody>
-</table>
-<p>An earlier draft of the outbound line read "nobody asked us to look at you". It was
-accurate and it was the wrong sentence: it puts the reader on the defensive about being
-looked at, before they have read anything worth reading. The version above concedes the
-same fact, that Connectd initiated and has not spoken to the team, while leading with
-the thing that might actually be useful to them.</p>
+
+
+<h3>A note on the diagram</h3>
+<p>It is drawn in code rather than generated. The argument it carries is that the gates
+cluster at one seam and are deliberately absent elsewhere, which is a claim about
+structure, and a generated image cannot be held to a structure. Every box in it is a
+function that runs.</p>
+
+<p><a href="diagram.png"><img src="diagram.png" alt="The funnel, the six steps, and the
+seam where every quality gate sits" style="width:100%;border:1px solid var(--line);
+border-radius:10px;margin:22px 0 8px"></a></p>
+
 
 <h2>The seams</h2>
 <p>The interesting part of a system like this is never the individual agent. It is the
@@ -313,7 +280,14 @@ stamp is worse than a rule since it looks like oversight. The human gate sits in
 the point a brief would reach a senior exec, which is the first moment a wrong answer
 consumes a scarce person rather than a cheap API call.</p>
 
-<h2>The one that got through, and what it changed</h2>
+
+
+<h2>What broke, and what changed</h2>
+<p>Five defects, none of them found by testing. Every one came from reading reports about
+real companies and disagreeing with them, which is the argument for keeping a human in
+the loop rather than a decoration on it. Two of the five were found by somebody else
+reviewing the output, which is the same argument again.</p>
+<h3>The one that got through, and what it changed</h3>
 
 <div class="callout"><strong>The first version of this system published a false claim
 about a real company.</strong> It reported that Anemo Labs had a Scientific Advisory
@@ -351,35 +325,55 @@ finding.</li>
 <p>These are in code, not in the prompt, because this was never a matter of asking the
 model more firmly.</p>
 
-<h2>Three more defects found the same way</h2>
-<p>All found by reading reports about real companies and disagreeing with them, rather
-than by testing. The fixes are more interesting than the build.</p>
 
-<div class="panel">
-<h3 style="margin-top:0">1. The qualification step did not exist</h3>
-<p style="margin-bottom:0"><code>icp.yml</code> was written first and then never wired
-into the pipeline, so a 29 person company with a blue chip client got a full report. A
-funnel that reports on everything it is handed does not have an ideal customer profile.
-It has a preference.</p>
-</div>
+<h3>Three smaller ones, found the same way</h3>
+<p>The qualification step existed as a config file and was never wired into the
+pipeline, so a 29 person company with a blue chip client got a full report. Customer
+logos were being cited as evidence of a sales gap, when a named enterprise customer is
+evidence of the opposite. And confidence was being over rated on inference from absence,
+rated <code>medium</code> where the reasoning was "there is no team page, so there is no
+compliance lead".</p>
+<p>All three are fixed, and the fixes are in code rather than in prompt wording, because
+asking a model more firmly to respect its own confidence definitions is not a control.</p>
 
-<div class="panel">
-<h3 style="margin-top:0">2. Customer logos cited as evidence of a sales gap</h3>
-<p style="margin-bottom:0">Two claims cited "Holland &amp; Barrett, approximately 100
-stores" and "BNP Paribas Portugal" as evidence the company could not sell to
-enterprises. Those are named enterprise customers. The evidence pointed the opposite
-way. The adversarial pass now runs an explicit <strong>evidence inversion</strong> check
-and drops both.</p>
-</div>
+<h3>What testing on live companies surfaced</h3>
+<p>I picked three UK companies to test with, chosen for having a readable public
+footprint. Two were screened out and both screens were right. Piclo has eighteen named
+staff including a CFO and nine institutional investors. DrDoctor raised a ten million
+Series B and serves seventy NHS trusts. Neither wants three pro bono advisors.</p>
 
-<div class="panel">
-<h3 style="margin-top:0">3. Confidence over rated on inference from absence</h3>
-<p style="margin-bottom:0">A gap was rated <code>medium</code> where the reasoning was,
-in effect, "there is no team page, so there is no compliance lead". That is inference
-from a missing page, not evidence about the company. Two fixes: a refusal gate requiring
-leadership visibility at all, and a mechanical confidence cap no prompt can talk its way
-past.</p>
-</div>
+<div class="callout"><strong>The companies easiest to read are the ones most likely to be
+out of profile.</strong> A rich public footprint correlates with being further along.
+Thin sites get refused, rich sites get screened out, and the target sits in a narrow band
+between them. Selecting test companies by how readable they were selected against the
+ICP, which is worth knowing before anyone concludes from three tries that the thing never
+reports.</div>
+
+<h3>A filter only one side spoke</h3>
+<p>Then a second defect, and a better one. Six companies in a row produced no report.
+The cause was that <code>icp.yml</code> targeted the stage <code>series-a-early</code>,
+while the extractor's schema only ever emits <code>pre-seed</code>, <code>seed</code>,
+<code>series-a</code>, <code>later</code> or <code>unknown</code>. The two sides spoke
+different vocabularies, so <strong>every Series A company was rejected silently.</strong></p>
+
+<div class="callout">It failed as a plausible result rather than as an error. Each
+company was screened out with a confident, correctly worded explanation, and nothing
+looked broken. The four sample runs are pre-seed, seed and later, so none of them could
+ever have exposed it. Only companies I had not chosen could.</div>
+
+<p>The fix is a startup check that refuses to run if the ICP names a stage the extractor
+cannot produce. A filter only one side speaks is not a filter, it is a silent reject.
+With the vocabularies agreed, the same company that was screened out produces three
+gaps.</p>
+
+<p>It also exposed a design miss. A screened-out company was a dead end, and it should
+not have been. Connectd is a two sided marketplace, and the senior operators inside a
+company too far along to need advisors are exactly who the other side of it recruits.
+Piclo's CFO is not a customer. She is supply. The screen now changes which side of the
+business the lead belongs to rather than discarding it, which is worth more than the
+report it replaces, because exec side acquisition is where the revenue actually is.</p>
+
+
 
 <h2>The optimisation loop</h2>
 <p class="big">An honest description first. At thirty runs a week this is not an
@@ -423,6 +417,8 @@ reject rate, gap accuracy, cost ceilings, and a <strong>minimum refusal rate</st
 That last one exists because the loop could otherwise learn to lift bookings by naming
 more dramatic gaps. A system that stops refusing has learned to guess.</div>
 
+
+
 <h2>Distribution</h2>
 <p>An artefact with no route to founders is not a funnel.</p>
 
@@ -458,42 +454,7 @@ rate is known, because paid multiplies whatever rate you already have. And manua
 outreach on LinkedIn, which is effective, available today, and <strong>not agentic</strong>,
 which is worth saying rather than dressing up.</p>
 
-<h2>What testing on live companies surfaced</h2>
-<p>I picked three UK companies to test with, chosen for having a readable public
-footprint. Two were screened out and both screens were right. Piclo has eighteen named
-staff including a CFO and nine institutional investors. DrDoctor raised a ten million
-Series B and serves seventy NHS trusts. Neither wants three pro bono advisors.</p>
 
-<div class="callout"><strong>The companies easiest to read are the ones most likely to be
-out of profile.</strong> A rich public footprint correlates with being further along.
-Thin sites get refused, rich sites get screened out, and the target sits in a narrow band
-between them. Selecting test companies by how readable they were selected against the
-ICP, which is worth knowing before anyone concludes from three tries that the thing never
-reports.</div>
-
-<h3>A filter only one side spoke</h3>
-<p>Then a second defect, and a better one. Six companies in a row produced no report.
-The cause was that <code>icp.yml</code> targeted the stage <code>series-a-early</code>,
-while the extractor's schema only ever emits <code>pre-seed</code>, <code>seed</code>,
-<code>series-a</code>, <code>later</code> or <code>unknown</code>. The two sides spoke
-different vocabularies, so <strong>every Series A company was rejected silently.</strong></p>
-
-<div class="callout">It failed as a plausible result rather than as an error. Each
-company was screened out with a confident, correctly worded explanation, and nothing
-looked broken. The four sample runs are pre-seed, seed and later, so none of them could
-ever have exposed it. Only companies I had not chosen could.</div>
-
-<p>The fix is a startup check that refuses to run if the ICP names a stage the extractor
-cannot produce. A filter only one side speaks is not a filter, it is a silent reject.
-With the vocabularies agreed, the same company that was screened out produces three
-gaps.</p>
-
-<p>It also exposed a design miss. A screened-out company was a dead end, and it should
-not have been. Connectd is a two sided marketplace, and the senior operators inside a
-company too far along to need advisors are exactly who the other side of it recruits.
-Piclo's CFO is not a customer. She is supply. The screen now changes which side of the
-business the lead belongs to rather than discarding it, which is worth more than the
-report it replaces, because exec side acquisition is where the revenue actually is.</p>
 
 <h2>What a run costs</h2>
 <p>Measured, not projected. OpenRouter reports real cost per call, so every run logs
@@ -512,6 +473,8 @@ model runs. The ICP screen and the refusal gate were built to stop the system sa
 something it could not support; at volume they also stop it spending money on companies
 it was never going to help. Roughly six pence a run across the four, and the cheap
 outcomes are the ones you want more of.</div>
+
+
 
 <h2>How it expands</h2>
 <table>
@@ -542,6 +505,38 @@ profiles to go and find.</li>
 <li><strong>Scrape reliability</strong>, then unit cost, then attribution once several
 routes are live.</li>
 </ul>
+
+
+
+<h2>Three routes in, three different openings</h2>
+<p>A founder who typed their own URL into the tool does not need to be told who sent
+this or that nobody asked us to look at them. They asked, ten seconds ago. A founder
+whose co-founder forwarded it needs enough framing that the document stands alone. A
+founder reached by the funding signal agent needs to be told plainly that this was
+unsolicited.</p>
+<p>The first version used the cold outbound framing as the default for all three, which
+made the primary path open with a sentence that was not true.</p>
+<table>
+<thead><tr><th>Route</th><th>Opens with</th></tr></thead>
+<tbody>
+<tr><td>Self serve</td><td>"We read your public website, and nothing else." Scope and
+how to read it, nothing more. They typed a URL into a form ten seconds ago, so telling
+them nobody has spoken to their team is a disclaimer protecting the sender rather than
+information serving the reader.</td></tr>
+<tr><td>Shared</td><td>"Shared with you by someone who has already read it." Names
+Connectd and the offer, because the reader did not run it and may not know who we
+are.</td></tr>
+<tr><td>Outbound</td><td>"We ran a leadership gap analysis on X, and this is how we work
+out who might be worth introducing you to." States what was done and why it arrived.</td></tr>
+</tbody>
+</table>
+<p>An earlier draft of the outbound line read "nobody asked us to look at you". It was
+accurate and it was the wrong sentence: it puts the reader on the defensive about being
+looked at, before they have read anything worth reading. The version above concedes the
+same fact, that Connectd initiated and has not spoken to the team, while leading with
+the thing that might actually be useful to them.</p>
+
+
 
 <h2>What this does not claim</h2>
 <table>
@@ -579,6 +574,8 @@ three checks were moved into code.</li>
 <li><strong>Four runs.</strong> Everything about the loop is specification, not result.</li>
 </ul>
 
+
+
 <h2>A note on the order of work</h2>
 <p>The taxonomy and the ICP were written before the engine, and that was not sequencing
 for its own sake.</p>
@@ -593,6 +590,8 @@ would have built a faster way to publish the wrong thing five times over. Same h
 taxonomy and the evidence rules are the prior work that gives the loop something worth
 optimising. A loop pointed at the wrong definition of a good lead just finds the wrong
 leads faster.</p>
+
+
 
 <hr class="rule" style="margin-top:60px">
 <div style="padding-top:34px">

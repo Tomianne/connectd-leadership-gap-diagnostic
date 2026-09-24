@@ -6,36 +6,6 @@ Built for Connectd, September 2026, by Hannah Tomi Ajiboye.
 
 ---
 
-## The task, and how I read it
-
-Four options were offered, with three to four hours, an explainer on how it
-expands, and a link.
-
-| Option | Where it is |
-|---|---|
-| **1. Lead magnet for acquiring startups, plus the funnel end to end** | This. Built and running, not described. |
-| **2. An agent loop optimising a marketing goal** | Inside it, as the optimisation layer. `loop.py`: log schema, versioned config, two clocks, guardrails. |
-| **3. A sample video or ad campaign** | Partly, and deliberately not fully. See below. |
-| **4. My own task, showing how I would deploy agents** | The framing. Three models with different jobs, one employed to disagree with another. |
-
-**Doing all four separately would have been the wrong answer.** Four things inside
-one budget is four sketches, and the scored part was the explainer on how it
-expands, which needs one system thought through rather than four started.
-
-### On option 3, and the unspent video budget
-
-Credits for roughly three eight second generated clips, unspent. The thing being
-sold is a mechanism and cinematic b-roll would have looked like a different task
-bolted on. The image budget went into `docs/diagram.png` instead, drawn in code
-rather than generated, because the argument it carries is structural: the gates
-cluster at one seam and are deliberately absent elsewhere. A generated image
-cannot be held to a structure. Every box in it is a function that runs.
-
-Choosing not to spend a budget on the flashier option, and being able to say why,
-is closer to the job than the clips would have been.
-
----
-
 ## The idea in one paragraph
 
 Connectd's offer to a startup is **up to three senior experts, pro bono, for three
@@ -142,6 +112,16 @@ and may not invent one. That single constraint does two jobs:
 
 It is the difference between a doctor writing a free form note and picking a
 diagnostic code.
+
+---
+
+## A note on the diagram
+
+`docs/diagram.png` is drawn in code rather than generated. The argument it
+carries is that the gates cluster at one seam and are deliberately absent
+elsewhere, which is a claim about structure, and a generated image cannot be held
+to a structure. Every box in it is a function that runs. Rebuild it with
+`python make_diagram.py`.
 
 ---
 
