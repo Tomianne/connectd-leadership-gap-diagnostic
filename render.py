@@ -244,30 +244,30 @@ def intro_block(context, company=None):
     """
     if context == "outbound":
         body = (
-            "<strong>This came from Connectd.</strong> We place senior operators into "
-            "early stage companies as advisors and non executives. Nobody asked us to "
-            "look at you, and nobody has spoken to your team. This was read off your "
-            "public website in about ninety seconds, so treat it as something to argue "
-            "with rather than an assessment. Every claim below shows the evidence it "
-            "rests on."
+            "<strong>We ran a leadership gap analysis on "
+            + (e(company) if company else "your company")
+            + ".</strong> Connectd places senior operators into early stage companies "
+            "as advisors and non executives, and this is how we work out who might "
+            "be worth introducing you to. It is built from your public website only. "
+            "Nobody has spoken to your team, so it is a starting point rather than an "
+            "assessment, and every claim below shows the evidence behind it."
         )
     elif context == "shared":
         body = (
-            "<strong>Somebody sent you this.</strong> It was generated from "
-            + (f"the public website of {e(company)} " if company else "the company's public website ")
-            + "in about ninety seconds, by Connectd, who place senior "
-            "operators into early stage companies as advisors and non executives. "
-            "Nobody has spoken to the team, so it is a starting point for a "
-            "conversation rather than an assessment. Every claim shows the evidence it "
-            "rests on, so you can check or dismiss any of it quickly."
+            "<strong>This is a leadership gap analysis of "
+            + (e(company) if company else "the company")
+            + ", shared with you by someone who has already read it.</strong> It was "
+            "produced by Connectd, who place senior operators into early stage "
+            "companies as advisors and non executives. It is built from the public "
+            "website only and nobody has spoken to the team, so every claim shows the "
+            "evidence behind it and can be checked or dismissed quickly."
         )
     else:  # self_serve
         body = (
-            "<strong>Here is what we could read.</strong> This is built from your public "
-            "website only, in about ninety seconds, and nobody at Connectd has spoken to "
-            "your team. So it is a starting point to argue with, not an assessment. Every "
-            "claim below shows the evidence behind it, and the last section lists what we "
-            "could not see."
+            "<strong>We read your public website, and nothing else.</strong> Nobody at "
+            "Connectd has spoken to your team, so treat this as a starting point to "
+            "argue with rather than an assessment. Every claim below shows the evidence "
+            "behind it, and the last section sets out what we could not see."
         )
     return f'<div class="intro"><p style="margin-bottom:0">{body}</p></div>'
 
