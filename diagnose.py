@@ -429,6 +429,22 @@ def should_refuse(ev, taxonomy):
 # judgement is made about gaps.
 # --------------------------------------------------------------------------
 
+# The stage values the extractor is allowed to emit. icp.yml must draw from this
+# set: a target stage the extractor can never produce is a silent reject, not a
+# filter, and it cost a correct company a screen-out before this check existed.
+EXTRACTOR_STAGES = {"pre-seed", "seed", "series-a", "later", "unknown"}
+
+
+def validate_icp(icp):
+    unknown = set(icp["target"]["stage"]) - EXTRACTOR_STAGES
+    if unknown:
+        raise SystemExit(
+            f"icp.yml lists stage(s) the extractor can never emit: {sorted(unknown)}. "
+            f"Allowed: {sorted(EXTRACTOR_STAGES)}"
+        )
+    return icp
+
+
 def qualify(ev, icp):
     """Return (verdict, reasons). Verdict is 'in', 'out' or 'review'."""
     reasons = []
@@ -1065,7 +1081,7 @@ def run(url, slug=None, confirm=True, on_step=None):
             "evidence_completeness": f"{score}/{total}",
         }
 
-    icp = load_yaml("icp.yml")
+    icp = validate_icp(load_yaml("icp.yml"))
     verdict, why = qualify(ev, icp)
     if verdict == "out":
         step("out_of_icp", "; ".join(why))

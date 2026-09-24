@@ -27,10 +27,15 @@ meta:
 # at the wrong definition of a good lead just finds the wrong leads faster.
 
 target:
+  # These values must match exactly what the extractor is allowed to emit, which
+  # is pre-seed, seed, series-a, later, unknown. An earlier version listed
+  # "series-a-early" here, a value the extractor can never produce, so every
+  # Series A company was screened out for the wrong reason. A vocabulary that
+  # only one side speaks is not a filter, it is a silent reject.
   stage:
     - pre-seed
     - seed
-    - series-a-early
+    - series-a
   rationale: >
     The offer is senior expertise the company cannot yet afford to employ. That is
     most valuable, and most obviously missing, between first product and first
