@@ -1,0 +1,872 @@
+{
+  "name": "Connectd Leadership Gap Diagnostic: routing, nurture and the funding signal",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "connectd/capture",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "d0b12462-e334-506a-9c07-5db07ed5182d",
+      "name": "Capture from the diagnostic",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        0
+      ],
+      "webhookId": "connectd-capture"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f0",
+              "name": "run_id",
+              "value": "={{ $json.body.run_id }}",
+              "type": "string"
+            },
+            {
+              "id": "f1",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "company",
+              "value": "={{ $json.body.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "outcome",
+              "value": "={{ $json.body.outcome }}",
+              "type": "string"
+            },
+            {
+              "id": "f4",
+              "name": "action",
+              "value": "={{ $json.body.action }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "archetypes",
+              "value": "={{ $json.body.archetypes_named }}",
+              "type": "string"
+            },
+            {
+              "id": "f6",
+              "name": "consent_followup",
+              "value": "={{ $json.body.consent_followup }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4d06bdbf-dcf4-52e1-8bd1-07351fe6f3f5",
+      "name": "Normalise the capture",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -40,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "af6f97ce-c21c-5b28-8dfa-89ab6f52be09",
+              "leftValue": "={{ $json.consent_followup }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "name": "filter.operator.true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c66e2b48-ad11-5dea-9fb3-081e90751df0",
+      "name": "Consent to follow up?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        180,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/contacts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ email: $json.email, updateEnabled: true, attributes: { LAST_RUN_ID: $json.run_id, LAST_OUTCOME: $json.outcome, FOLLOWUP_CONSENT: false } }) }}",
+        "options": {}
+      },
+      "id": "78389ea2-50b6-5d13-9235-1dbf18cf9803",
+      "name": "Log the run, do not contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        220
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "brevo",
+          "name": "Brevo api-key"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "845ce1d3-ff7b-583a-bc65-6a7bb9f61305",
+      "name": "Stop here",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        620,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/contacts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ email: $json.email, updateEnabled: true, attributes: { COMPANY: $json.company, LAST_RUN_ID: $json.run_id, LAST_OUTCOME: $json.outcome, ARCHETYPES: $json.archetypes, FOLLOWUP_CONSENT: true } }) }}",
+        "options": {}
+      },
+      "id": "a25ae038-cb7b-5bb6-98c0-ebf69e1e103a",
+      "name": "Upsert the contact with the run",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "brevo",
+          "name": "Brevo api-key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8c6587bc-ae02-504c-bb6a-5751d416344b",
+                    "leftValue": "={{ $json.outcome }}",
+                    "rightValue": "delivered",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "report"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "94faa535-f08f-5e0d-b4e7-02cc71119f45",
+                    "leftValue": "={{ $json.outcome }}",
+                    "rightValue": "out_of_icp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not the ICP"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b207cca9-6077-5bf5-a582-f0ddc78fe3b2",
+                    "leftValue": "={{ $json.outcome }}",
+                    "rightValue": "refused",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "refused"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9d032d7f-3928-5277-843a-1221a6ce9e62",
+      "name": "Which outcome",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        620,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "days"
+      },
+      "id": "c580b327-21c6-52dd-b400-9dd7344ce541",
+      "name": "Wait three days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "43d5f823-efcc-5384-9e9d-d25bab7933f5",
+              "leftValue": "={{ $json.booked }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "name": "filter.operator.true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9e665a66-23d5-584e-99c9-20646911be15",
+      "name": "Booked already?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1060,
+        -200
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "6db7f815-285b-560c-ad79-77d04ee40d2c",
+      "name": "Exit the nurture",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ to: [{ email: $json.email }], templateId: 4, params: { company: $json.company, run_id: $json.run_id } }) }}",
+        "options": {}
+      },
+      "id": "c391b1ac-9fd8-5cab-a13e-4b8140e15ef6",
+      "name": "Ask which gap was wrong",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1280,
+        -160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "brevo",
+          "name": "Brevo api-key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f0",
+              "name": "side",
+              "value": "exec_supply",
+              "type": "string"
+            },
+            {
+              "id": "f1",
+              "name": "reason",
+              "value": "={{ $json.outcome }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f4ce9f98-295c-557e-8d5b-9b59b77ebc20",
+      "name": "Route to the exec side",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/contacts/lists/7/contacts/add",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ emails: [$json.email] }) }}",
+        "options": {}
+      },
+      "id": "48dd36d7-f113-5f92-bce1-ca4e09d2a2b0",
+      "name": "Tag as exec supply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        40
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "brevo",
+          "name": "Brevo api-key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "days"
+      },
+      "id": "64f6aceb-1843-54b6-bd70-ad117e133818",
+      "name": "Wait one day",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ to: [{ email: $json.email }], templateId: 5, params: { company: $json.company } }) }}",
+        "options": {}
+      },
+      "id": "207c375b-9ae9-52fe-aed7-f73819cf5687",
+      "name": "Offer the ten minute call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        280
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "brevo",
+          "name": "Brevo api-key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "d7ed5858-1485-5c70-ac5e-eedd3e92cb66",
+      "name": "Every weekday morning",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -260,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.company-information.service.gov.uk/advanced-search/companies",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "sic_codes",
+              "value": "62012,62020,72190"
+            },
+            {
+              "name": "incorporated_from",
+              "value": "={{ $now.minus(5, 'years').toISODate() }}"
+            },
+            {
+              "name": "size",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ded542de-1b18-595e-bada-a9b9abfd15b0",
+      "name": "Companies House: SH01 filings",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -40,
+        700
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "companies-house",
+          "name": "Companies House key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// The same screen the Python build applies, kept ahead of the expensive\n// step so the agent never spends a run on a company it would reject.\nconst STAGES = ['pre-seed', 'seed', 'series-a'];\nreturn items.filter(i =>\n  STAGES.includes(i.json.stage) &&\n  i.json.employees <= 25 &&\n  i.json.country === 'GB'\n);"
+      },
+      "id": "decfbcc0-a8d4-57ae-980d-59996def96f1",
+      "name": "Screen against icp.yml",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.DIAGNOSTIC_URL }}/diagnose",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ url: $json.website, source: \"funding_signal\" }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "0365e470-875d-54d0-b87d-83ff0a907724",
+      "name": "Run the diagnostic",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8c6587bc-ae02-504c-bb6a-5751d416344b",
+              "leftValue": "={{ $json.outcome }}",
+              "rightValue": "delivered",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b86bdaf2-3ec1-5b30-b6a1-56bff067ce85",
+      "name": "Did it produce a report?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        620,
+        700
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ea0a22d9-c998-570d-9c54-b52a3b929155",
+      "name": "No report, no outreach",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        840,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f0",
+              "name": "first_gap",
+              "value": "={{ $json.gaps[0].archetype }}",
+              "type": "string"
+            },
+            {
+              "id": "f1",
+              "name": "evidence",
+              "value": "={{ $json.gaps[0].quoted_evidence }}",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "report_url",
+              "value": "={{ $json.report_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e62139af-9acb-542c-81cc-ec356433ce7e",
+      "name": "Open with the real read",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ to: [{ email: $json.founder_email }], templateId: 6, params: { first_gap: $json.first_gap, evidence: $json.evidence, report_url: $json.report_url } }) }}",
+        "options": {}
+      },
+      "id": "6201f69f-a5f9-5d58-ad94-9cb4b8e1eb3b",
+      "name": "Send the outbound",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        660
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "brevo",
+          "name": "Brevo api-key"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Capture from the diagnostic": {
+      "main": [
+        [
+          {
+            "node": "Normalise the capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalise the capture": {
+      "main": [
+        [
+          {
+            "node": "Consent to follow up?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consent to follow up?": {
+      "main": [
+        [
+          {
+            "node": "Upsert the contact with the run",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log the run, do not contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log the run, do not contact": {
+      "main": [
+        [
+          {
+            "node": "Stop here",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert the contact with the run": {
+      "main": [
+        [
+          {
+            "node": "Which outcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Which outcome": {
+      "main": [
+        [
+          {
+            "node": "Wait three days",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route to the exec side",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait one day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait three days": {
+      "main": [
+        [
+          {
+            "node": "Booked already?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Booked already?": {
+      "main": [
+        [
+          {
+            "node": "Exit the nurture",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ask which gap was wrong",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to the exec side": {
+      "main": [
+        [
+          {
+            "node": "Tag as exec supply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait one day": {
+      "main": [
+        [
+          {
+            "node": "Offer the ten minute call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every weekday morning": {
+      "main": [
+        [
+          {
+            "node": "Companies House: SH01 filings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Companies House: SH01 filings": {
+      "main": [
+        [
+          {
+            "node": "Screen against icp.yml",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Screen against icp.yml": {
+      "main": [
+        [
+          {
+            "node": "Run the diagnostic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run the diagnostic": {
+      "main": [
+        [
+          {
+            "node": "Did it produce a report?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Did it produce a report?": {
+      "main": [
+        [
+          {
+            "node": "Open with the real read",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No report, no outreach",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Open with the real read": {
+      "main": [
+        [
+          {
+            "node": "Send the outbound",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "connectd-leadership-gap-diagnostic"
+  }
+}
