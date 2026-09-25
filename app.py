@@ -462,10 +462,11 @@ with st.container():
         with b1:
             go = st.button("Run the diagnostic", type="primary", disabled=not url, use_container_width=True)
         with b2:
-            st.caption(
-                f"Free, nothing to sign up for. {max(int(remaining / 0.12), 0) if remaining is not None else '-'} "
-                f"runs left in the shared budget, {SESSION_RUN_CAP - runs_used} left this session."
-            )
+            # No run counts and no budget figures. They are operator telemetry, and a
+            # customer facing page that shows the founder how much credit is left is
+            # asking them to think about the operator's costs instead of their own
+            # company. The caps still apply, they are just not narrated.
+            st.caption("Free, and nothing to sign up for.")
 
         if go:
             import os
