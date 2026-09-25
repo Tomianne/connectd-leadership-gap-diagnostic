@@ -114,19 +114,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-SAMPLES = {
-    "Anemo Labs, deep tech, produced a report": "anemo-labs",
-    "Ridelogix, logistics, two claims were discarded": "ridelogix",
-    "Chatterbox, screened out as too late stage": "chatterbox",
-    "Rule, refused for having too little to read": "rule-money",
-}
-
-TRY_THESE = [
-    ("Anemo Labs", "https://anemolabs.com"),
-    ("Ridelogix", "https://ridelogix.com"),
-    ("Chatterbox", "https://www.chatterbox.io"),
-]
-
 OUTCOME_BLURB = {
     "delivered": "Up to three gaps, each carrying the evidence it rests on.",
     "refused": "It declined to diagnose rather than guess.",
@@ -164,25 +151,6 @@ def credit_remaining(key):
     except (urllib.error.HTTPError, urllib.error.URLError, OSError, ValueError):
         return None
     return d.get("limit_remaining")
-
-
-def load_run(slug):
-    p = ROOT / "samples" / f"{slug}.json"
-    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
-
-
-def load_html(slug):
-    """
-    Render the sample fresh in embed mode rather than reading the standalone
-    file. The committed HTML carries its own page header, which duplicates what
-    the app has already shown and is what made the report look pasted in.
-    """
-    report = load_run(slug)
-    if not report:
-        return None
-    import render
-
-    return render.render(report, embed=True).split("<body>")[1].split("</body>")[0]
 
 
 def actions(report, key_prefix=""):
@@ -463,20 +431,18 @@ runs_used = st.session_state.get("runs_used", 0)
 budget_ok = key is not None and (remaining is None or remaining >= MIN_CREDIT_TO_START)
 session_ok = runs_used < SESSION_RUN_CAP
 
-tab_live, tab_demo = st.tabs(["Run it now", "See example reports"])
-
 # ---------------------------------------------------------------------------
-with tab_live:
+with st.container():
     if not key:
         st.info(
-            "This deployment has no key configured, so live runs are off. The example "
-            "reports in the next tab are real runs and need nothing."
+            "This deployment has no key configured, so live runs are off. The write up "
+            f"carries four real runs end to end: {WRITEUP}"
         )
     elif not budget_ok:
         st.warning(
-            "The shared budget for this page has run out. The example reports in the "
-            "next tab are real and still work, and the code is on GitHub if you want "
-            "to run it on your own key."
+            "The shared budget for this page has run out. The write up carries four "
+            f"real runs end to end ({WRITEUP}), and the code is on GitHub if you want "
+            f"to run it on your own key ({REPO})."
         )
     elif not session_ok:
         st.warning(
@@ -500,14 +466,6 @@ with tab_live:
                 f"Free, nothing to sign up for. {max(int(remaining / 0.12), 0) if remaining is not None else '-'} "
                 f"runs left in the shared budget, {SESSION_RUN_CAP - runs_used} left this session."
             )
-
-        st.caption("Or try one of these:")
-        cols = st.columns(len(TRY_THESE))
-        for col, (name, u) in zip(cols, TRY_THESE):
-            with col:
-                if st.button(name, key=f"try_{name}", use_container_width=True):
-                    st.session_state["prefill"] = u
-                    st.rerun()
 
         if go:
             import os
@@ -564,42 +522,6 @@ with tab_live:
                 data=json.dumps(report, indent=2),
                 file_name=f"{report.get('slug') or report.get('run_id')}.json",
                 mime="application/json",
-            )
-
-# ---------------------------------------------------------------------------
-with tab_demo:
-    st.caption(
-        "Four real UK companies, run on 24 September 2026. Two produced reports, one "
-        "was screened out, one was refused. The two that produced nothing are the ones "
-        "worth looking at first, because a diagnostic that only knows how to produce a "
-        "diagnosis will produce one whether or not it should."
-    )
-    label = st.selectbox("Pick a run", list(SAMPLES.keys()), label_visibility="collapsed")
-    slug = SAMPLES[label]
-    report = load_run(slug)
-    if not report:
-        st.error(f"Sample {slug} is missing.")
-    else:
-        show_report(report, load_html(slug), key_prefix="demo")
-        actions(report, key_prefix=f"demo_{slug}")
-
-        with st.expander("What Connectd sees: the review gate"):
-            st.caption(
-                "The founder gets the conclusion. Connectd gets the working, plus the "
-                "one decision a person has to make before a brief reaches an exec."
-            )
-            review_gate(report, key_prefix=f"demo_{slug}")
-        with st.expander("The machine readable record for this run"):
-            st.json(
-                {
-                    k: v
-                    for k, v in report.items()
-                    if k in (
-                        "run_id", "outcome", "evidence_completeness", "taxonomy_version",
-                        "demotions", "icp_reasons", "refusal_reason", "run_cost",
-                        "duration_seconds", "models",
-                    )
-                }
             )
 
 st.divider()
