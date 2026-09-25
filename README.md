@@ -12,10 +12,14 @@ Connectd's offer to a startup is **up to three senior experts, pro bono, for thr
 to six months**. So the lead magnet's output is deliberately **three named senior
 advisory gaps**, in a fixed vocabulary, each carrying the evidence it rests on.
 
-That means the magnet does not generate a lead and then hand it to someone to
-qualify. **It generates the placement brief.** The artefact the founder wants and
-the artefact the business needs are the same object, which is why this is worth
+Which means the lead arrives with the qualification attached. Not a name to
+research, but an evidenced read on what that company needs, written in the
+vocabulary the bench is indexed by. **The artefact the founder wants and the raw
+material for the placement are the same object**, which is why this is worth
 building properly rather than as a quiz.
+
+A person still accepts or rejects each gap before it reaches an exec, and that
+step is built. A draft brief and an agreed one are not the same thing.
 
 A founder enters their website. About ninety seconds later they have a read on
 their own leadership that is specific enough to argue with.
