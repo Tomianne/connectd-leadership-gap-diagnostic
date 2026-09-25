@@ -514,6 +514,20 @@
     },
     {
       "parameters": {
+        "fieldToSplitOut": "items",
+        "options": {}
+      },
+      "id": "8e3ec096-6031-5944-9f56-119a950d1f4b",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        180,
+        700
+      ]
+    },
+    {
+      "parameters": {
         "method": "GET",
         "url": "={{ 'https://api.company-information.service.gov.uk/company/' + $json.company_number + '/filing-history' }}",
         "authentication": "genericCredentialType",
@@ -545,7 +559,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        180,
+        400,
         700
       ],
       "credentials": {
@@ -564,7 +578,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        400,
+        620,
         700
       ]
     },
@@ -577,7 +591,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        620,
+        840,
         700
       ]
     },
@@ -597,7 +611,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        840,
+        1060,
         700
       ]
     },
@@ -631,7 +645,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1060,
+        1280,
         700
       ]
     },
@@ -642,7 +656,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1280,
+        1500,
         900
       ]
     },
@@ -678,7 +692,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1280,
+        1500,
         660
       ]
     },
@@ -698,7 +712,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1500,
+        1720,
         660
       ],
       "credentials": {
@@ -860,6 +874,17 @@
       ]
     },
     "Companies House: ICP watchlist": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
       "main": [
         [
           {

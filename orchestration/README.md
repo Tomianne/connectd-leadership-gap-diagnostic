@@ -60,14 +60,21 @@ Getting it takes two calls, because neither can do it alone.
 1. **Companies House ICP watchlist.** Advanced search by SIC code, incorporation
    date and active status. This cannot filter on filings, so its job is the
    candidate set and nothing more.
-2. **Capital filings for each.** The filing history endpoint per company,
+2. **Split Out.** The search replies with one object holding an `items` array,
+   so without this the next node runs once against a `company_number` that does
+   not exist at the top level. It was missing in the first version and the
+   failure was invisible: the call went out malformed, the response had no
+   `items`, the SH01 filter read an empty list and emitted nothing, and every
+   node went green. A zero there is indistinguishable from a day with no funding
+   rounds. It was caught by reading the item counts on the edges, not the ticks.
+3. **Capital filings for each.** The filing history endpoint per company,
    category `capital`, batched five at a time to stay inside the rate limit.
-3. **An SH01 since the last run?** Keeps only companies with an SH01 dated in
+4. **An SH01 since the last run?** Keeps only companies with an SH01 dated in
    the last 36 hours, and carries the filing date forward.
-4. **Screen against `icp.yml`** before the expensive step, not after, so the
+5. **Screen against `icp.yml`** before the expensive step, not after, so the
    agent never spends a diagnostic run on a company it would have rejected.
-5. **Run the diagnostic.**
-6. **Did it produce a report?** If it refused or screened out, the branch ends
+6. **Run the diagnostic.**
+7. **Did it produce a report?** If it refused or screened out, the branch ends
    at `No report, no outreach`. The outbound is only ever sent when there is a
    real read to open with. That node is the whole argument for the refusal path:
    without it, a diagnostic that declines to diagnose would still trigger a cold
