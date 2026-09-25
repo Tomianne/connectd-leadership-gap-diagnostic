@@ -70,10 +70,14 @@ Getting it takes two calls, because neither can do it alone.
 3. **Capital filings for each.** The filing history endpoint per company,
    category `capital`, batched five at a time to stay inside the rate limit.
 4. **An SH01 since the last run?** Keeps only companies with an SH01 dated in
-   the last 36 hours, and carries the filing date forward.
+   the last 36 hours, and carries the filing date forward. Verified against live
+   filings by widening the window to a year for one execution: 7 SH01s across
+   the 100 companies in the watchlist. The window is back at 36 hours, which is
+   the schedule interval plus slack for a weekend.
 5. **Screen against `icp.yml`** before the expensive step, not after, so the
    agent never spends a diagnostic run on a company it would have rejected.
-6. **Run the diagnostic.**
+6. **Run the diagnostic.** This is where the branch currently stops, and the
+   reason is in the table below.
 7. **Did it produce a report?** If it refused or screened out, the branch ends
    at `No report, no outreach`. The outbound is only ever sent when there is a
    real read to open with. That node is the whole argument for the refusal path:
@@ -87,11 +91,40 @@ Getting it takes two calls, because neither can do it alone.
 |---|---|---|
 | Every Brevo node | one Header Auth credential, `api-key` | The same key the build already sends with. One credential covers all six. |
 | Both Companies House nodes | Basic Auth, key as username, password blank | Free REST key from `developer.company-information.service.gov.uk`. One credential covers both. |
-| `Run the diagnostic` | `DIAGNOSTIC_URL` variable | The one genuine gap. `diagnose.py` is a library with a CLI and is not currently exposed over HTTP, so this node needs a small wrapper deployed before branch B can run end to end. Branch A needs no such thing. |
+| `Run the diagnostic` | `DIAGNOSTIC_URL` variable | `diagnose.py` is a library with a CLI and is not exposed over HTTP, so this node needs a small wrapper deployed. Branch A needs no such thing. |
+| `Run the diagnostic` | a website for each company | **The larger gap.** See below. |
 | Brevo template ids 4, 5, 6 | the three follow-up templates | Referenced by id rather than inlined, so the copy is editable without touching the workflow. |
+
+## The gap between the signal and the diagnostic
+
+Companies House publishes the number, the name, the registered address, the
+officers and the filings. **It does not publish a website.**
+
+The diagnostic takes a URL and nothing else. So the funding branch has a real
+discontinuity in the middle of it: it can tell you, accurately and with a date,
+that a company just issued equity, and it cannot tell you where to point the
+diagnostic. The `$json.website` that `Run the diagnostic` passes does not exist
+on a Companies House record and never will.
+
+This is documented rather than solved, deliberately. Closing it means a
+resolution step, matching a registered company name to a live domain, and that
+is a whole class of problem with its own failure modes: the wrong company, a
+dead domain, a parked page, a holding company whose trading name differs. A
+resolution step written quickly under time pressure would be the least tested
+thing in the build, feeding the most expensive one. The right place to solve it
+is against a real data source Connectd chooses, not a guess made here.
+
+Everything before that node is verified. Everything after it is built and
+unreachable until it is closed.
 
 ## Honest status
 
-Branch A runs once the Brevo credential is attached. Branch B runs once the
-diagnostic is behind an endpoint. Neither is claimed as running in production,
-and the write-up says so in the same words.
+Branch A runs once the Brevo credential is attached.
+
+Branch B runs as far as the SH01 detection, which has been executed against live
+Companies House data. It stops at `Run the diagnostic`, which needs two things:
+the diagnostic behind an endpoint, and a way to get from a company number to a
+website.
+
+Neither branch is claimed as running in production, and the write-up says so in
+the same words.
