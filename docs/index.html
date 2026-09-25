@@ -285,6 +285,43 @@ layer.</p>
 accepts any address whether the mailbox exists or not and is the exact condition that
 produces a mass hard bounce.</p>
 
+<h3>Where this actually runs</h3>
+<p>Both routes above are orchestration rather than diagnosis, so they are built where
+orchestration belongs. <strong>The diagnostic stays in Python</strong>, because a gate that
+has to fire on every run is a function with a test, not a node that can be dragged out of
+the path. n8n takes the schedule, the credentials, the retries, the three day wait and the
+branch on outcome.</p>
+
+<p><a href="n8n-workflow.png"><img src="n8n-workflow.png" alt="The n8n workflow: a capture
+branch handling consent, the CRM write and three outcome-specific follow ups, and a
+scheduled branch watching Companies House for share allotment filings"
+style="width:100%;border:1px solid var(--line);border-radius:10px;margin:18px 0 10px"></a></p>
+
+<p class="sources">25 nodes, two triggers.
+<a href="n8n-branch-a.png">The capture branch at readable size</a> &middot;
+<a href="https://github.com/Tomianne/connectd-leadership-gap-diagnostic/blob/master/orchestration/connectd-funnel.n8n.json">the
+workflow JSON</a> &middot;
+<a href="https://github.com/Tomianne/connectd-leadership-gap-diagnostic/blob/master/orchestration/README.md">why
+each node is where it is</a></p>
+
+<p><strong>The top branch is what happens after a founder asks for their report.</strong>
+Consent is separable, so the no branch records the run against the contact and stops.
+Then the outcome decides the follow up: a report waits three days and asks which gap was
+wrong, which is the one label the loop cannot get from behaviour; a screened-out company
+routes to the exec side; a refusal gets the ten minute call.</p>
+
+<p><strong>The lower branch is the funding signal agent.</strong> Companies House advanced
+search builds the ICP watchlist, a second call reads each company's filing history, and an
+SH01 dated in the last 36 hours is the trigger, because a share allotment is the legal
+record of a round landing rather than a press mention that might be six months old. It
+ends at a node called <strong>No report, no outreach</strong>. A diagnostic that declined
+to diagnose must not still fire a cold email.</p>
+
+<div class="callout"><strong>Status, plainly.</strong> The workflow is built, imported and
+credentialed against the same Brevo key this build sends with. It has not been fired at
+live traffic, and the funding branch needs the diagnostic behind an HTTP endpoint, which
+is not deployed here. That is one node and it is named in the notes.</div>
+
 <h3>Then</h3>
 <ul>
 <li>Accelerator and syndicate platform teams, whose job is handing portfolio companies
@@ -343,8 +380,8 @@ diverge.</p>
 <thead><tr><th>Not claimed</th><th>The honest version</th></tr></thead>
 <tbody>
 <tr><td>End to end</td><td>The diagnostic runs end to end on real companies. The routing
-and nurture layer is designed, with a working precedent in another stack, and is not
-connected here.</td></tr>
+and nurture layer is built as an n8n workflow, imported and credentialed, and has not been
+fired at live traffic.</td></tr>
 <tr><td>It knows your business</td><td>Built from your public offer. No access to the CRM,
 the bench or the real qualification thresholds. Both config files exist so that is an hour
 of work, not a rebuild.</td></tr>
@@ -393,9 +430,10 @@ definition of a good lead just finds the wrong leads faster.</p>
 <p>Built with Claude Code. The gap taxonomy and the qualification rules are inferred from
 Connectd's public offer, not from their bench or their CRM, and both live in editable
 config files for that reason.</p>
-<p>n8n would be the natural production home for the routing and scheduling layer. Two
-walkthroughs on that tooling, including why I moved off n8n Cloud and how to wire Google
-Cloud into it, are on the AI with Hannah channel:
+<p>The routing and scheduling layer is built in n8n and lives in
+<a href="https://github.com/Tomianne/connectd-leadership-gap-diagnostic/tree/master/orchestration">orchestration/</a>.
+Two walkthroughs on that tooling, including why I moved off n8n Cloud and how to wire
+Google Cloud into it, are on the AI with Hannah channel:
 <a href="https://youtube.com/watch?v=tZNzfJvQ0EE">why I cancelled n8n Cloud</a> and
 <a href="https://youtube.com/watch?v=lucBq6iw37g">connecting Google Cloud to n8n</a>.</p>
 <p>Source, including the taxonomy, the ICP rules and the run log:
