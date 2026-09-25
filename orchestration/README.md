@@ -50,14 +50,24 @@ at the moment of capture. This branch owns what comes after.
 
 Trigger: weekdays at 07:00.
 
-1. **Companies House advanced search**, filtered to the SIC codes in scope.
-   SH01 is the allotment of shares filing, which is the legal record of a round
-   landing, so it is a dated public event rather than a press mention that may
-   describe something six months old.
-2. **Screen against `icp.yml`** before the expensive step, not after, so the
+The signal is **SH01**, the allotment of shares. That is the filing a company
+makes when it issues new equity, so it is the legal record of a round landing
+with a date attached, rather than a press mention that may be describing
+something six months old.
+
+Getting it takes two calls, because neither can do it alone.
+
+1. **Companies House ICP watchlist.** Advanced search by SIC code, incorporation
+   date and active status. This cannot filter on filings, so its job is the
+   candidate set and nothing more.
+2. **Capital filings for each.** The filing history endpoint per company,
+   category `capital`, batched five at a time to stay inside the rate limit.
+3. **An SH01 since the last run?** Keeps only companies with an SH01 dated in
+   the last 36 hours, and carries the filing date forward.
+4. **Screen against `icp.yml`** before the expensive step, not after, so the
    agent never spends a diagnostic run on a company it would have rejected.
-3. **Run the diagnostic.**
-4. **Did it produce a report?** If it refused or screened out, the branch ends
+5. **Run the diagnostic.**
+6. **Did it produce a report?** If it refused or screened out, the branch ends
    at `No report, no outreach`. The outbound is only ever sent when there is a
    real read to open with. That node is the whole argument for the refusal path:
    without it, a diagnostic that declines to diagnose would still trigger a cold
@@ -69,7 +79,7 @@ Trigger: weekdays at 07:00.
 | Node group | Needs | Notes |
 |---|---|---|
 | Every Brevo node | one Header Auth credential, `api-key` | The same key the build already sends with. One credential covers all six. |
-| Companies House | Basic Auth, key as username, blank password | Free API key from their developer portal. |
+| Both Companies House nodes | Basic Auth, key as username, password blank | Free REST key from `developer.company-information.service.gov.uk`. One credential covers both. |
 | `Run the diagnostic` | `DIAGNOSTIC_URL` variable | The one genuine gap. `diagnose.py` is a library with a CLI and is not currently exposed over HTTP, so this node needs a small wrapper deployed before branch B can run end to end. Branch A needs no such thing. |
 | Brevo template ids 4, 5, 6 | the three follow-up templates | Referenced by id rather than inlined, so the copy is editable without touching the workflow. |
 

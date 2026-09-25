@@ -486,6 +486,10 @@
               "value": "={{ $now.minus(5, 'years').toISODate() }}"
             },
             {
+              "name": "company_status",
+              "value": "active"
+            },
+            {
               "name": "size",
               "value": "100"
             }
@@ -493,8 +497,8 @@
         },
         "options": {}
       },
-      "id": "ded542de-1b18-595e-bada-a9b9abfd15b0",
-      "name": "Companies House: SH01 filings",
+      "id": "3bdca784-0b12-555f-9884-15ca63ba412b",
+      "name": "Companies House: ICP watchlist",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -510,6 +514,62 @@
     },
     {
       "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://api.company-information.service.gov.uk/company/' + $json.company_number + '/filing-history' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "category",
+              "value": "capital"
+            },
+            {
+              "name": "items_per_page",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 5,
+              "batchInterval": 1000
+            }
+          }
+        }
+      },
+      "id": "d8e741b8-4728-5294-91ca-a165332b72a7",
+      "name": "Capital filings for each",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        700
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "companies-house",
+          "name": "Companies House key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// SH01 is the allotment of shares, which is the filing a company makes\n// when it issues new equity. It is the legal record of a round landing,\n// so it is a dated event rather than a press mention that may describe\n// something six months old.\nconst since = new Date(Date.now() - 36 * 60 * 60 * 1000);\nconst out = [];\nfor (const i of items) {\n  const hit = (i.json.items || []).find(\n    f => f.type === 'SH01' && new Date(f.date) >= since\n  );\n  if (hit) out.push({ json: { ...i.json, sh01_date: hit.date } });\n}\nreturn out;"
+      },
+      "id": "a0dc7d53-9242-561d-b984-8e6bd8df4c62",
+      "name": "An SH01 since the last run?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        700
+      ]
+    },
+    {
+      "parameters": {
         "jsCode": "// The same screen the Python build applies, kept ahead of the expensive\n// step so the agent never spends a run on a company it would reject.\nconst STAGES = ['pre-seed', 'seed', 'series-a'];\nreturn items.filter(i =>\n  STAGES.includes(i.json.stage) &&\n  i.json.employees <= 25 &&\n  i.json.country === 'GB'\n);"
       },
       "id": "decfbcc0-a8d4-57ae-980d-59996def96f1",
@@ -517,7 +577,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        180,
+        620,
         700
       ]
     },
@@ -537,7 +597,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        400,
+        840,
         700
       ]
     },
@@ -571,7 +631,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        620,
+        1060,
         700
       ]
     },
@@ -582,7 +642,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        840,
+        1280,
         900
       ]
     },
@@ -618,7 +678,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        840,
+        1280,
         660
       ]
     },
@@ -638,7 +698,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1060,
+        1500,
         660
       ],
       "credentials": {
@@ -792,14 +852,36 @@
       "main": [
         [
           {
-            "node": "Companies House: SH01 filings",
+            "node": "Companies House: ICP watchlist",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Companies House: SH01 filings": {
+    "Companies House: ICP watchlist": {
+      "main": [
+        [
+          {
+            "node": "Capital filings for each",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capital filings for each": {
+      "main": [
+        [
+          {
+            "node": "An SH01 since the last run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "An SH01 since the last run?": {
       "main": [
         [
           {
