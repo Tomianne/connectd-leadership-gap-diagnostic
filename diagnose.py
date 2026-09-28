@@ -331,6 +331,19 @@ importance:
    `unrendered_sections`, never in `not_visible`, and never phrase it as an absence.
 6. `not_visible` means "I could not see this on these pages". It does NOT mean the
    company does not have it. Phrase every entry that way.
+7. `apparent_stage` is the only field here that a website never states outright, so
+   it is the easiest one to get wrong by inference. Use these definitions and
+   nothing else:
+     - "pre-seed", "seed", "series-a": the site names that round, or names an
+       investor or accelerator consistent with it.
+     - "later": the site shows POSITIVE evidence of Series B or beyond, or of an
+       established company that has clearly outgrown early stage venture funding.
+     - "unknown": everything else, including every site that shows no funding,
+       investor or round language at all.
+   A confident tone, a long track record, named customers, production systems or
+   the word "studio" are NOT stage evidence. A bootstrapped company shows no
+   funding language and is "unknown", never "later". If you are reaching for
+   "later" because nothing on the site says otherwise, the answer is "unknown".
 
 Return only JSON matching this shape:
 
@@ -340,7 +353,7 @@ Return only JSON matching this shape:
   "what_they_sell": str|null,
   "who_they_sell_to": str|null,
   "sector": str|null,
-  "apparent_stage": "pre-seed"|"seed"|"series-a"|"later"|"unknown",
+  "apparent_stage": "pre-seed"|"seed"|"series-a"|"later"|"unknown",   // see rule 7
   "team_members": [{"name": str, "role": str, "source_url": str}],
   "team_size_estimate": int|null,
   "open_roles": [{"title": str, "source_url": str}],
@@ -446,16 +459,49 @@ def validate_icp(icp):
 
 
 def qualify(ev, icp):
-    """Return (verdict, reasons). Verdict is 'in', 'out' or 'review'."""
+    """
+    Return (verdict, reasons, category, notes).
+
+    Verdict is 'in' or 'out'. Category names the DIRECTION the company sits in
+    relative to the profile: 'too_advanced', 'too_early' or 'mixed'. Notes record
+    what was considered and deliberately not screened on.
+
+    The category exists because the founder-facing page has to say something true
+    about why, and one hardcoded message cannot be true in both directions. A two
+    person company was being told it was past the point this is built for.
+    """
     reasons = []
+    notes = []
+    directions = set()
     target = icp["target"]
 
+    # A stage screen needs stage EVIDENCE, never the absence of it.
+    #
+    # 'later' is what a model reaches for when a site shows no funding language
+    # at all, which describes every bootstrapped company that ever existed. Two
+    # runs proved it: Ridelogix and 3Balconies both showed zero funding evidence,
+    # one happened to emit 'unknown' and received a full report, the other
+    # emitted 'later' and was screened out as too mature. Same evidence quality,
+    # opposite outcome, decided by an arbitrary label.
+    #
+    # So the screen now has to stand on a funding mention. Without one the stage
+    # value is an inference drawn from silence, and it disqualifies nobody.
     stage = ev.get("apparent_stage")
+    has_funding_evidence = bool(ev.get("funding_mentions"))
     if stage and stage != "unknown" and stage not in target["stage"]:
-        reasons.append(
-            f"apparent stage '{stage}' is outside the target stages "
-            f"({', '.join(target['stage'])})"
-        )
+        if has_funding_evidence:
+            reasons.append(
+                f"apparent stage '{stage}' is outside the target stages "
+                f"({', '.join(target['stage'])})"
+            )
+            directions.add("too_advanced")
+        else:
+            notes.append(
+                f"stage read as '{stage}' but no funding mention was found anywhere on "
+                f"the site, so the stage screen was not applied. An inferred stage with "
+                f"no funding evidence behind it is a reading of silence, not a fact about "
+                f"the company."
+            )
 
     size = ev.get("team_size_estimate")
     if not size and ev.get("team_members"):
@@ -467,8 +513,10 @@ def qualify(ev, icp):
                 f"{target['team_size']['max']}, so the company can likely hire "
                 f"outright rather than needing pro bono advisory"
             )
+            directions.add("too_advanced")
         elif size < target["team_size"]["min"]:
             reasons.append(f"team of about {size} is below the minimum of {target['team_size']['min']}")
+            directions.add("too_early")
 
     # A full senior team present is the explicit disqualifier that matters most,
     # because naming a gap here would mean inventing one.
@@ -479,10 +527,17 @@ def qualify(ev, icp):
     )
     if has_finance and has_commercial:
         reasons.append("a finance lead and a commercial lead are both already named on the team")
+        directions.add("too_advanced")
 
     if not reasons:
-        return "in", []
-    return "out", reasons
+        return "in", [], None, notes
+    if directions == {"too_advanced"}:
+        category = "too_advanced"
+    elif directions == {"too_early"}:
+        category = "too_early"
+    else:
+        category = "mixed"
+    return "out", reasons, category, notes
 
 # --------------------------------------------------------------------------
 # step 4: classification against the closed taxonomy
@@ -1082,10 +1137,12 @@ def run(url, slug=None, confirm=True, on_step=None):
         }
 
     icp = validate_icp(load_yaml("icp.yml"))
-    verdict, why = qualify(ev, icp)
+    verdict, why, screen_category, screen_notes = qualify(ev, icp)
+    for n in screen_notes:
+        print(f"      screen note: {n}")
     if verdict == "out":
         step("out_of_icp", "; ".join(why))
-        print(f"[4/6] OUT OF ICP: {'; '.join(why)}")
+        print(f"[4/6] OUT OF ICP ({screen_category}): {'; '.join(why)}")
         return {
             "run_id": run_id,
             "slug": slug,
@@ -1095,6 +1152,8 @@ def run(url, slug=None, confirm=True, on_step=None):
             "run_cost": dict(COST),
             "generated_at": started.isoformat(timespec="seconds"),
             "icp_reasons": why,
+            "icp_screen_category": screen_category,
+            "icp_notes": screen_notes,
             "evidence": ev,
             "evidence_completeness": f"{score}/{total}",
             "message": (

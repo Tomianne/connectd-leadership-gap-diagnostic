@@ -655,16 +655,59 @@ def render_out_of_icp(r, audience="founder", context="self_serve", embed=False):
     """
     Telling somebody they are "outside the profile" and quoting the config line
     that excluded them is a rejection letter. The same fact can be delivered as a
-    compliment, because it usually is one: they are past the stage where this
-    offer helps.
+    compliment where it is one.
+
+    But it is only a compliment in one direction, and this page used to assume
+    that direction for everybody. A company screened out for having two people on
+    its website was shown the headline "You are past the point this is built
+    for", which is the opposite of what the screen actually found. The reasons
+    were on the page already; they were just fenced behind audience == internal,
+    so the one reader who could not see them was the one being described.
+
+    So the copy now branches on `icp_screen_category`, set by qualify():
+
+        too_advanced  further along than the offer suits
+        too_early     not yet enough organisation to advise
+        mixed         signals in both directions
+
+    Runs produced before the category existed carry no value for it, and fall
+    through to the neutral branch, which states the reasons plainly and claims
+    nothing about direction.
     """
-    out = [] if embed else [header(r, "You are past the point this is built for.", audience)]
+    category = r.get("icp_screen_category")
+    reasons = r.get("icp_reasons") or []
+
+    if category == "too_advanced":
+        title = "You are past the point this is built for."
+        lede = (
+            "This diagnostic is built for companies too early to afford the senior "
+            "people they need. From the outside, you look past that."
+        )
+    elif category == "too_early":
+        title = "You are earlier than this is built for."
+        lede = (
+            "This diagnostic looks for senior gaps in a company that already has an "
+            "organisation to advise. From the outside, you look earlier than that."
+        )
+    else:
+        title = "This is not the right fit, and here is why."
+        lede = (
+            "This diagnostic is built for a fairly narrow band of company, and the "
+            "signals on your site sit outside it in more than one direction."
+        )
+
+    out = [] if embed else [header(r, title, audience)]
 
     out.append("<h2>Why there is no report here</h2>")
-    out.append(
-        '<p class="big">This diagnostic is built for companies too early to afford the '
-        "senior people they need. From the outside, you look past that.</p>"
-    )
+    out.append(f'<p class="big">{lede}</p>')
+
+    # The founder gets the actual screen, not a shape of it. Withholding the
+    # reason is what made the old page able to say something untrue without
+    # anybody noticing.
+    if reasons:
+        out.append("<p>What the screen found, in full:</p>")
+        out.append("<ul>" + "".join(f"<li>{e(x)}</li>" for x in reasons) + "</ul>")
+
     out.append(
         "<p>We could produce three gaps for you. Any system like this can produce three "
         "gaps for anyone. It would mean picking them to fill a template rather than "
@@ -675,20 +718,32 @@ def render_out_of_icp(r, audience="founder", context="self_serve", embed=False):
         "conversation will sort it out faster than the website will.</p>"
     )
 
-    # A screened-out company is not a dead end, and treating it as one was a
-    # miss. Connectd is two sided: the senior people inside a company too far
-    # along to need pro bono advisors are exactly who the other side of the
-    # marketplace recruits. The screen changes which side of the business this
-    # is a lead for, not whether it is one.
-    out.append(
-        '<h2>There is a different conversation here</h2>\n<div class="panel">\n<p class="big">Connectd places senior operators into early stage companies as advisors\nand non executives. People at your stage are usually on the other side of that.</p>\n<p>Advising a startup for three to six months is how a lot of senior operators build a\nportfolio, get board experience before they want a board seat, and stay close to the\npart of the market that moves fastest. It is unpaid, it is a few hours a month, and it\ntends to be the most interesting meeting in the calendar.</p>\n<p style="margin-bottom:0">If that sounds like you, or like somebody on your team, it is\nworth ten minutes.</p>\n</div>'
-    )
+    if category == "too_advanced":
+        # A screened-out company is not a dead end, and treating it as one was a
+        # miss. Connectd is two sided: the senior people inside a company too far
+        # along to need pro bono advisors are exactly who the other side of the
+        # marketplace recruits. The screen changes which side of the business
+        # this is a lead for, not whether it is one.
+        #
+        # This only holds in this direction. Offering a two person pre-seed
+        # founder a seat on somebody else's board is not a warm redirect, it is
+        # evidence that nothing on the page was written for them.
+        out.append(
+            '<h2>There is a different conversation here</h2>\n<div class="panel">\n<p class="big">Connectd places senior operators into early stage companies as advisors\nand non executives. People at your stage are usually on the other side of that.</p>\n<p>Advising a startup for three to six months is how a lot of senior operators build a\nportfolio, get board experience before they want a board seat, and stay close to the\npart of the market that moves fastest. It is unpaid, it is a few hours a month, and it\ntends to be the most interesting meeting in the calendar.</p>\n<p style="margin-bottom:0">If that sounds like you, or like somebody on your team, it is\nworth ten minutes.</p>\n</div>'
+        )
+    elif category == "too_early":
+        out.append(
+            '<h2>What would be more use than a report</h2>\n<div class="panel">\n<p class="big">At this size the useful conversation is which single senior voice would\nchange the next six months, and a generated document is a poor way to have it.</p>\n<p>Connectd places senior operators into early stage companies as advisors and non\nexecutives, unpaid, for three to six months. That route opens earlier than this\ndiagnostic can usefully read a website, so being early here says nothing about whether\nit is worth a conversation.</p>\n<p style="margin-bottom:0">Come back when the team page has more on it and this will have\nsomething to work with.</p>\n</div>'
+        )
 
     if audience == "internal":
         out.append("<h2>Internal</h2>")
         out.append('<div class="panel">')
-        for reason in r.get("icp_reasons", []):
+        out.append(field("Screen direction", e(category or "not recorded (run predates the category)")))
+        for reason in reasons:
             out.append(field("Screen", e(reason)))
+        for note in r.get("icp_notes") or []:
+            out.append(field("Considered, not screened on", e(note)))
         out.append(field("Why this matters", (
             "A funnel that reports on everything it is handed does not have an ideal "
             "customer profile. It has a preference."
@@ -697,16 +752,29 @@ def render_out_of_icp(r, audience="founder", context="self_serve", embed=False):
 
     _b = (load_offer().get("booking_url") or "").strip()
     if _b and not embed:
+        if category == "too_early":
+            primary, secondary = "Book a conversation", "You read it wrong, we are further along"
+        elif category == "too_advanced":
+            primary, secondary = "Tell me about advisory roles", "You read it wrong, we are earlier than that"
+        else:
+            primary, secondary = "Book a conversation", "You read it wrong"
         out.append(
-            f'<div class="cta"><p><a class="btn" href="{e(_b)}">Tell me about advisory roles</a>'
-            f'<a class="btn ghost" href="{e(_b)}">You read it wrong, we are earlier than that</a></p></div>'
+            f'<div class="cta"><p><a class="btn" href="{e(_b)}">{e(primary)}</a>'
+            f'<a class="btn ghost" href="{e(_b)}">{e(secondary)}</a></p></div>'
         )
     out.append(method_footer())
     return shell(f"Not the right fit: {r.get('company_name')}", "".join(out), embed=embed)
 
 
-def render_error(r):
-    out = [header(r, "This analysis did not complete.")]
+def render_error(r, audience="founder", context="self_serve", embed=False):
+    """
+    This took the same signature as the other three renderers late, and the gap
+    mattered. It referenced `embed` in its final line without ever accepting it,
+    so every call raised NameError, and the one outcome that exists to report a
+    failure honestly was the one outcome that could not render. A failure path
+    that fails is indistinguishable from no failure at all.
+    """
+    out = [] if embed else [header(r, "This analysis did not complete.", audience)]
     out.append("<h2>What happened</h2>")
     out.append(f'<p class="big">{e(r.get("message"))}</p>')
     out.append('<div class="panel">' + field("Technical detail", e(r.get("error"))) + "</div>")
@@ -728,18 +796,22 @@ RENDERERS = {
 
 
 def render(report, audience="founder", context="self_serve", embed=False):
+    # All four renderers now take the same signature, so the dispatcher no longer
+    # needs to know which ones can be handed an audience and which cannot. That
+    # special casing is what let render_error drift out of step unnoticed.
     fn = RENDERERS.get(report.get("outcome"))
-    if fn in (render_delivered, render_refused, render_out_of_icp):
-        return fn(report, audience=audience, context=context, embed=embed)
     if not fn:
         return render_error(
             {
                 **report,
                 "message": "This run did not produce a result.",
                 "error": f"outcome was '{report.get('outcome')}'",
-            }
+            },
+            audience=audience,
+            context=context,
+            embed=embed,
         )
-    return fn(report)
+    return fn(report, audience=audience, context=context, embed=embed)
 
 
 def main():
