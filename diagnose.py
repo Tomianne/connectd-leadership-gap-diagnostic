@@ -387,7 +387,20 @@ def extract_evidence(pages, key):
 
 
 def evidence_completeness(ev):
-    """How much did we actually see? Drives the refusal gate."""
+    """
+    How much did we actually see? Drives the refusal gate.
+
+    Every field here counts something the site showed. That sounds obvious and it
+    was not true: the eighth field used to score `apparent_stage not in (None,
+    "unknown")`, which rewards the extractor for naming a stage and penalises it
+    for the honest "unknown". Extraction rule 3 tells the model an honest null is
+    worth more than a plausible guess, and this function was quietly paying it to
+    guess. A scoring rule that contradicts the instruction above it will win,
+    because the instruction is advice and the score has consequences.
+
+    It is replaced by evidence of commercial footprint, which the site either
+    shows or does not, and which no inference can manufacture.
+    """
     fields = [
         bool(ev.get("company_name")),
         bool(ev.get("what_they_sell")),
@@ -396,7 +409,7 @@ def evidence_completeness(ev):
         bool(ev.get("open_roles")),
         bool(ev.get("funding_mentions")),
         bool(ev.get("sector")),
-        ev.get("apparent_stage") not in (None, "unknown"),
+        bool(ev.get("pricing_visible")) or bool(ev.get("customer_or_logo_claims")),
     ]
     return sum(fields), len(fields)
 
@@ -448,12 +461,38 @@ def should_refuse(ev, taxonomy):
 EXTRACTOR_STAGES = {"pre-seed", "seed", "series-a", "later", "unknown"}
 
 
+# Disqualifier ids that qualify() actually tests. icp.yml declares more than this,
+# and the difference is the point of the check below.
+#
+# A declared rule nobody implemented reads exactly like an enforced one to anybody
+# reading the config, which is the same class of problem as a target stage the
+# extractor could never emit: a vocabulary only one side speaks. 3Balconies was
+# screened out for the wrong reason while `agency-or-consultancy`, the rule that
+# describes it correctly, sat in this file doing nothing.
+#
+# These are not being implemented days before a review. Adding screens close to a
+# decision risks a silent false screen-out on a company the reader knows well,
+# and a false screen-out is invisible: the company is simply told no. A stated
+# gap is cheaper than a confident wrong answer, which is the whole argument this
+# system makes everywhere else.
+IMPLEMENTED_DISQUALIFIERS = {"full-c-suite-present"}
+
+
 def validate_icp(icp):
     unknown = set(icp["target"]["stage"]) - EXTRACTOR_STAGES
     if unknown:
         raise SystemExit(
             f"icp.yml lists stage(s) the extractor can never emit: {sorted(unknown)}. "
             f"Allowed: {sorted(EXTRACTOR_STAGES)}"
+        )
+
+    declared = [d.get("id") for d in (icp.get("disqualify") or []) if d.get("id")]
+    unenforced = sorted(set(declared) - IMPLEMENTED_DISQUALIFIERS)
+    icp["_unenforced_disqualifiers"] = unenforced
+    if unenforced:
+        print(
+            f"      note: {len(unenforced)} of {len(declared)} declared disqualifiers are "
+            f"documented but not enforced in code: {', '.join(unenforced)}"
         )
     return icp
 
@@ -1154,6 +1193,7 @@ def run(url, slug=None, confirm=True, on_step=None):
             "icp_reasons": why,
             "icp_screen_category": screen_category,
             "icp_notes": screen_notes,
+            "unenforced_disqualifiers": icp.get("_unenforced_disqualifiers") or [],
             "evidence": ev,
             "evidence_completeness": f"{score}/{total}",
             "message": (

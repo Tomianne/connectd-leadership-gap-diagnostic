@@ -744,6 +744,13 @@ def render_out_of_icp(r, audience="founder", context="self_serve", embed=False):
             out.append(field("Screen", e(reason)))
         for note in r.get("icp_notes") or []:
             out.append(field("Considered, not screened on", e(note)))
+        _un = r.get("unenforced_disqualifiers") or []
+        if _un:
+            out.append(field("Declared but not enforced", (
+                e(", ".join(_un)) + ". These are documented in icp.yml and no code tests "
+                "them, so this screen did not consider them. Listed here rather than left "
+                "to look enforced."
+            )))
         out.append(field("Why this matters", (
             "A funnel that reports on everything it is handed does not have an ideal "
             "customer profile. It has a preference."
